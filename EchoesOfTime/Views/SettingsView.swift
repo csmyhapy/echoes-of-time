@@ -55,7 +55,7 @@ struct SettingsView: View {
 
             Section("settings.section.developer") {
                 Button("settings.demo.add") {
-                    DemoData.insert(into: context)
+                    DemoData.insert(into: context, language: appState.language)
                 }
             }
 
