@@ -106,3 +106,7 @@
 "lock.unlock" = "Unlock";
 "lock.reason" = "Unlock Echoes of Time to view your family archives.";
 "lock.cancel" = "Cancel";
+
+"export.pdf" = "Export PDF Book";
+"export.archive" = "Export Archive (ZIP)";
+"export.failed" = "Export failed. Please try again.";

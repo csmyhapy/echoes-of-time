@@ -18,6 +18,8 @@ struct PersonDetailView: View {
     @State private var showingNewNode = false
     @State private var editingNode: Node?
     @State private var showVoiceRecorder = false
+    @State private var exportItem: ExportItem?
+    @State private var showExportError = false
 
     private var sortedNodes: [Node] {
         person.nodes.sorted { $0.sortOrder < $1.sortOrder }
@@ -83,6 +85,22 @@ struct PersonDetailView: View {
         .toolbar {
             if !isReader {
                 ToolbarItem(placement: .topBarTrailing) {
+                    Menu {
+                        Button {
+                            exportPDF()
+                        } label: {
+                            Label("export.pdf", systemImage: "doc.richtext")
+                        }
+                        Button {
+                            exportArchive()
+                        } label: {
+                            Label("export.archive", systemImage: "archivebox")
+                        }
+                    } label: {
+                        Image(systemName: "square.and.arrow.up")
+                    }
+                }
+                ToolbarItem(placement: .topBarTrailing) {
                     Button("common.edit") { showingEditPerson = true }
                 }
             }
@@ -100,6 +118,12 @@ struct PersonDetailView: View {
             RecorderSheet(personID: person.id, titleKey: "recorder.person.title") { name, duration in
                 saveVoice(fileName: name, duration: duration)
             }
+        }
+        .sheet(item: $exportItem) { item in
+            ActivityView(url: item.url)
+        }
+        .alert("export.failed", isPresented: $showExportError) {
+            Button("common.save", role: .cancel) {}
         }
     }
 
@@ -145,6 +169,24 @@ struct PersonDetailView: View {
             context.insert(note)
         }
         try? context.save()
+    }
+
+    // MARK: - 导出
+
+    private func exportPDF() {
+        if let url = PDFExporter.makePDF(for: person) {
+            exportItem = ExportItem(url: url)
+        } else {
+            showExportError = true
+        }
+    }
+
+    private func exportArchive() {
+        if let url = ArchiveExporter.makeArchive(for: person) {
+            exportItem = ExportItem(url: url)
+        } else {
+            showExportError = true
+        }
     }
 
     private func delete(_ node: Node) {

@@ -211,8 +211,8 @@ EchoesOfTime/
 | 7 | 照片管理 | 相册选图、压缩落盘、排序、删除 | NodeDetailView + MediaStore | ✅ 完成 |
 | 8 | 录音 | 录制（人物/章节/照片级）、试听、替换 | AudioRecorder + RecorderSheet | ✅ 完成 |
 | 9 | 留言 | 家人留言（人物/章节/照片）、删除 | MessageSection | ✅ 完成 |
-| 10 | 导出 | PDF 回忆册、zip 档案包、系统分享 | PDFExporter / ArchiveExporter | ⬜ P5 |
-| 11 | 备份 / 恢复 | 本地导出、iCloud 可选同步 | BackupService | ⬜ P5 |
+| 10 | 导出 | PDF 回忆册、zip 档案包、系统分享 | PDFExporter / ArchiveExporter | ✅ 完成 |
+| 11 | 备份 / 恢复 | 导出 zip 存文件 App / iCloud Drive | ArchiveExporter + ActivityView | ✅ 完成（手动备份） |
 | 12 | 导入迁移 | 读完网站数据一次搬入 APP | Importer | ⬜ P6 |
 | 13 | 设置 | 语言、模式、大字、隐私锁、数据说明 | SettingsView | 🟡 语言/模式/大字已有 |
 | 14 | 隐私锁 | Face ID / 设备密码解锁 | PrivacyLock | ✅ 完成 |
@@ -316,8 +316,8 @@ Library（大字列表）→ Person → 章节卡片 → 照片网格 → 大图
 | **P2** | 建档 / 章节编辑 / 照片增删排序 | ✅ 完成 |
 | **P3** | 录音（AVFoundation，m4a） | ✅ 完成 |
 | **P4** | 留言 + Face ID 隐私锁 | ✅ 完成 |
-| **P5** | PDF 导出 / zip 导出 / iCloud 备份 | ⬜ 下一步 |
-| **P6** | 网站数据导入器（.echosarchive） | ⬜ |
+| **P5** | PDF 导出 / zip 导出 / iCloud 备份 | ✅ 完成 |
+| **P6** | 网站数据导入器（.echosarchive） | ⬜ 下一步 |
 | **P7** | TestFlight 内测 → App Store 上架（隐私政策 / 截图 / 审核） | ⬜ |
 
 ---

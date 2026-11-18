@@ -106,3 +106,7 @@
 "lock.unlock" = "解锁";
 "lock.reason" = "解锁后查看你的家庭记忆档案";
 "lock.cancel" = "取消";
+
+"export.pdf" = "导出 PDF 回忆册";
+"export.archive" = "导出档案包（ZIP）";
+"export.failed" = "导出失败，请重试。";
