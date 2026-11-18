@@ -23,6 +23,8 @@ final class Person {
     var coverImageFileName: String? // 封面图文件名（Media 目录内）
     var bgmFileName: String?        // 背景音乐文件名
     var createdAt: Date
+    /// 内置示例档案（虚构、仅供体验），不占用正式档案名额
+    var isDemo: Bool = false
 
     @Relationship(deleteRule: .cascade, inverse: \Node.person)
     var nodes: [Node] = []
@@ -43,7 +45,8 @@ final class Person {
         summary: String = "",
         story: String = "",
         coverImageFileName: String? = nil,
-        createdAt: Date = .now
+        createdAt: Date = .now,
+        isDemo: Bool = false
     ) {
         self.id = id
         self.name = name
@@ -52,6 +55,7 @@ final class Person {
         self.story = story
         self.coverImageFileName = coverImageFileName
         self.createdAt = createdAt
+        self.isDemo = isDemo
     }
 }
 

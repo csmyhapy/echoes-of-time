@@ -114,7 +114,7 @@
 
 "settings.bgm" = "背景音乐";
 "one.archive.limit.title" = "仅支持一个档案";
-"one.archive.limit.message" = "本设备只保存一个档案。如需重新建立，请先删除现有档案。";
+"one.archive.limit.message" = "本设备只保存一份正式档案（示例档案不计入）。如需重新建立，请先删除现有档案。";
 
 "library.subtitle" = "把一生，收进一个个章节。";
 "library.create.person" = "创建人物档案";
@@ -123,3 +123,13 @@
 "unit.chapters" = "个章节";
 "unit.photos" = "张照片";
 "unit.voice" = "条语音";
+
+"library.create.first" = "创建你的第一个档案";
+"library.create.first.desc" = "这里属于你。为父母、祖辈，或任何你想留下故事的人建档。";
+"demo.section.title" = "示例档案";
+"demo.section.note" = "虚构示例，仅供体验";
+"demo.badge" = "示例";
+"demo.note" = "虚构人物，不占正式档案名额";
+
+"demo.exists.title" = "已存在示例档案";
+"demo.exists.message" = "已安装一份示例档案。如需更换，请在首页长按删除后再添加。";

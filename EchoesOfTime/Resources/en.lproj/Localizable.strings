@@ -114,7 +114,7 @@
 
 "settings.bgm" = "Background Music";
 "one.archive.limit.title" = "One Archive Only";
-"one.archive.limit.message" = "This app keeps a single life archive on this device. To start over, delete the existing archive first.";
+"one.archive.limit.message" = "This app keeps one life archive per device. Sample archives don't count. To start over, delete your existing archive first.";
 
 "library.subtitle" = "Keep a life, chapter by chapter.";
 "library.create.person" = "Create a Person Archive";
@@ -123,3 +123,13 @@
 "unit.chapters" = "chapters";
 "unit.photos" = "photos";
 "unit.voice" = "voice notes";
+
+"library.create.first" = "Create Your First Archive";
+"library.create.first.desc" = "This space is yours. Add a parent, a grandparent — anyone whose story you want to keep.";
+"demo.section.title" = "Sample Archive";
+"demo.section.note" = "Fictional, for exploring";
+"demo.badge" = "SAMPLE";
+"demo.note" = "Fictional person · does not count toward your archive";
+
+"demo.exists.title" = "Sample Already Added";
+"demo.exists.message" = "A sample archive is already installed. Delete it from the home screen first if you want a different one.";

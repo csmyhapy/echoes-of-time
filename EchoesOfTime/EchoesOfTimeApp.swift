@@ -71,16 +71,27 @@ struct RootView: View {
     private func seedDemoIfNeeded() {
         let persons = (try? context.fetch(FetchDescriptor<Person>())) ?? []
 
-        // 空库：自动放入当前语言的示例档案（仅首次启动）
+        // 兼容旧数据：按名字识别内置示例，补上 isDemo 标记
+        var patched = false
+        for person in persons where !person.isDemo {
+            if DemoData.demoLanguage(of: person) != nil {
+                person.isDemo = true
+                patched = true
+            }
+        }
+        if patched { try? context.save() }
+
+        // 空库：首次启动放入当前语言的示例档案
         if persons.isEmpty, !UserDefaults.standard.bool(forKey: "demoSeeded") {
             DemoData.insert(into: context, language: appState.language)
             UserDefaults.standard.set(true, forKey: "demoSeeded")
             return
         }
 
-        // 唯一档案仍是另一种语言的示例：替换为当前语言版本
-        if persons.count == 1,
-           let only = persons.first,
+        // 库里只有示例、且语言不匹配：换成当前语言的示例（正式档案不受影响）
+        let demos = persons.filter { $0.isDemo }
+        if persons.count == 1, demos.count == 1,
+           let only = demos.first,
            let demoLanguage = DemoData.demoLanguage(of: only),
            demoLanguage != appState.language {
             MediaStore.deleteFolder(for: only.id)

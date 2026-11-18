@@ -41,7 +41,8 @@ enum DemoData {
             name: "Eleanor Whitfield",
             birthYear: "1929–2021",
             summary: "A schoolteacher from the Yorkshire moors. She kept every report card, every pressed flower, and every letter her husband wrote during the war.",
-            story: "This is a fictional demo archive, created to show how Echoes of Time works. Eleanor's chapters are invented, but the shape is real: one chapter for each season of a life, with the photographs, the voice, and the small stories that go with them."
+            story: "This is a fictional demo archive, created to show how Echoes of Time works. Eleanor's chapters are invented, but the shape is real: one chapter for each season of a life, with the photographs, the voice, and the small stories that go with them.",
+            isDemo: true
         )
         context.insert(person)
         person.coverImageFileName = importPhoto("demo_en_cover", personID: person.id)
@@ -86,7 +87,8 @@ enum DemoData {
             name: "王秀兰",
             birthYear: "1936–2022",
             summary: "长沙的一位普通女工，在纺织厂干了三十年。她留着每一张工牌、每一张粮票，还有儿女从小到大的成绩单。",
-            story: "这是为了体验「忆生相伴」而制作的虚构演示档案。王秀兰的人生是编的，但章节的结构是真的：一段人生一个章节，配上当时的照片、声音和几句家常话。"
+            story: "这是为了体验「忆生相伴」而制作的虚构演示档案。王秀兰的人生是编的，但章节的结构是真的：一段人生一个章节，配上当时的照片、声音和几句家常话。",
+            isDemo: true
         )
         context.insert(person)
         person.coverImageFileName = importPhoto("demo_zh_cover", personID: person.id)

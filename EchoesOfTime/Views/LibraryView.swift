@@ -2,7 +2,7 @@
 //  LibraryView.swift
 //  EchoesOfTime
 //
-//  首页：显示当前档案（一个 App 一位人物），并提供建档 / 添加章节 / 编辑入口。
+//  首页：正式档案（一个 App 一位人物）+ 内置示例档案（不占名额，小卡展示）
 //
 
 import SwiftUI
@@ -20,15 +20,20 @@ struct LibraryView: View {
     @State private var editingPerson: Person?
     @State private var addingChapterFor: Person?
 
+    /// 用户自己的正式档案
+    private var realPersons: [Person] { persons.filter { !$0.isDemo } }
+    /// 内置示例（虚构，仅供体验）
+    private var demoPersons: [Person] { persons.filter { $0.isDemo } }
+
     var body: some View {
         ScrollView {
-            VStack(spacing: 18) {
+            VStack(spacing: 16) {
                 header
 
-                if persons.isEmpty {
+                if realPersons.isEmpty && demoPersons.isEmpty {
                     emptyCard
                 } else {
-                    ForEach(persons) { person in
+                    ForEach(realPersons) { person in
                         NavigationLink {
                             PersonDetailView(person: person, isReader: isReader)
                         } label: {
@@ -43,7 +48,15 @@ struct LibraryView: View {
                         }
                     }
 
-                    actionButtons
+                    if realPersons.isEmpty {
+                        createPrompt
+                    } else {
+                        actionButtons
+                    }
+
+                    if !demoPersons.isEmpty {
+                        demoSection
+                    }
                 }
             }
             .padding(.horizontal, 20)
@@ -83,10 +96,10 @@ struct LibraryView: View {
                 .multilineTextAlignment(.center)
         }
         .padding(.top, 6)
-        .padding(.bottom, 4)
+        .padding(.bottom, 2)
     }
 
-    // MARK: - 空状态
+    // MARK: - 空状态（连示例都没有）
 
     private var emptyCard: some View {
         VStack(spacing: 18) {
@@ -121,12 +134,47 @@ struct LibraryView: View {
         .clipShape(RoundedRectangle(cornerRadius: 18))
     }
 
-    // MARK: - 操作区
+    // MARK: - 尚无正式档案时的建档引导（示例存在时显示）
+
+    private var createPrompt: some View {
+        VStack(spacing: 14) {
+            Image(systemName: "person.crop.circle.badge.plus")
+                .font(.system(size: 44))
+                .foregroundStyle(.brown.opacity(0.8))
+
+            VStack(spacing: 4) {
+                Text("library.create.first")
+                    .font(.headline)
+                Text("library.create.first.desc")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+            }
+
+            if !isReader {
+                Button {
+                    showingNewPerson = true
+                } label: {
+                    Label("library.create.person", systemImage: "person.badge.plus")
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 13)
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(.brown)
+            }
+        }
+        .padding(20)
+        .frame(maxWidth: .infinity)
+        .background(Color(.secondarySystemGroupedBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 18))
+    }
+
+    // MARK: - 正式档案的操作区
 
     private var actionButtons: some View {
         VStack(spacing: 10) {
             Button {
-                if persons.isEmpty {
+                if realPersons.isEmpty {
                     showingNewPerson = true
                 } else {
                     showLimitAlert = true
@@ -140,7 +188,7 @@ struct LibraryView: View {
             .tint(.brown)
 
             Button {
-                addingChapterFor = persons.first
+                addingChapterFor = realPersons.first
             } label: {
                 Label("library.action.addChapter", systemImage: "plus.rectangle.on.folder")
                     .frame(maxWidth: .infinity)
@@ -150,7 +198,7 @@ struct LibraryView: View {
             .tint(.brown)
 
             Button {
-                editingPerson = persons.first
+                editingPerson = realPersons.first
             } label: {
                 Label("library.action.editArchive", systemImage: "square.and.pencil")
                     .frame(maxWidth: .infinity)
@@ -159,7 +207,39 @@ struct LibraryView: View {
             .buttonStyle(.bordered)
             .tint(.brown)
         }
-        .padding(.top, 4)
+        .padding(.top, 2)
+    }
+
+    // MARK: - 示例档案区（小卡 + 明确标注）
+
+    private var demoSection: some View {
+        VStack(alignment: .leading, spacing: 9) {
+            HStack(spacing: 8) {
+                Text("demo.section.title")
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(.secondary)
+                Spacer()
+                Text("demo.section.note")
+                    .font(.system(size: 11))
+                    .foregroundStyle(.tertiary)
+            }
+            .padding(.horizontal, 2)
+
+            ForEach(demoPersons) { person in
+                NavigationLink {
+                    PersonDetailView(person: person, isReader: isReader)
+                } label: {
+                    DemoRow(person: person)
+                }
+                .buttonStyle(.plain)
+                .contextMenu {
+                    if !isReader {
+                        Button("common.delete", role: .destructive) { delete(person) }
+                    }
+                }
+            }
+        }
+        .padding(.top, 6)
     }
 
     private func delete(_ person: Person) {
@@ -169,7 +249,7 @@ struct LibraryView: View {
     }
 }
 
-// MARK: - 档案大卡片
+// MARK: - 正式档案大卡片
 
 struct ArchiveCard: View {
     let person: Person
@@ -177,7 +257,10 @@ struct ArchiveCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            cover
+            CoverImage(fileName: person.coverImageFileName,
+                       personID: person.id,
+                       iconSize: large ? 56 : 40)
+                .frame(maxWidth: .infinity)
                 .frame(height: large ? 240 : 190)
                 .clipped()
 
@@ -228,21 +311,76 @@ struct ArchiveCard: View {
             .font(.system(size: large ? 18 : 12, weight: .medium))
             .foregroundStyle(.brown.opacity(0.85))
     }
+}
 
-    private var cover: some View {
+// MARK: - 示例档案小卡
+
+struct DemoRow: View {
+    let person: Person
+
+    var body: some View {
+        HStack(spacing: 12) {
+            CoverImage(fileName: person.coverImageFileName, personID: person.id, iconSize: 22)
+                .frame(width: 50, height: 50)
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+
+            VStack(alignment: .leading, spacing: 3) {
+                HStack(spacing: 6) {
+                    Text(person.name)
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundStyle(.primary)
+                    Text("demo.badge")
+                        .font(.system(size: 9, weight: .bold))
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 2)
+                        .background(Color.brown.opacity(0.14))
+                        .foregroundStyle(.brown)
+                        .clipShape(Capsule())
+                }
+                if !person.birthYear.isEmpty {
+                    Text(person.birthYear)
+                        .font(.system(size: 12))
+                        .foregroundStyle(.secondary)
+                }
+                Text("demo.note")
+                    .font(.system(size: 11))
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+            }
+
+            Spacer(minLength: 4)
+
+            Image(systemName: "chevron.right")
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundStyle(.tertiary)
+        }
+        .padding(12)
+        .background(Color(.secondarySystemGroupedBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 14))
+    }
+}
+
+// MARK: - 封面图通用组件
+
+struct CoverImage: View {
+    let fileName: String?
+    let personID: UUID
+    var iconSize: CGFloat = 32
+
+    var body: some View {
         Group {
-            if let img = MediaStore.loadImage(fileName: person.coverImageFileName, personID: person.id) {
+            if let name = fileName,
+               let img = MediaStore.loadImage(fileName: name, personID: personID) {
                 Image(uiImage: img).resizable().scaledToFill()
             } else {
                 ZStack {
                     LinearGradient(colors: [Color.brown.opacity(0.35), Color.brown.opacity(0.12)],
                                    startPoint: .topLeading, endPoint: .bottomTrailing)
                     Image(systemName: "person.crop.circle")
-                        .font(.system(size: large ? 56 : 40))
-                        .foregroundStyle(.white.opacity(0.8))
+                        .font(.system(size: iconSize))
+                        .foregroundStyle(.white.opacity(0.85))
                 }
             }
         }
-        .frame(maxWidth: .infinity)
     }
 }

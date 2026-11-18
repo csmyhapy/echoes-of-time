@@ -59,10 +59,10 @@ struct SettingsView: View {
 
             Section("settings.section.developer") {
                 Button("settings.demo.add") {
-                    if persons.isEmpty {
-                        DemoData.insert(into: context, language: appState.language)
-                    } else {
+                    if persons.contains(where: { $0.isDemo }) {
                         showLimitAlert = true
+                    } else {
+                        DemoData.insert(into: context, language: appState.language)
                     }
                 }
             }
@@ -74,10 +74,10 @@ struct SettingsView: View {
             }
         }
         .navigationTitle("settings.title")
-        .alert("one.archive.limit.title", isPresented: $showLimitAlert) {
+        .alert("demo.exists.title", isPresented: $showLimitAlert) {
             Button("common.save", role: .cancel) {}
         } message: {
-            Text("one.archive.limit.message")
+            Text("demo.exists.message")
         }
     }
 }
