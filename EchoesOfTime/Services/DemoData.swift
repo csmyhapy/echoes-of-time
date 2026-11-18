@@ -36,6 +36,7 @@ enum DemoData {
         )
         context.insert(person)
         person.coverImageFileName = importPhoto("demo_en_cover", personID: person.id)
+        person.bgmFileName = "bgm_demo.m4a"
 
         addNode(name: "Childhood in Yorkshire",
                 yearRange: "1929–1945",
@@ -80,6 +81,7 @@ enum DemoData {
         )
         context.insert(person)
         person.coverImageFileName = importPhoto("demo_zh_cover", personID: person.id)
+        person.bgmFileName = "bgm_demo.m4a"
 
         addNode(name: "童年时光",
                 yearRange: "1936–1949",

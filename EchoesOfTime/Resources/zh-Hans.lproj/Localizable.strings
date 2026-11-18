@@ -111,3 +111,7 @@
 "export.archive" = "导出档案包（ZIP）";
 "export.failed" = "导出失败，请重试。";
 "library.empty.demo" = "载入示例档案";
+
+"settings.bgm" = "背景音乐";
+"one.archive.limit.title" = "仅支持一个档案";
+"one.archive.limit.message" = "本设备只保存一个档案。如需重新建立，请先删除现有档案。";

@@ -125,6 +125,19 @@ struct PersonDetailView: View {
         .alert("export.failed", isPresented: $showExportError) {
             Button("common.save", role: .cancel) {}
         }
+        .onAppear {
+            BGMManager.shared.play(fileName: person.bgmFileName, personID: person.id)
+        }
+        .onDisappear {
+            BGMManager.shared.stop()
+        }
+        .onChange(of: showVoiceRecorder) { _, isShowing in
+            if isShowing {
+                BGMManager.shared.stop()
+            } else {
+                BGMManager.shared.play(fileName: person.bgmFileName, personID: person.id)
+            }
+        }
     }
 
     // MARK: - 人物旁白

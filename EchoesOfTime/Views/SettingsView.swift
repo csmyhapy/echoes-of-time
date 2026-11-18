@@ -13,6 +13,9 @@ struct SettingsView: View {
     @Environment(\.modelContext) private var context
     @AppStorage("requireFaceID") private var requireFaceID = false
     @AppStorage("familyName") private var familyName = "Family"
+    @AppStorage("bgmEnabled") private var bgmEnabled = true
+    @Query private var persons: [Person]
+    @State private var showLimitAlert = false
 
     var body: some View {
         @Bindable var state = appState
@@ -51,11 +54,16 @@ struct SettingsView: View {
 
             Section("settings.section.display") {
                 Toggle("settings.largeText", isOn: $state.largeText)
+                Toggle("settings.bgm", isOn: $bgmEnabled)
             }
 
             Section("settings.section.developer") {
                 Button("settings.demo.add") {
-                    DemoData.insert(into: context, language: appState.language)
+                    if persons.isEmpty {
+                        DemoData.insert(into: context, language: appState.language)
+                    } else {
+                        showLimitAlert = true
+                    }
                 }
             }
 
@@ -66,5 +74,10 @@ struct SettingsView: View {
             }
         }
         .navigationTitle("settings.title")
+        .alert("one.archive.limit.title", isPresented: $showLimitAlert) {
+            Button("common.save", role: .cancel) {}
+        } message: {
+            Text("one.archive.limit.message")
+        }
     }
 }

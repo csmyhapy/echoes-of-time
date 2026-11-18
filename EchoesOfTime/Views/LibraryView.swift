@@ -16,6 +16,7 @@ struct LibraryView: View {
     var isReader: Bool = false
 
     @State private var showingNewPerson = false
+    @State private var showLimitAlert = false
 
     var body: some View {
         List {
@@ -43,11 +44,20 @@ struct LibraryView: View {
         .sheet(isPresented: $showingNewPerson) {
             PersonEditView(person: nil)
         }
+        .alert("one.archive.limit.title", isPresented: $showLimitAlert) {
+            Button("common.save", role: .cancel) {}
+        } message: {
+            Text("one.archive.limit.message")
+        }
         .toolbar {
             if !isReader {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
-                        showingNewPerson = true
+                        if persons.isEmpty {
+                            showingNewPerson = true
+                        } else {
+                            showLimitAlert = true
+                        }
                     } label: {
                         Image(systemName: "plus")
                     }

@@ -111,3 +111,7 @@
 "export.archive" = "Export Archive (ZIP)";
 "export.failed" = "Export failed. Please try again.";
 "library.empty.demo" = "Load a Sample Archive";
+
+"settings.bgm" = "Background Music";
+"one.archive.limit.title" = "One Archive Only";
+"one.archive.limit.message" = "This app keeps a single life archive on this device. To start over, delete the existing archive first.";
