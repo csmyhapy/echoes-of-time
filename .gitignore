@@ -1,0 +1,36 @@
+# macOS
+.DS_Store
+._*
+
+# Xcode 构建产物
+build/
+DerivedData/
+*.xcuserstate
+*.xcscmblueprint
+*.xccheckout
+*.moved-aside
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Xcode 用户级数据（每台机器不同，不应提交）
+xcuserdata/
+EchoesOfTime.xcodeproj/project.xcworkspace/xcuserdata/
+EchoesOfTime.xcodeproj/xcuserdata/
+
+# Swift Package Manager
+.build/
+.swiftpm/
+Package.resolved
+
+# CocoaPods / Carthage（当前项目未使用，预留）
+Pods/
+Carthage/Build/
+
+# 本地备份 / 临时文件
+*.orig
+*.bak
+*.tmp
+*.zip
+backup_*/

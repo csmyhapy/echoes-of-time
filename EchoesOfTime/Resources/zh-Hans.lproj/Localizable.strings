@@ -1,0 +1,108 @@
+/* 简体中文 */
+"app.title" = "岁月回声";
+"tab.library" = "档案";
+"tab.settings" = "设置";
+
+"library.empty.title" = "还没有档案";
+"library.empty.desc" = "点击右上角「+」，为你爱的人创建一份记忆档案。";
+"library.sample.summary" = "一位老师、一位园丁，也是一位被深爱的祖母。";
+
+"person.empty.nodes" = "章节会显示在这里。";
+"person.section.timeline" = "人生时间线";
+
+"settings.title" = "设置";
+"settings.section.language" = "语言";
+"settings.language" = "界面语言";
+"settings.language.note" = "默认跟随设备语言，你随时可以切换。";
+"settings.section.mode" = "模式";
+"settings.mode" = "使用模式";
+"settings.mode.note" = "编辑模式供家人建档使用；长辈模式为大字号、只读浏览。";
+"settings.section.display" = "显示";
+"settings.largeText" = "大字号";
+"settings.section.data" = "数据与隐私";
+"settings.data.note" = "所有照片、录音和故事都只保存在本机，不会上传到任何服务器。";
+
+"mode.editor" = "编辑模式（家人）";
+"mode.reader" = "长辈浏览模式";
+
+"node.section.photos" = "照片";
+"node.empty.photos" = "这个章节还没有照片。";
+"photo.has.audio" = "语音旁白";
+"photo.missing" = "找不到照片文件";
+"photo.narration.play" = "播放旁白";
+"photo.narration.pause" = "暂停";
+
+"common.cancel" = "取消";
+"common.save" = "保存";
+"common.delete" = "删除";
+"common.edit" = "编辑";
+
+"edit.person.new.title" = "新建档案";
+"edit.person.edit.title" = "编辑人物";
+"edit.person.section.basics" = "基本信息";
+"edit.person.section.summary" = "简介";
+"edit.person.section.story" = "人生故事";
+"edit.person.section.cover" = "封面照片";
+"edit.person.name" = "姓名";
+"edit.person.birthYear" = "生卒年（如 1929–2021）";
+"edit.person.summary" = "一句话介绍";
+"edit.person.story" = "写下他/她的一生…";
+
+"edit.cover.choose" = "选择封面照片";
+
+"edit.node.new.title" = "新建章节";
+"edit.node.edit.title" = "编辑章节";
+"edit.node.section.basics" = "基本信息";
+"edit.node.section.summary" = "简介";
+"edit.node.section.story" = "章节故事";
+"edit.node.section.cover" = "封面照片";
+"edit.node.name" = "章节标题";
+"edit.node.yearRange" = "年代（如 1951–1989）";
+"edit.node.visible" = "对浏览者可见";
+"edit.node.summary" = "一句话介绍";
+"edit.node.story" = "这一段发生了什么…";
+
+"photo.moveLeft" = "前移";
+"photo.moveRight" = "后移";
+
+"settings.section.developer" = "开发者";
+"settings.demo.add" = "插入演示档案";
+
+"edit.node.suggest" = "推荐名称";
+"suggestion.childhood" = "童年";
+"suggestion.adolescence" = "少年";
+"suggestion.youngAdulthood" = "青年";
+"suggestion.middleAdulthood" = "中年";
+"suggestion.laterYears" = "晚年";
+"suggestion.marriage" = "我的婚姻";
+"suggestion.career" = "我的事业";
+"suggestion.family" = "家人与朋友";
+"suggestion.hobbies" = "爱好与热爱";
+"suggestion.roots" = "我的根与传承";
+"suggestion.turningPoints" = "人生转折";
+
+"recorder.title" = "录制旁白";
+"recorder.photo.title" = "照片旁白";
+"recorder.node.title" = "章节旁白";
+"recorder.person.title" = "人生旁白";
+"recorder.hint" = "正在录音…点击红色按钮结束。";
+"recorder.permission.denied" = "需要麦克风权限，请在系统设置中允许。";
+"photo.record" = "录制旁白";
+"photo.rerecord" = "重新录制";
+"voice.record" = "录制";
+"voice.play" = "播放";
+"voice.empty" = "还没有旁白。";
+"node.voice.title" = "章节旁白";
+"person.voice.title" = "人生旁白";
+
+"messages.title" = "家人留言";
+"messages.empty" = "还没有留言，来做第一个留言的人吧。";
+"messages.placeholder" = "写一句留言…";
+"photo.messages" = "留言";
+"settings.section.privacy" = "隐私";
+"settings.requireFaceID" = "开启面容 ID 解锁";
+"settings.familyName" = "你的名字（用于留言）";
+"lock.title" = "岁月回声已锁定";
+"lock.unlock" = "解锁";
+"lock.reason" = "解锁后查看你的家庭记忆档案";
+"lock.cancel" = "取消";

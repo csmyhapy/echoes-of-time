@@ -1,0 +1,108 @@
+/* English */
+"app.title" = "Echoes of Time";
+"tab.library" = "Library";
+"tab.settings" = "Settings";
+
+"library.empty.title" = "No stories yet";
+"library.empty.desc" = "Tap the + button to begin a memory archive for someone you love.";
+"library.sample.summary" = "A teacher, a gardener, and a beloved grandmother.";
+
+"person.empty.nodes" = "Chapters will appear here.";
+"person.section.timeline" = "Life Timeline";
+
+"settings.title" = "Settings";
+"settings.section.language" = "Language";
+"settings.language" = "App Language";
+"settings.language.note" = "Follows your device language by default. You can switch at any time.";
+"settings.section.mode" = "Mode";
+"settings.mode" = "Usage Mode";
+"settings.mode.note" = "Editor mode is for family members who build the archive. Reader mode shows a large-text, read-only view for elders.";
+"settings.section.display" = "Display";
+"settings.largeText" = "Large Text";
+"settings.section.data" = "Data & Privacy";
+"settings.data.note" = "All photos, recordings and stories are stored only on this device. Nothing is uploaded to any server.";
+
+"mode.editor" = "Editor (Family)";
+"mode.reader" = "Reader (Elder)";
+
+"node.section.photos" = "Photos";
+"node.empty.photos" = "No photos in this chapter yet.";
+"photo.has.audio" = "Voice narration";
+"photo.missing" = "Photo file not found";
+"photo.narration.play" = "Play narration";
+"photo.narration.pause" = "Pause";
+
+"common.cancel" = "Cancel";
+"common.save" = "Save";
+"common.delete" = "Delete";
+"common.edit" = "Edit";
+
+"edit.person.new.title" = "New Archive";
+"edit.person.edit.title" = "Edit Person";
+"edit.person.section.basics" = "Basics";
+"edit.person.section.summary" = "Summary";
+"edit.person.section.story" = "Life Story";
+"edit.person.section.cover" = "Cover Photo";
+"edit.person.name" = "Name";
+"edit.person.birthYear" = "Years (e.g. 1929–2021)";
+"edit.person.summary" = "A short introduction";
+"edit.person.story" = "Write the story of their life…";
+
+"edit.cover.choose" = "Choose Cover Photo";
+
+"edit.node.new.title" = "New Chapter";
+"edit.node.edit.title" = "Edit Chapter";
+"edit.node.section.basics" = "Basics";
+"edit.node.section.summary" = "Summary";
+"edit.node.section.story" = "Chapter Story";
+"edit.node.section.cover" = "Cover Photo";
+"edit.node.name" = "Chapter Title";
+"edit.node.yearRange" = "Years (e.g. 1951–1989)";
+"edit.node.visible" = "Visible to readers";
+"edit.node.summary" = "A short introduction";
+"edit.node.story" = "What happened in this chapter…";
+
+"photo.moveLeft" = "Move Earlier";
+"photo.moveRight" = "Move Later";
+
+"settings.section.developer" = "Developer";
+"settings.demo.add" = "Add Demo Archive";
+
+"edit.node.suggest" = "Suggested Titles";
+"suggestion.childhood" = "Childhood";
+"suggestion.adolescence" = "Adolescence";
+"suggestion.youngAdulthood" = "Young Adulthood";
+"suggestion.middleAdulthood" = "Middle Adulthood";
+"suggestion.laterYears" = "Later Years";
+"suggestion.marriage" = "My Marriage";
+"suggestion.career" = "My Career";
+"suggestion.family" = "Family & Friends";
+"suggestion.hobbies" = "My Hobbies & Passions";
+"suggestion.roots" = "My Roots & Heritage";
+"suggestion.turningPoints" = "Turning Points";
+
+"recorder.title" = "Record Narration";
+"recorder.photo.title" = "Photo Narration";
+"recorder.node.title" = "Chapter Narration";
+"recorder.person.title" = "Life Narration";
+"recorder.hint" = "Recording… tap the red button to stop.";
+"recorder.permission.denied" = "Microphone access is required. Please allow it in Settings.";
+"photo.record" = "Record narration";
+"photo.rerecord" = "Replace narration";
+"voice.record" = "Record";
+"voice.play" = "Play";
+"voice.empty" = "No narration yet.";
+"node.voice.title" = "Chapter Narration";
+"person.voice.title" = "Life Narration";
+
+"messages.title" = "Family Messages";
+"messages.empty" = "No messages yet. Be the first to leave a memory.";
+"messages.placeholder" = "Leave a message…";
+"photo.messages" = "Messages";
+"settings.section.privacy" = "Privacy";
+"settings.requireFaceID" = "Require Face ID";
+"settings.familyName" = "Your Name (for messages)";
+"lock.title" = "Echoes of Time is locked";
+"lock.unlock" = "Unlock";
+"lock.reason" = "Unlock Echoes of Time to view your family archives.";
+"lock.cancel" = "Cancel";
