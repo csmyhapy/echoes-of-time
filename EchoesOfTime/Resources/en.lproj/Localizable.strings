@@ -4,7 +4,7 @@
 "tab.settings" = "Settings";
 
 "library.empty.title" = "No stories yet";
-"library.empty.desc" = "Tap the + button to begin a memory archive for someone you love.";
+"library.empty.desc" = "Tap the button below to begin a memory archive for someone you love.";
 "library.sample.summary" = "A teacher, a gardener, and a beloved grandmother.";
 
 "person.empty.nodes" = "Chapters will appear here.";
@@ -115,3 +115,11 @@
 "settings.bgm" = "Background Music";
 "one.archive.limit.title" = "One Archive Only";
 "one.archive.limit.message" = "This app keeps a single life archive on this device. To start over, delete the existing archive first.";
+
+"library.subtitle" = "Keep a life, chapter by chapter.";
+"library.create.person" = "Create a Person Archive";
+"library.action.addChapter" = "Add a Chapter";
+"library.action.editArchive" = "Edit Archive";
+"unit.chapters" = "chapters";
+"unit.photos" = "photos";
+"unit.voice" = "voice notes";

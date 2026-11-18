@@ -2,7 +2,7 @@
 //  LibraryView.swift
 //  EchoesOfTime
 //
-//  档案列表（编辑模式 / 长辈浏览模式共用）
+//  首页：显示当前档案（一个 App 一位人物），并提供建档 / 添加章节 / 编辑入口。
 //
 
 import SwiftUI
@@ -17,90 +17,149 @@ struct LibraryView: View {
 
     @State private var showingNewPerson = false
     @State private var showLimitAlert = false
+    @State private var editingPerson: Person?
+    @State private var addingChapterFor: Person?
 
     var body: some View {
-        VStack(spacing: 0) {
-            Text("app.title")
-                .font(.system(size: isReader ? 40 : 32, weight: .bold))
-                .frame(maxWidth: .infinity, alignment: .center)
-                .padding(.top, 4)
-                .padding(.bottom, 6)
+        ScrollView {
+            VStack(spacing: 18) {
+                header
 
-            List {
-            if persons.isEmpty {
-                emptyState
-            } else {
-                ForEach(persons) { person in
-                    NavigationLink {
-                        PersonDetailView(person: person, isReader: isReader)
-                    } label: {
-                        PersonRow(person: person, large: isReader)
-                    }
-                    .swipeActions(edge: .trailing) {
-                        Button(role: .destructive) {
-                            delete(person)
+                if persons.isEmpty {
+                    emptyCard
+                } else {
+                    ForEach(persons) { person in
+                        NavigationLink {
+                            PersonDetailView(person: person, isReader: isReader)
                         } label: {
-                            Label("common.delete", systemImage: "trash")
+                            ArchiveCard(person: person, large: isReader)
+                        }
+                        .buttonStyle(.plain)
+                        .contextMenu {
+                            if !isReader {
+                                Button("common.edit") { editingPerson = person }
+                                Button("common.delete", role: .destructive) { delete(person) }
+                            }
                         }
                     }
+
+                    actionButtons
                 }
             }
-            }
-            .listStyle(.insetGrouped)
+            .padding(.horizontal, 20)
+            .padding(.top, 6)
+            .padding(.bottom, 28)
         }
+        .background(Color(.systemGroupedBackground))
         .navigationTitle("")
         .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $showingNewPerson) {
             PersonEditView(person: nil)
+        }
+        .sheet(item: $editingPerson) { person in
+            PersonEditView(person: person)
+        }
+        .sheet(item: $addingChapterFor) { person in
+            NodeEditView(person: person, node: nil)
         }
         .alert("one.archive.limit.title", isPresented: $showLimitAlert) {
             Button("common.save", role: .cancel) {}
         } message: {
             Text("one.archive.limit.message")
         }
-        .toolbar {
-            if !isReader {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        if persons.isEmpty {
-                            showingNewPerson = true
-                        } else {
-                            showLimitAlert = true
-                        }
-                    } label: {
-                        Image(systemName: "plus")
-                    }
-                }
-            }
-        }
     }
 
-    private var emptyState: some View {
-        VStack(spacing: 16) {
-            Image(systemName: "books.vertical")
-                .font(.system(size: 48))
-                .foregroundStyle(.secondary)
-            Text("library.empty.title")
-                .font(.headline)
-            Text("library.empty.desc")
-                .font(.subheadline)
+    // MARK: - 顶部
+
+    private var header: some View {
+        VStack(spacing: 6) {
+            Text("app.title")
+                .font(.system(size: isReader ? 40 : 32, weight: .bold))
+                .frame(maxWidth: .infinity)
+
+            Text("library.subtitle")
+                .font(.system(size: isReader ? 20 : 13))
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
+        }
+        .padding(.top, 6)
+        .padding(.bottom, 4)
+    }
+
+    // MARK: - 空状态
+
+    private var emptyCard: some View {
+        VStack(spacing: 18) {
+            Image(systemName: "person.crop.circle.badge.plus")
+                .font(.system(size: 64))
+                .foregroundStyle(.brown.opacity(0.75))
+
+            VStack(spacing: 6) {
+                Text("library.empty.title")
+                    .font(.headline)
+                Text("library.empty.desc")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+            }
 
             if !isReader {
                 Button {
-                    DemoData.insert(into: context, language: appState.language)
+                    showingNewPerson = true
                 } label: {
-                    Label("library.empty.demo", systemImage: "sparkles")
+                    Label("library.create.person", systemImage: "person.badge.plus")
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 14)
                 }
                 .buttonStyle(.borderedProminent)
                 .tint(.brown)
-                .padding(.top, 8)
             }
         }
+        .padding(24)
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 40)
-        .listRowBackground(Color.clear)
+        .background(Color(.secondarySystemGroupedBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 18))
+    }
+
+    // MARK: - 操作区
+
+    private var actionButtons: some View {
+        VStack(spacing: 10) {
+            Button {
+                if persons.isEmpty {
+                    showingNewPerson = true
+                } else {
+                    showLimitAlert = true
+                }
+            } label: {
+                Label("library.create.person", systemImage: "person.badge.plus")
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 13)
+            }
+            .buttonStyle(.bordered)
+            .tint(.brown)
+
+            Button {
+                addingChapterFor = persons.first
+            } label: {
+                Label("library.action.addChapter", systemImage: "plus.rectangle.on.folder")
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 14)
+            }
+            .buttonStyle(.borderedProminent)
+            .tint(.brown)
+
+            Button {
+                editingPerson = persons.first
+            } label: {
+                Label("library.action.editArchive", systemImage: "square.and.pencil")
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 12)
+            }
+            .buttonStyle(.bordered)
+            .tint(.brown)
+        }
+        .padding(.top, 4)
     }
 
     private func delete(_ person: Person) {
@@ -110,24 +169,64 @@ struct LibraryView: View {
     }
 }
 
-struct PersonRow: View {
+// MARK: - 档案大卡片
+
+struct ArchiveCard: View {
     let person: Person
     var large: Bool = false
 
     var body: some View {
-        HStack(spacing: 14) {
+        VStack(alignment: .leading, spacing: 0) {
             cover
-            VStack(alignment: .leading, spacing: 4) {
-                Text(person.name)
-                    .font(.system(size: large ? 28 : 18, weight: .semibold))
-                if !person.birthYear.isEmpty {
-                    Text(person.birthYear)
-                        .font(.system(size: large ? 20 : 14))
+                .frame(height: large ? 240 : 190)
+                .clipped()
+
+            VStack(alignment: .leading, spacing: 10) {
+                HStack(alignment: .center) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(person.name)
+                            .font(.system(size: large ? 32 : 24, weight: .bold))
+                        if !person.birthYear.isEmpty {
+                            Text(person.birthYear)
+                                .font(.system(size: large ? 22 : 14))
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: large ? 20 : 14, weight: .semibold))
+                        .foregroundStyle(.tertiary)
+                }
+
+                stats
+
+                if !person.summary.isEmpty {
+                    Text(person.summary)
+                        .font(.system(size: large ? 20 : 13))
                         .foregroundStyle(.secondary)
+                        .lineLimit(2)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
             }
+            .padding(16)
         }
-        .padding(.vertical, large ? 8 : 2)
+        .background(Color(.secondarySystemGroupedBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 18))
+        .shadow(color: .black.opacity(0.07), radius: 10, x: 0, y: 4)
+    }
+
+    private var stats: some View {
+        HStack(spacing: 14) {
+            stat(person.nodes.count, "unit.chapters")
+            stat(person.photos.count, "unit.photos")
+            stat(person.voiceNotes.count, "unit.voice")
+        }
+    }
+
+    private func stat(_ count: Int, _ key: String) -> some View {
+        (Text("\(count) ") + Text(LocalizedStringKey(key)))
+            .font(.system(size: large ? 18 : 12, weight: .medium))
+            .foregroundStyle(.brown.opacity(0.85))
     }
 
     private var cover: some View {
@@ -136,15 +235,14 @@ struct PersonRow: View {
                 Image(uiImage: img).resizable().scaledToFill()
             } else {
                 ZStack {
-                    LinearGradient(colors: [Color.brown.opacity(0.25), Color.brown.opacity(0.1)],
+                    LinearGradient(colors: [Color.brown.opacity(0.35), Color.brown.opacity(0.12)],
                                    startPoint: .topLeading, endPoint: .bottomTrailing)
                     Image(systemName: "person.crop.circle")
-                        .font(.system(size: large ? 40 : 26))
-                        .foregroundStyle(.brown)
+                        .font(.system(size: large ? 56 : 40))
+                        .foregroundStyle(.white.opacity(0.8))
                 }
             }
         }
-        .frame(width: large ? 84 : 56, height: large ? 84 : 56)
-        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .frame(maxWidth: .infinity)
     }
 }

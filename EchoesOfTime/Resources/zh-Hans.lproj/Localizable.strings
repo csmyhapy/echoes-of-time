@@ -4,7 +4,7 @@
 "tab.settings" = "设置";
 
 "library.empty.title" = "还没有档案";
-"library.empty.desc" = "点击右上角「+」，为你爱的人创建一份记忆档案。";
+"library.empty.desc" = "点击下方按钮，为你爱的人创建一份记忆档案。";
 "library.sample.summary" = "一位老师、一位园丁，也是一位被深爱的祖母。";
 
 "person.empty.nodes" = "章节会显示在这里。";
@@ -115,3 +115,11 @@
 "settings.bgm" = "背景音乐";
 "one.archive.limit.title" = "仅支持一个档案";
 "one.archive.limit.message" = "本设备只保存一个档案。如需重新建立，请先删除现有档案。";
+
+"library.subtitle" = "把一生，收进一个个章节。";
+"library.create.person" = "创建人物档案";
+"library.action.addChapter" = "添加章节";
+"library.action.editArchive" = "编辑档案";
+"unit.chapters" = "个章节";
+"unit.photos" = "张照片";
+"unit.voice" = "条语音";
