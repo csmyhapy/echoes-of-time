@@ -19,7 +19,14 @@ struct LibraryView: View {
     @State private var showLimitAlert = false
 
     var body: some View {
-        List {
+        VStack(spacing: 0) {
+            Text("app.title")
+                .font(.system(size: isReader ? 40 : 32, weight: .bold))
+                .frame(maxWidth: .infinity, alignment: .center)
+                .padding(.top, 4)
+                .padding(.bottom, 6)
+
+            List {
             if persons.isEmpty {
                 emptyState
             } else {
@@ -38,9 +45,11 @@ struct LibraryView: View {
                     }
                 }
             }
+            }
+            .listStyle(.insetGrouped)
         }
-        .listStyle(.insetGrouped)
-        .navigationTitle("app.title")
+        .navigationTitle("")
+        .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $showingNewPerson) {
             PersonEditView(person: nil)
         }

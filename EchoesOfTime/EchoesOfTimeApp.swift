@@ -39,6 +39,7 @@ struct EchoesOfTimeApp: App {
 struct RootView: View {
     @Environment(AppState.self) private var appState
     @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.modelContext) private var context
     @State private var lock = PrivacyLock()
 
     var body: some View {
@@ -53,9 +54,39 @@ struct RootView: View {
                 LockScreenView(lock: lock)
             }
         }
-        .onAppear { lock.lockIfNeeded() }
+        .onAppear {
+            lock.lockIfNeeded()
+            seedDemoIfNeeded()
+        }
         .onChange(of: scenePhase) { _, phase in
             if phase == .active { lock.lockIfNeeded() }
+        }
+        .onChange(of: appState.language) { _, _ in
+            seedDemoIfNeeded()
+        }
+    }
+
+    /// 首页直接展示示例档案；若唯一档案是另一语言的示例，则换成当前语言的那一份。
+    @MainActor
+    private func seedDemoIfNeeded() {
+        let persons = (try? context.fetch(FetchDescriptor<Person>())) ?? []
+
+        // 空库：自动放入当前语言的示例档案（仅首次启动）
+        if persons.isEmpty, !UserDefaults.standard.bool(forKey: "demoSeeded") {
+            DemoData.insert(into: context, language: appState.language)
+            UserDefaults.standard.set(true, forKey: "demoSeeded")
+            return
+        }
+
+        // 唯一档案仍是另一种语言的示例：替换为当前语言版本
+        if persons.count == 1,
+           let only = persons.first,
+           let demoLanguage = DemoData.demoLanguage(of: only),
+           demoLanguage != appState.language {
+            MediaStore.deleteFolder(for: only.id)
+            context.delete(only)
+            try? context.save()
+            DemoData.insert(into: context, language: appState.language)
         }
     }
 }

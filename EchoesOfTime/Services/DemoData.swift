@@ -24,6 +24,15 @@ enum DemoData {
         }
     }
 
+    /// 判断这份档案是不是内置示例，返回它对应的语言
+    static func demoLanguage(of person: Person) -> AppLanguage? {
+        switch person.name {
+        case "Eleanor Whitfield": return .en
+        case "王秀兰": return .zhHans
+        default: return nil
+        }
+    }
+
     // MARK: - English demo
 
     @MainActor
