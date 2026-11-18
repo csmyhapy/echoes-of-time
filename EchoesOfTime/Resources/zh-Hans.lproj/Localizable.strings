@@ -110,3 +110,4 @@
 "export.pdf" = "导出 PDF 回忆册";
 "export.archive" = "导出档案包（ZIP）";
 "export.failed" = "导出失败，请重试。";
+"library.empty.demo" = "载入示例档案";

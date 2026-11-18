@@ -67,6 +67,17 @@ struct LibraryView: View {
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
+
+            if !isReader {
+                Button {
+                    DemoData.insert(into: context, language: appState.language)
+                } label: {
+                    Label("library.empty.demo", systemImage: "sparkles")
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(.brown)
+                .padding(.top, 8)
+            }
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 40)

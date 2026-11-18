@@ -110,3 +110,4 @@
 "export.pdf" = "Export PDF Book";
 "export.archive" = "Export Archive (ZIP)";
 "export.failed" = "Export failed. Please try again.";
+"library.empty.demo" = "Load a Sample Archive";
