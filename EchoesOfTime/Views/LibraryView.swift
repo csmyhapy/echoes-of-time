@@ -40,6 +40,8 @@ struct LibraryView: View {
                 }
             } else if target == "person" {
                 PersonDetailView(person: first, isReader: isReader)
+            } else if target == "photos" {
+                PhotoLibraryView(person: first)
             } else {
                 mainContent
             }
@@ -56,6 +58,7 @@ struct LibraryView: View {
         let args = ProcessInfo.processInfo.arguments
         if args.contains("debug-node") { return "node" }
         if args.contains("debug-person") { return "person" }
+        if args.contains("debug-photos") { return "photos" }
         return nil
     }
 

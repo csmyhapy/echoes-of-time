@@ -2,14 +2,11 @@
 "app.title" = "岁月回声";
 "tab.library" = "档案";
 "tab.settings" = "设置";
-
 "library.empty.title" = "还没有档案";
 "library.empty.desc" = "点击下方按钮，为你爱的人创建一份记忆档案。";
 "library.sample.summary" = "一位老师、一位园丁，也是一位被深爱的祖母。";
-
 "person.empty.nodes" = "章节会显示在这里。";
 "person.section.timeline" = "人生时间线";
-
 "settings.title" = "设置";
 "settings.section.language" = "语言";
 "settings.language" = "界面语言";
@@ -21,22 +18,18 @@
 "settings.largeText" = "大字号";
 "settings.section.data" = "数据与隐私";
 "settings.data.note" = "所有照片、录音和故事都只保存在本机，不会上传到任何服务器。";
-
 "mode.editor" = "编辑模式（家人）";
 "mode.reader" = "长辈浏览模式";
-
 "node.section.photos" = "照片";
 "node.empty.photos" = "这个章节还没有照片。";
 "photo.has.audio" = "语音旁白";
 "photo.missing" = "找不到照片文件";
 "photo.narration.play" = "播放旁白";
 "photo.narration.pause" = "暂停";
-
 "common.cancel" = "取消";
 "common.save" = "保存";
 "common.delete" = "删除";
 "common.edit" = "编辑";
-
 "edit.person.new.title" = "新建档案";
 "edit.person.edit.title" = "编辑人物";
 "edit.person.section.basics" = "基本信息";
@@ -47,9 +40,7 @@
 "edit.person.birthYear" = "生卒年（如 1929–2021）";
 "edit.person.summary" = "一句话介绍";
 "edit.person.story" = "写下他/她的一生…";
-
 "edit.cover.choose" = "选择封面照片";
-
 "edit.node.new.title" = "新建章节";
 "edit.node.edit.title" = "编辑章节";
 "edit.node.section.basics" = "基本信息";
@@ -61,13 +52,10 @@
 "edit.node.visible" = "对浏览者可见";
 "edit.node.summary" = "一句话介绍";
 "edit.node.story" = "这一段发生了什么…";
-
 "photo.moveLeft" = "前移";
 "photo.moveRight" = "后移";
-
 "settings.section.developer" = "开发者";
 "settings.demo.add" = "插入演示档案";
-
 "edit.node.suggest" = "推荐名称";
 "suggestion.childhood" = "童年";
 "suggestion.adolescence" = "少年";
@@ -80,7 +68,6 @@
 "suggestion.hobbies" = "爱好与热爱";
 "suggestion.roots" = "我的根与传承";
 "suggestion.turningPoints" = "人生转折";
-
 "recorder.title" = "录制旁白";
 "recorder.photo.title" = "照片旁白";
 "recorder.node.title" = "章节旁白";
@@ -94,7 +81,6 @@
 "voice.empty" = "还没有旁白。";
 "node.voice.title" = "章节旁白";
 "person.voice.title" = "人生旁白";
-
 "messages.title" = "家人留言";
 "messages.empty" = "还没有留言，来做第一个留言的人吧。";
 "messages.placeholder" = "写一句留言…";
@@ -106,16 +92,13 @@
 "lock.unlock" = "解锁";
 "lock.reason" = "解锁后查看你的家庭记忆档案";
 "lock.cancel" = "取消";
-
 "export.pdf" = "导出 PDF 回忆册";
 "export.archive" = "导出档案包（ZIP）";
 "export.failed" = "导出失败，请重试。";
 "library.empty.demo" = "载入示例档案";
-
 "settings.bgm" = "背景音乐";
 "one.archive.limit.title" = "仅支持一个档案";
 "one.archive.limit.message" = "本设备只保存一份正式档案（示例档案不计入）。如需重新建立，请先删除现有档案。";
-
 "library.subtitle" = "把一生，收进一个个章节。";
 "library.create.person" = "创建人物档案";
 "library.action.addChapter" = "添加章节";
@@ -123,17 +106,14 @@
 "unit.chapters" = "个章节";
 "unit.photos" = "张照片";
 "unit.voice" = "条语音";
-
 "library.create.first" = "创建你的第一个档案";
 "library.create.first.desc" = "这里属于你。为父母、祖辈，或任何你想留下故事的人建档。";
 "demo.section.title" = "示例档案";
 "demo.section.note" = "虚构示例，仅供体验";
 "demo.badge" = "示例";
 "demo.note" = "虚构人物，不占正式档案名额";
-
 "demo.exists.title" = "已存在示例档案";
 "demo.exists.message" = "已安装一份示例档案。如需更换，请在首页长按删除后再添加。";
-
 "bgm.off" = "关闭背景音乐";
 "bgm.on" = "开启背景音乐";
 "settings.version" = "版本";
@@ -142,13 +122,24 @@
 "settings.developer.note" = "解锁本设备的人物档案数量限制。仅供开发者本人使用。";
 "settings.developer.hint" = "连点版本号 5 次可解锁开发者模式。";
 "settings.developer.unlocked" = "已解锁开发者模式。";
-
 "settings.import.archive" = "导入档案包";
 "settings.import.note" = "选择从旧网站或另一台设备导出的 .echosarchive.zip 文件。";
 "settings.import.result" = "导入结果";
-
 "privacy.title" = "隐私政策";
 "person.section.story" = "关于 TA 的一生";
 "person.story.expand" = "展开全文";
 "person.story.collapse" = "收起";
 "unit.messages" = "条留言";
+
+/* 照片库 */
+"library.photos.title" = "照片库";
+"library.photos.select" = "选择";
+"library.photos.all" = "全部";
+"library.photos.unassigned" = "未分配";
+"library.photos.empty" = "这里还没有照片。";
+"library.photos.assign" = "分配到章节";
+"library.photos.unassign" = "移出章节";
+"library.photos.tag.unassigned" = "未分配";
+"library.photos.delete.confirm" = "删除这些照片？";
+"library.photos.assign.title" = "选择章节";
+"library.photos.assign.footer" = "一张照片可以同时属于多个章节。";

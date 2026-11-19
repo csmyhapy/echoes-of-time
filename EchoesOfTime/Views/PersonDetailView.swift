@@ -380,7 +380,23 @@ struct PersonDetailView: View {
     private var statsRow: some View {
         HStack(spacing: 12) {
             statValue(person.nodes.count, "unit.chapters")
-            statValue(person.photos.count, "unit.photos")
+
+            if isReader {
+                statValue(person.photos.count, "unit.photos")
+            } else {
+                NavigationLink {
+                    PhotoLibraryView(person: person)
+                } label: {
+                    HStack(spacing: 2) {
+                        statValue(person.photos.count, "unit.photos")
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 10, weight: .semibold))
+                            .foregroundStyle(.brown.opacity(0.72))
+                    }
+                }
+                .buttonStyle(.plain)
+            }
+
             statValue(person.messages.filter { !$0.isDeleted }.count, "unit.messages")
         }
     }

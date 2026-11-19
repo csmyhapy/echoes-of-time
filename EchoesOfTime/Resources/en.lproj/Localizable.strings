@@ -2,14 +2,11 @@
 "app.title" = "Echoes of Time";
 "tab.library" = "Library";
 "tab.settings" = "Settings";
-
 "library.empty.title" = "No stories yet";
 "library.empty.desc" = "Tap the button below to begin a memory archive for someone you love.";
 "library.sample.summary" = "A teacher, a gardener, and a beloved grandmother.";
-
 "person.empty.nodes" = "Chapters will appear here.";
 "person.section.timeline" = "Life Timeline";
-
 "settings.title" = "Settings";
 "settings.section.language" = "Language";
 "settings.language" = "App Language";
@@ -21,22 +18,18 @@
 "settings.largeText" = "Large Text";
 "settings.section.data" = "Data & Privacy";
 "settings.data.note" = "All photos, recordings and stories are stored only on this device. Nothing is uploaded to any server.";
-
 "mode.editor" = "Editor (Family)";
 "mode.reader" = "Reader (Elder)";
-
 "node.section.photos" = "Photos";
 "node.empty.photos" = "No photos in this chapter yet.";
 "photo.has.audio" = "Voice narration";
 "photo.missing" = "Photo file not found";
 "photo.narration.play" = "Play narration";
 "photo.narration.pause" = "Pause";
-
 "common.cancel" = "Cancel";
 "common.save" = "Save";
 "common.delete" = "Delete";
 "common.edit" = "Edit";
-
 "edit.person.new.title" = "New Archive";
 "edit.person.edit.title" = "Edit Person";
 "edit.person.section.basics" = "Basics";
@@ -47,9 +40,7 @@
 "edit.person.birthYear" = "Years (e.g. 1929–2021)";
 "edit.person.summary" = "A short introduction";
 "edit.person.story" = "Write the story of their life…";
-
 "edit.cover.choose" = "Choose Cover Photo";
-
 "edit.node.new.title" = "New Chapter";
 "edit.node.edit.title" = "Edit Chapter";
 "edit.node.section.basics" = "Basics";
@@ -61,13 +52,10 @@
 "edit.node.visible" = "Visible to readers";
 "edit.node.summary" = "A short introduction";
 "edit.node.story" = "What happened in this chapter…";
-
 "photo.moveLeft" = "Move Earlier";
 "photo.moveRight" = "Move Later";
-
 "settings.section.developer" = "Developer";
 "settings.demo.add" = "Add Demo Archive";
-
 "edit.node.suggest" = "Suggested Titles";
 "suggestion.childhood" = "Childhood";
 "suggestion.adolescence" = "Adolescence";
@@ -80,7 +68,6 @@
 "suggestion.hobbies" = "My Hobbies & Passions";
 "suggestion.roots" = "My Roots & Heritage";
 "suggestion.turningPoints" = "Turning Points";
-
 "recorder.title" = "Record Narration";
 "recorder.photo.title" = "Photo Narration";
 "recorder.node.title" = "Chapter Narration";
@@ -94,7 +81,6 @@
 "voice.empty" = "No narration yet.";
 "node.voice.title" = "Chapter Narration";
 "person.voice.title" = "Life Narration";
-
 "messages.title" = "Family Messages";
 "messages.empty" = "No messages yet. Be the first to leave a memory.";
 "messages.placeholder" = "Leave a message…";
@@ -106,16 +92,13 @@
 "lock.unlock" = "Unlock";
 "lock.reason" = "Unlock Echoes of Time to view your family archives.";
 "lock.cancel" = "Cancel";
-
 "export.pdf" = "Export PDF Book";
 "export.archive" = "Export Archive (ZIP)";
 "export.failed" = "Export failed. Please try again.";
 "library.empty.demo" = "Load a Sample Archive";
-
 "settings.bgm" = "Background Music";
 "one.archive.limit.title" = "One Archive Only";
 "one.archive.limit.message" = "This app keeps one life archive per device. Sample archives don't count. To start over, delete your existing archive first.";
-
 "library.subtitle" = "Keep a life, chapter by chapter.";
 "library.create.person" = "Create a Person Archive";
 "library.action.addChapter" = "Add a Chapter";
@@ -123,17 +106,14 @@
 "unit.chapters" = "chapters";
 "unit.photos" = "photos";
 "unit.voice" = "voice notes";
-
 "library.create.first" = "Create Your First Archive";
 "library.create.first.desc" = "This space is yours. Add a parent, a grandparent — anyone whose story you want to keep.";
 "demo.section.title" = "Sample Archive";
 "demo.section.note" = "Fictional, for exploring";
 "demo.badge" = "SAMPLE";
 "demo.note" = "Fictional person · does not count toward your archive";
-
 "demo.exists.title" = "Sample Already Added";
 "demo.exists.message" = "A sample archive is already installed. Delete it from the home screen first if you want a different one.";
-
 "bgm.off" = "Turn off background music";
 "bgm.on" = "Turn on background music";
 "settings.version" = "Version";
@@ -142,13 +122,24 @@
 "settings.developer.note" = "Unlocks unlimited archives on this device. Intended for the developer only.";
 "settings.developer.hint" = "Tap the version number five times to unlock developer mode.";
 "settings.developer.unlocked" = "Developer mode unlocked.";
-
 "settings.import.archive" = "Import Archive Package";
 "settings.import.note" = "Choose an .echosarchive.zip exported from the old site or another device.";
 "settings.import.result" = "Import Result";
-
 "privacy.title" = "Privacy Policy";
 "person.section.story" = "A Life in Full";
 "person.story.expand" = "Read more";
 "person.story.collapse" = "Show less";
 "unit.messages" = "messages";
+
+/* 照片库 */
+"library.photos.title" = "Photo Library";
+"library.photos.select" = "Select";
+"library.photos.all" = "All";
+"library.photos.unassigned" = "Unassigned";
+"library.photos.empty" = "No photos here yet.";
+"library.photos.assign" = "Assign to chapters";
+"library.photos.unassign" = "Remove from chapters";
+"library.photos.tag.unassigned" = "No chapter";
+"library.photos.delete.confirm" = "Delete these photos?";
+"library.photos.assign.title" = "Choose chapters";
+"library.photos.assign.footer" = "A photo can belong to several chapters at once.";
