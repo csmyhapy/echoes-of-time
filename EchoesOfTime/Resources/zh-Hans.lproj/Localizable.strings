@@ -133,3 +133,12 @@
 
 "demo.exists.title" = "已存在示例档案";
 "demo.exists.message" = "已安装一份示例档案。如需更换，请在首页长按删除后再添加。";
+
+"bgm.off" = "关闭背景音乐";
+"bgm.on" = "开启背景音乐";
+"settings.version" = "版本";
+"settings.section.developer.mode" = "开发者";
+"settings.developer.on" = "开发者模式";
+"settings.developer.note" = "解锁本设备的人物档案数量限制。仅供开发者本人使用。";
+"settings.developer.hint" = "连点版本号 5 次可解锁开发者模式。";
+"settings.developer.unlocked" = "已解锁开发者模式。";

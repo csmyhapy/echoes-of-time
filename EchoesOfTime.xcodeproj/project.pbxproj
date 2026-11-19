@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		7C3E9A1B4D5F607182930A1B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8D4F0B2C5E6A718293041B2C /* Assets.xcassets */; };
 		0102BE26D8A0D0A07375767F /* PDFExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C4EA3B185F91C41C1C18F63 /* PDFExporter.swift */; };
 		12C78B452A9B46041307EA77 /* demo_en_cover.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 150ECB4A0F31BBCD8E21DD40 /* demo_en_cover.jpg */; };
 		13B247387FAA953A268ACBB7 /* MessageSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04D1783CD562CFCE89250A83 /* MessageSection.swift */; };
@@ -31,6 +30,7 @@
 		6D680B74C479CAE489D06B9F /* PrivacyLock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE531B58C40A7B98CAD406C /* PrivacyLock.swift */; };
 		71710A1FF619D15C329B07A6 /* PersonDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C83D58AED07B11122494E71 /* PersonDetailView.swift */; };
 		72E5FCB1A4F8A5D1D0C1DC2E /* demo_zh_childhood.jpg in Resources */ = {isa = PBXBuildFile; fileRef = FA381052077E2222E4431DA1 /* demo_zh_childhood.jpg */; };
+		7C3E9A1B4D5F607182930A1B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8D4F0B2C5E6A718293041B2C /* Assets.xcassets */; };
 		7D484F3FACD01F707EF3DE5E /* NodeEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0EF813170AB996D6B04ACB0 /* NodeEditView.swift */; };
 		81131C21F6C2E493DF76B140 /* demo_zh_worker.jpg in Resources */ = {isa = PBXBuildFile; fileRef = BED33621A101D8B1AE6F9F8D /* demo_zh_worker.jpg */; };
 		8196B368584AF6D6DDB0BBEA /* NodeDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAECC1140490B0D87994B727 /* NodeDetailView.swift */; };
@@ -62,14 +62,14 @@
 		74AEAC68F1C5D550D25E4F66 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		76353776932D55C9DFAFD8B1 /* PhotoDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoDetailView.swift; sourceTree = "<group>"; };
 		8CCBB823537FB6586F1B68D4 /* demo_en_wedding.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = demo_en_wedding.jpg; sourceTree = "<group>"; };
-		9A4E2555626FCE6254E40018 /* demo_zh_wedding.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = demo_zh_wedding.jpg; sourceTree = "<group>"; };
 		8D4F0B2C5E6A718293041B2C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		9A4E2555626FCE6254E40018 /* demo_zh_wedding.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = demo_zh_wedding.jpg; sourceTree = "<group>"; };
 		9B5308CC6488037F1E1C215D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		A2686615E1FC42CE884FD927 /* LibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryView.swift; sourceTree = "<group>"; };
 		A51208CC9EE0722B26277A48 /* RecorderSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecorderSheet.swift; sourceTree = "<group>"; };
-		A57E1362C27A9ABF66C08B64 /* EchoesOfTime.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = EchoesOfTime.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A57E1362C27A9ABF66C08B64 /* EchoesOfTime.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EchoesOfTime.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA58680E2D3D5BB8DEE29883 /* demo_en_teacher.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = demo_en_teacher.jpg; sourceTree = "<group>"; };
-		AFB603B4903106CDA1BFE656 /* bgm_demo.m4a */ = {isa = PBXFileReference; path = bgm_demo.m4a; sourceTree = "<group>"; };
+		AFB603B4903106CDA1BFE656 /* bgm_demo.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = bgm_demo.m4a; sourceTree = "<group>"; };
 		B256239F533821F9C6094194 /* BGMManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BGMManager.swift; sourceTree = "<group>"; };
 		B517F4995AC5BAF1D557A275 /* demo_en_childhood.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = demo_en_childhood.jpg; sourceTree = "<group>"; };
 		BED33621A101D8B1AE6F9F8D /* demo_zh_worker.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = demo_zh_worker.jpg; sourceTree = "<group>"; };
@@ -414,8 +414,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = X9VPKA62VN;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = EchoesOfTime/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -433,8 +435,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = X9VPKA62VN;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = EchoesOfTime/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

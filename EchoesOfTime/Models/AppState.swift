@@ -74,6 +74,11 @@ final class AppState {
     }
     var largeText: Bool
 
+    /// 开发者模式：解锁「一人一档」限制（仅开发者本人使用，普通用户不可见入口）
+    var isDeveloper: Bool {
+        didSet { UserDefaults.standard.set(isDeveloper, forKey: "developerMode") }
+    }
+
     init() {
         let stored = UserDefaults.standard.string(forKey: "appLanguage")
         let lang = stored.flatMap(AppLanguage.init(rawValue:)) ?? AppLanguage.deviceDefault
@@ -81,6 +86,7 @@ final class AppState {
         self.language = lang
         self.mode = storedMode.flatMap(AppMode.init(rawValue:)) ?? .editor
         self.largeText = UserDefaults.standard.object(forKey: "largeText") as? Bool ?? true
+        self.isDeveloper = UserDefaults.standard.bool(forKey: "developerMode")
 
         Bundle.setLanguage(lang.rawValue)
     }

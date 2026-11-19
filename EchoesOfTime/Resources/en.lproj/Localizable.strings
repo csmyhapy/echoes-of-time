@@ -133,3 +133,12 @@
 
 "demo.exists.title" = "Sample Already Added";
 "demo.exists.message" = "A sample archive is already installed. Delete it from the home screen first if you want a different one.";
+
+"bgm.off" = "Turn off background music";
+"bgm.on" = "Turn on background music";
+"settings.version" = "Version";
+"settings.section.developer.mode" = "Developer";
+"settings.developer.on" = "Developer Mode";
+"settings.developer.note" = "Unlocks unlimited archives on this device. Intended for the developer only.";
+"settings.developer.hint" = "Tap the version number five times to unlock developer mode.";
+"settings.developer.unlocked" = "Developer mode unlocked.";
