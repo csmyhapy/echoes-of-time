@@ -282,8 +282,8 @@ enum ShareExporter {
         .head{margin:0 0 22px;padding:20px 22px;border:1px solid var(--line);border-left:3px solid var(--brown);
              background:#fff;border-radius:0 14px 14px 0;}
         .head h2{font-size:15px;letter-spacing:.14em;color:var(--brown);margin:0 0 12px;font-weight:600;}
-        .head p{font-size:14.5px;line-height:1.9;color:#5E5347;margin:0 0 8px;text-align:justify;}
-        .head p:last-child{margin-bottom:0;}
+        .head p{font-size:14.5px;line-height:1.9;color:#5E5347;margin:0;text-align:justify;text-indent:2em;}
+        .head p + p{margin-top:0.57em;}   /* 段间距 ≈ 行距 × 1.3，不空行 */
         .photo{width:100%;height:auto;display:block;border-radius:14px;box-shadow:0 8px 26px rgba(80,55,30,.13);}
         h1{font-size:26px;line-height:1.3;margin:22px 0 6px;color:var(--brown);font-weight:700;}
         .owner{font-size:14px;color:#8A7C6B;margin:0 0 18px;}
@@ -680,7 +680,9 @@ enum ShareExporter {
             y += 20
 
             let headStyle = NSMutableParagraphStyle()
-            headStyle.lineSpacing = 5.5
+            headStyle.lineSpacing = 5.5                 // 10pt 字，行距 ≈ 1.55 倍
+            headStyle.paragraphSpacing = 6              // 段间距 ≈ 行间距 × 1.3
+            headStyle.firstLineHeadIndent = 20          // 段首空两格（10pt × 2）
             headStyle.alignment = .justified
             let headBody = [
                 String(format: String(localized: "share.head.p1"), person.name),
