@@ -73,6 +73,8 @@ final class Node {
     var sortOrder: Int
     var createdAt: Date
     var isVisible: Bool
+    /// 来源网站的节点顺序（导入时写入，用于保持网站上的章节排列）
+    var webOrder: Int = 0
 
     var person: Person?
 

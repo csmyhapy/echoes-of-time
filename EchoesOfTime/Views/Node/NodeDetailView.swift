@@ -43,6 +43,10 @@ struct NodeDetailView: View {
                         .foregroundStyle(.brown)
                 }
 
+                photoSection
+
+                voiceSection
+
                 if showsSummary {
                     Text(node.summary)
                         .font(.system(size: isReader ? 24 : 16))
@@ -55,13 +59,9 @@ struct NodeDetailView: View {
                         .lineSpacing(6)
                 }
 
-                voiceSection
-
                 if let person = node.person {
                     MessageSection(person: person, node: node, isReader: isReader)
                 }
-
-                photoSection
             }
             .padding(20)
         }

@@ -110,7 +110,20 @@ struct RootView: View {
     private func importDebugArchivesIfNeeded() {
         guard let docs = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first,
               let files = try? FileManager.default.contentsOfDirectory(at: docs, includingPropertiesForKeys: nil) else { return }
-        for url in files where url.pathExtension == "zip" {
+        let zips = files.filter { $0.pathExtension == "zip" }
+        guard !zips.isEmpty else { return }
+
+        // 带 reset-import 启动时，先清掉所有正式档案（保留示例），再重新导入
+        if ProcessInfo.processInfo.arguments.contains("reset-import") {
+            let all = (try? context.fetch(FetchDescriptor<Person>())) ?? []
+            for person in all where !person.isDemo {
+                MediaStore.deleteFolder(for: person.id)
+                context.delete(person)
+            }
+            try? context.save()
+        }
+
+        for url in zips {
             _ = try? ArchiveImporter.importArchive(at: url, context: context)
             try? FileManager.default.removeItem(at: url)
         }

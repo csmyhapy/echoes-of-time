@@ -42,77 +42,40 @@ struct PersonDetailView: View {
     }
 
     private var sortedNodes: [Node] {
-        person.nodes.sorted { $0.sortOrder < $1.sortOrder }
+        // sortOrder 相同时按年代起始年排序（网站导入的 sortOrder 全是 0，需要兜底）
+        person.nodes.sorted { a, b in
+            if a.sortOrder != b.sortOrder { return a.sortOrder < b.sortOrder }
+            if a.webOrder != b.webOrder {
+                // webOrder 为 0 表示新建章节，排在网站导入章节之后
+                let wa = a.webOrder == 0 ? Int.max : a.webOrder
+                let wb = b.webOrder == 0 ? Int.max : b.webOrder
+                return wa < wb
+            }
+            let ya = startYear(a.yearRange), yb = startYear(b.yearRange)
+            if ya != yb { return ya < yb }
+            return a.createdAt < b.createdAt
+        }
+    }
+
+    private func startYear(_ range: String) -> Int {
+        let numbers = range.split(whereSeparator: { !$0.isNumber }).compactMap { Int($0.prefix(4)) }
+        return numbers.first ?? 9999
     }
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 24) {
+            VStack(alignment: .leading, spacing: 22) {
                 header
+
+                timelineSection
 
                 voiceSection
 
-                MessageSection(person: person, isReader: isReader)
-
                 if !person.story.isEmpty {
-                    VStack(alignment: .leading, spacing: 10) {
-                        Text("person.section.story")
-                            .font(.system(size: isReader ? 26 : 20, weight: .semibold))
-
-                        Text(person.story)
-                            .font(.system(size: isReader ? 24 : 16))
-                            .lineSpacing(6)
-                            .lineLimit((isReader || storyExpanded) ? nil : 4)
-                            .fixedSize(horizontal: false, vertical: true)
-
-                        if !isReader {
-                            Button(storyExpanded ? "person.story.collapse" : "person.story.expand") {
-                                withAnimation(.easeInOut(duration: 0.2)) { storyExpanded.toggle() }
-                            }
-                            .font(.system(size: 15, weight: .medium))
-                            .foregroundStyle(.brown)
-                            .buttonStyle(.borderless)
-                        }
-                    }
+                    storySection
                 }
 
-                if sortedNodes.isEmpty {
-                    Text("person.empty.nodes")
-                        .font(.system(size: isReader ? 22 : 15))
-                        .foregroundStyle(.secondary)
-                        .padding(.top, 20)
-                } else {
-                    HStack {
-                        Text("person.section.timeline")
-                            .font(.system(size: isReader ? 26 : 20, weight: .semibold))
-                        Spacer()
-                        if !isReader {
-                            Button {
-                                showingNewNode = true
-                            } label: {
-                                Image(systemName: "plus.circle.fill")
-                                    .font(.title3)
-                                    .foregroundStyle(.brown)
-                            }
-                            .buttonStyle(.borderless)
-                        }
-                    }
-
-                    ForEach(sortedNodes) { node in
-                        NavigationLink {
-                            NodeDetailView(node: node, isReader: isReader)
-                        } label: {
-                            NodeCard(node: node, personID: person.id, large: isReader)
-                        }
-                        .buttonStyle(.plain)
-                        .contextMenu {
-                            if !isReader {
-                                Button("common.edit") { editingNode = node }
-                                Button("common.delete", role: .destructive) { delete(node) }
-                            }
-                        }
-                    }
-                }
+                MessageSection(person: person, isReader: isReader)
             }
             .padding(20)
         }
@@ -175,6 +138,71 @@ struct PersonDetailView: View {
                 BGMManager.shared.stop()
             } else {
                 BGMManager.shared.play(fileName: person.bgmFileName, personID: person.id)
+            }
+        }
+    }
+
+    private var timelineSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Text("person.section.timeline")
+                    .font(.system(size: isReader ? 26 : 20, weight: .semibold))
+                Spacer()
+                if !isReader {
+                    Button {
+                        showingNewNode = true
+                    } label: {
+                        Image(systemName: "plus.circle.fill")
+                            .font(.title3)
+                            .foregroundStyle(.brown)
+                    }
+                    .buttonStyle(.borderless)
+                }
+            }
+
+            if sortedNodes.isEmpty {
+                Text("person.empty.nodes")
+                    .font(.system(size: isReader ? 22 : 15))
+                    .foregroundStyle(.secondary)
+            } else {
+                ForEach(sortedNodes) { node in
+                    NavigationLink {
+                        NodeDetailView(node: node, isReader: isReader)
+                    } label: {
+                        NodeCard(node: node, personID: person.id, large: isReader)
+                    }
+                    .buttonStyle(.plain)
+                    .contextMenu {
+                        if !isReader {
+                            Button("common.edit") { editingNode = node }
+                            Button("common.delete", role: .destructive) { delete(node) }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // MARK: - 人生故事（折叠）
+
+    private var storySection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("person.section.story")
+                .font(.system(size: isReader ? 26 : 20, weight: .semibold))
+
+            Text(person.story)
+                .font(.system(size: isReader ? 24 : 16))
+                .lineSpacing(6)
+                .lineLimit((isReader || storyExpanded) ? nil : 4)
+                .fixedSize(horizontal: false, vertical: true)
+
+            if !isReader {
+                Button(storyExpanded ? "person.story.collapse" : "person.story.expand") {
+                    withAnimation(.easeInOut(duration: 0.2)) { storyExpanded.toggle() }
+                }
+                .font(.system(size: 15, weight: .medium))
+                .foregroundStyle(.brown)
+                .buttonStyle(.borderless)
             }
         }
     }
@@ -247,33 +275,64 @@ struct PersonDetailView: View {
     }
 
     private var header: some View {
-        HStack(spacing: 18) {
+        VStack(alignment: .leading, spacing: 12) {
             Group {
-                if let img = MediaStore.loadImage(fileName: person.coverImageFileName, personID: person.id) {
+                if let img = MediaStore.loadImage(fileName: person.resolvedCoverFileName, personID: person.id) {
                     Image(uiImage: img).resizable().scaledToFill()
                 } else {
                     ZStack {
-                        Color.brown.opacity(0.18)
+                        LinearGradient(
+                            colors: [Color.brown.opacity(0.35), Color.brown.opacity(0.12)],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
                         Image(systemName: "person.crop.circle")
-                            .font(.system(size: 40))
-                            .foregroundStyle(.brown)
+                            .font(.system(size: 48))
+                            .foregroundStyle(.white.opacity(0.85))
                     }
                 }
             }
-            .frame(width: isReader ? 110 : 88, height: isReader ? 110 : 88)
+            .frame(maxWidth: .infinity)
+            .frame(height: isReader ? 260 : 200)
+            .clipped()
             .clipShape(RoundedRectangle(cornerRadius: 16))
 
-            VStack(alignment: .leading, spacing: 6) {
+            VStack(alignment: .leading, spacing: 8) {
                 Text(person.name)
-                    .font(.system(size: isReader ? 30 : 24, weight: .bold))
-                if !person.birthYear.isEmpty {
-                    Text(person.birthYear)
-                        .font(.system(size: isReader ? 22 : 16))
-                        .foregroundStyle(.secondary)
+                    .font(.system(size: isReader ? 32 : 26, weight: .bold))
+
+                HStack(alignment: .center, spacing: 10) {
+                    if !person.birthYear.isEmpty {
+                        Text(person.birthYear)
+                            .font(.system(size: isReader ? 20 : 15))
+                            .foregroundStyle(.secondary)
+                    }
+                    Spacer()
+                    statsRow
                 }
             }
-            Spacer()
+
+            if !person.summary.isEmpty {
+                Text(person.summary)
+                    .font(.system(size: isReader ? 22 : 15))
+                    .foregroundStyle(.secondary)
+                    .lineSpacing(4)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
         }
+    }
+
+    private var statsRow: some View {
+        HStack(spacing: 12) {
+            statValue(person.nodes.count, "unit.chapters")
+            statValue(person.photos.count, "unit.photos")
+            statValue(person.messages.filter { !$0.isDeleted }.count, "unit.messages")
+        }
+    }
+
+    private func statValue(_ count: Int, _ key: LocalizedStringKey) -> some View {
+        (Text("\(count) ").foregroundColor(.brown) + Text(key).foregroundColor(.brown.opacity(0.72)))
+            .font(.system(size: isReader ? 18 : 13, weight: .medium))
     }
 }
 

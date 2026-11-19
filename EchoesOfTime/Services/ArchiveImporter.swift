@@ -172,6 +172,7 @@ enum ArchiveImporter {
                 isVisible: nodeDTO.isVisible
             )
             node.person = person
+            node.webOrder = nodeDTO.webID ?? 0
             context.insert(node)
             nodeByName[nodeDTO.name] = node
             if let webID = nodeDTO.webID { nodeByWebID[webID] = node }
