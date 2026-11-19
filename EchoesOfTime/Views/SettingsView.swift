@@ -37,9 +37,6 @@ struct SettingsView: View {
                         Spacer()
                         Text(appState.language.displayName)
                             .foregroundStyle(.secondary)
-                        Image(systemName: "chevron.right")
-                            .font(.system(size: 13, weight: .semibold))
-                            .foregroundStyle(.tertiary)
                     }
                 }
 
@@ -57,9 +54,6 @@ struct SettingsView: View {
                         Spacer()
                         Text(LocalizedStringKey(appState.mode.titleKey))
                             .foregroundStyle(.secondary)
-                        Image(systemName: "chevron.right")
-                            .font(.system(size: 13, weight: .semibold))
-                            .foregroundStyle(.tertiary)
                     }
                 }
 

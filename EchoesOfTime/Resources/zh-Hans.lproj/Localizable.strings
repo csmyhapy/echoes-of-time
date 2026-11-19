@@ -100,6 +100,11 @@
 "one.archive.limit.title" = "仅支持一个档案";
 "one.archive.limit.message" = "本设备只保存一份正式档案（示例档案不计入）。如需重新建立，请先删除现有档案。";
 "library.subtitle" = "把一生，收进一个个章节。";
+"library.tagline.1" = "听见声音，看见故事，留住一生。";
+"library.tagline.2" = "岁月回声，存的是人生。";
+"library.tagline.3" = "趁时光未老，留一份传记。";
+"library.tagline.4" = "让时光有回声，让往事有人听。";
+"library.tagline.5" = "那些讲过的话，不该随人远去。";
 "library.create.person" = "创建人物档案";
 "library.action.addChapter" = "添加章节";
 "library.action.editArchive" = "编辑档案";

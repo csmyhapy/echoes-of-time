@@ -240,13 +240,24 @@ struct EditorRootView: View {
                 if selected == 0 {
                     NavigationStack { LibraryView() }
                 } else {
-                    NavigationStack { SettingsView() }
+                    NavigationStack {
+                        SettingsView()
+                            .toolbar {
+                                ToolbarItem(placement: .topBarLeading) {
+                                    Button { selected = 0 } label: {
+                                        Image(systemName: "chevron.left")
+                                            .font(.system(size: 17, weight: .semibold))
+                                    }
+                                }
+                            }
+                    }
                 }
             }
 
             VStack(spacing: 14) {
-                fab("books.vertical", active: selected == 0) { selected = 0 }
-                fab("gearshape", active: selected == 1) { selected = 1 }
+                if selected == 0 {
+                    fab("gearshape", active: false) { selected = 1 }
+                }
                 fab(bgmEnabled ? "speaker.wave.2.fill" : "speaker.slash.fill", active: bgmEnabled) {
                     bgmEnabled.toggle()
                     if !bgmEnabled {

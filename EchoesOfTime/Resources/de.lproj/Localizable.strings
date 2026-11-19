@@ -100,6 +100,11 @@
 "one.archive.limit.title" = "Nur ein Archiv";
 "one.archive.limit.message" = "Diese App speichert ein Lebensarchiv pro Gerät. Beispiele zählen nicht. Um neu zu beginnen, löschen Sie zuerst Ihr bestehendes Archiv.";
 "library.subtitle" = "Ein Leben bewahren, Kapitel für Kapitel.";
+    "library.tagline.1" = "Hear the voice, see the story, keep a lifetime.";
+    "library.tagline.2" = "Echoes of time keep a life, not just photos.";
+    "library.tagline.3" = "While time remains, leave a life story.";
+    "library.tagline.4" = "Let time echo, let the past be heard.";
+    "library.tagline.5" = "Words once spoken should not fade away.";
 "library.create.person" = "Personenarchiv anlegen";
 "library.action.addChapter" = "Kapitel hinzufügen";
 "library.action.editArchive" = "Archiv bearbeiten";

@@ -100,6 +100,11 @@
 "one.archive.limit.title" = "Slechts één archief";
 "one.archive.limit.message" = "Deze app bewaart één levensarchief per apparaat. Voorbeelden tellen niet. Om opnieuw te beginnen, verwijder eerst je huidige archief.";
 "library.subtitle" = "Bewaar een leven, hoofdstuk voor hoofdstuk.";
+    "library.tagline.1" = "Hear the voice, see the story, keep a lifetime.";
+    "library.tagline.2" = "Echoes of time keep a life, not just photos.";
+    "library.tagline.3" = "While time remains, leave a life story.";
+    "library.tagline.4" = "Let time echo, let the past be heard.";
+    "library.tagline.5" = "Words once spoken should not fade away.";
 "library.create.person" = "Persoonsarchief aanmaken";
 "library.action.addChapter" = "Hoofdstuk toevoegen";
 "library.action.editArchive" = "Archief bewerken";

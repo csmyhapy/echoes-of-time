@@ -100,6 +100,11 @@
 "one.archive.limit.title" = "アーカイブはひとつだけ";
 "one.archive.limit.message" = "このアプリは端末ひとつにつき生涯アーカイブをひとつ保存します。サンプルは数えません。最初からやり直すには、まず現在のアーカイブを削除してください。";
 "library.subtitle" = "人生を、章ごとに受け継ぐ。";
+    "library.tagline.1" = "Hear the voice, see the story, keep a lifetime.";
+    "library.tagline.2" = "Echoes of time keep a life, not just photos.";
+    "library.tagline.3" = "While time remains, leave a life story.";
+    "library.tagline.4" = "Let time echo, let the past be heard.";
+    "library.tagline.5" = "Words once spoken should not fade away.";
 "library.create.person" = "人物アーカイブを作成";
 "library.action.addChapter" = "章を追加";
 "library.action.editArchive" = "アーカイブを編集";

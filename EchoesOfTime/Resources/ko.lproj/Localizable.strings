@@ -100,6 +100,11 @@
 "one.archive.limit.title" = "보관함은 하나만";
 "one.archive.limit.message" = "이 앱은 기기당 삶의 보관함을 하나만 저장합니다. 샘플은 세지 않습니다. 처음부터 다시 시작하려면 먼저 현재 보관함을 삭제하세요.";
 "library.subtitle" = "한 인생을, 장마다 간직하세요.";
+    "library.tagline.1" = "Hear the voice, see the story, keep a lifetime.";
+    "library.tagline.2" = "Echoes of time keep a life, not just photos.";
+    "library.tagline.3" = "While time remains, leave a life story.";
+    "library.tagline.4" = "Let time echo, let the past be heard.";
+    "library.tagline.5" = "Words once spoken should not fade away.";
 "library.create.person" = "인물 보관함 만들기";
 "library.action.addChapter" = "장 추가";
 "library.action.editArchive" = "보관함 편집";

@@ -20,6 +20,13 @@ struct LibraryView: View {
     @State private var editingPerson: Person?
     @State private var addingChapterFor: Person?
 
+    /// 首页标语：每次进入首页随机换一句（冷启动/页面重建时取值一次）
+    @State private var taglineIndex = Int.random(in: 0..<LibraryView.taglineKeys.count)
+    private static let taglineKeys = [
+        "library.tagline.1", "library.tagline.2", "library.tagline.3",
+        "library.tagline.4", "library.tagline.5"
+    ]
+
     /// 用户自己的正式档案
     private var realPersons: [Person] { persons.filter { !$0.isDemo } }
     /// 内置示例（虚构，仅供体验）
@@ -122,6 +129,10 @@ struct LibraryView: View {
         .background(Color(.systemGroupedBackground))
         .navigationTitle("")
         .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            // 回到藏书列表即停止背景音乐（人物→节点保持连续，不在此停）
+            BGMManager.shared.stop()
+        }
         .sheet(isPresented: $showingNewPerson) {
             PersonEditView(person: nil)
         }
@@ -146,10 +157,11 @@ struct LibraryView: View {
                 .font(.system(size: isReader ? 40 : 32, weight: .bold))
                 .frame(maxWidth: .infinity)
 
-            Text("library.subtitle")
+            Text(LocalizedStringKey(Self.taglineKeys[taglineIndex]))
                 .font(.system(size: isReader ? 20 : 13))
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
+                .transition(.opacity)
         }
         .padding(.top, 6)
         .padding(.bottom, 2)
@@ -229,41 +241,68 @@ struct LibraryView: View {
 
     private var actionButtons: some View {
         VStack(spacing: 10) {
-            Button {
+            // 主操作：添加章节（最常用，实心棕）
+            capsuleButton(title: "library.action.addChapter",
+                          systemImage: "plus.rectangle.on.folder",
+                          role: .primary) {
+                addingChapterFor = realPersons.first
+            }
+
+            // 次操作：编辑档案（浅棕描边）
+            capsuleButton(title: "library.action.editArchive",
+                          systemImage: "square.and.pencil",
+                          role: .secondary) {
+                editingPerson = realPersons.first
+            }
+
+            // 弱操作：创建人物档案（一人一档、通常受限，中性灰）
+            capsuleButton(title: "library.create.person",
+                          systemImage: "person.badge.plus",
+                          role: .ghost) {
                 if appState.isDeveloper {
                     showingNewPerson = true   // 开发者：不限人物数量
                 } else {
                     showLimitAlert = true     // 普通用户：一人一档
                 }
-            } label: {
-                Label("library.create.person", systemImage: "person.badge.plus")
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 13)
             }
-            .buttonStyle(.bordered)
-            .tint(.brown)
-
-            Button {
-                addingChapterFor = realPersons.first
-            } label: {
-                Label("library.action.addChapter", systemImage: "plus.rectangle.on.folder")
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 14)
-            }
-            .buttonStyle(.borderedProminent)
-            .tint(.brown)
-
-            Button {
-                editingPerson = realPersons.first
-            } label: {
-                Label("library.action.editArchive", systemImage: "square.and.pencil")
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 12)
-            }
-            .buttonStyle(.bordered)
-            .tint(.brown)
         }
         .padding(.top, 2)
+    }
+
+    private enum CapsuleRole { case primary, secondary, ghost }
+
+    private func capsuleButton(title: LocalizedStringKey, systemImage: String, role: CapsuleRole, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Label(title, systemImage: systemImage)
+                .font(.system(size: 17, weight: .semibold))
+                .labelStyle(.titleAndIcon)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 15)
+                .background(background(for: role), in: Capsule())
+                .overlay(Capsule().strokeBorder(strokeColor(for: role), lineWidth: role == .secondary ? 1 : 0))
+                .foregroundStyle(foreground(for: role))
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func background(for role: CapsuleRole) -> AnyShapeStyle {
+        switch role {
+        case .primary: AnyShapeStyle(Color.brown)
+        case .secondary: AnyShapeStyle(Color.brown.opacity(0.13))
+        case .ghost: AnyShapeStyle(Color(.secondarySystemBackground))
+        }
+    }
+
+    private func foreground(for role: CapsuleRole) -> Color {
+        switch role {
+        case .primary: .white
+        case .secondary: .brown
+        case .ghost: .secondary
+        }
+    }
+
+    private func strokeColor(for role: CapsuleRole) -> Color {
+        role == .secondary ? Color.brown.opacity(0.35) : .clear
     }
 
     // MARK: - 示例档案区（小卡 + 明确标注）

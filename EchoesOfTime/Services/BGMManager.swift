@@ -35,6 +35,7 @@ final class BGMManager {
         let key = "\(personID.uuidString)/\(fileName)"
         if currentKey == key, player?.isPlaying == true { return }
         stop()
+        activateSession()
 
         guard let url = resolveURL(fileName: fileName, personID: personID) else { return }
         do {
@@ -55,6 +56,17 @@ final class BGMManager {
         player?.stop()
         player = nil
         currentKey = nil
+    }
+
+    /// 配置并激活音频会话，确保真机（含静音键、与语音会话切换后）能稳定出声
+    private func activateSession() {
+        do {
+            let session = AVAudioSession.sharedInstance()
+            try session.setCategory(.playback, mode: .default, options: [.mixWithOthers])
+            try session.setActive(true)
+        } catch {
+            // 会话激活失败仍继续尝试播放，不阻断
+        }
     }
 
     private func resolveURL(fileName: String, personID: UUID) -> URL? {

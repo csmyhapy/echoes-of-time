@@ -100,6 +100,11 @@
 "one.archive.limit.title" = "Une seule archive";
 "one.archive.limit.message" = "Cette app conserve une archive de vie par appareil. Les exemples ne comptent pas. Pour recommencer, supprimez d'abord votre archive actuelle.";
 "library.subtitle" = "Conserver une vie, chapitre par chapitre.";
+    "library.tagline.1" = "Hear the voice, see the story, keep a lifetime.";
+    "library.tagline.2" = "Echoes of time keep a life, not just photos.";
+    "library.tagline.3" = "While time remains, leave a life story.";
+    "library.tagline.4" = "Let time echo, let the past be heard.";
+    "library.tagline.5" = "Words once spoken should not fade away.";
 "library.create.person" = "Créer une archive de personne";
 "library.action.addChapter" = "Ajouter un chapitre";
 "library.action.editArchive" = "Modifier l'archive";

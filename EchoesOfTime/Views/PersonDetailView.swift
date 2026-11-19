@@ -117,9 +117,8 @@ struct PersonDetailView: View {
                 BGMManager.shared.play(fileName: person.bgmFileName, personID: person.id)
             }
         }
-        .onDisappear {
-            BGMManager.shared.stop()
-        }
+        // 注意：push 到节点/照片页时不在此停止，保持背景音乐连续；
+        // 返回藏书列表由 LibraryView 统一停止。
         .onChange(of: showVoiceRecorder) { _, isShowing in
             if isShowing {
                 BGMManager.shared.stop()
