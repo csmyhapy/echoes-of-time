@@ -203,3 +203,11 @@
 "share.option.pdf" = "分享这一页（PDF）";
 "share.readonly.hint" = "想说的话，微信直接发我就好。家人会把它留在这一张照片下面。";
 "share.error.pdf" = "PDF 生成失败，可能是照片文件缺失。";
+"share.intro" = "分享自「%@」的人生档案";
+"share.about.title" = "关于这份分享";
+"share.about.what" = "这是一份只存在家人手机里的私人记忆档案：一张照片、一段文字、一段原声，没有上传到任何网站。";
+"share.about.why" = "家人觉得，你会想知道这段故事，所以把这一页发给了你。";
+"share.about.todo" = "想说的话，微信直接回给家人就好，家人会把它留在这张照片下面。";
+"share.brand.slogan" = "把照片背后的故事，留在家人手里。";
+"share.brand.by" = "由「岁月回声」整理 · iOS";
+"share.card.about" = "这是一份存在家人手机里的私人记忆档案。想说的话，微信回给家人就好。";

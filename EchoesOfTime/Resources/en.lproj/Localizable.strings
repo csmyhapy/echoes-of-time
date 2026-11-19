@@ -203,3 +203,11 @@
 "share.option.pdf" = "Share this page (PDF)";
 "share.readonly.hint" = "If you would like to say something, just send a message on WeChat — the family will keep it under this photo.";
 "share.error.pdf" = "Could not build the PDF. The photo file may be missing.";
+"share.intro" = "From the life archive of %@";
+"share.about.title" = "About this share";
+"share.about.what" = "This is a private memory kept only on the family’s own phone: one photo, one story, one voice recording. Nothing was uploaded to any website.";
+"share.about.why" = "The family thought you would like to know this part of the story, so they sent you this page.";
+"share.about.todo" = "If you would like to say something, simply reply on WeChat — the family will keep it under this photo.";
+"share.brand.slogan" = "Keep the story behind the photo with the family.";
+"share.brand.by" = "Made with Echoes of Time · iOS";
+"share.card.about" = "A private memory kept on the family’s own phone. If you would like to say something, just reply on WeChat.";

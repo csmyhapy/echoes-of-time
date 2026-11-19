@@ -288,16 +288,22 @@ enum ShareExporter {
         .audio{margin:22px 0 6px;padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:#fff;}
         .audio .label{display:block;font-size:12px;letter-spacing:.12em;color:var(--brown);opacity:.8;margin-bottom:8px;}
         .audio audio{width:100%;}
-        .note{margin-top:32px;padding:18px 20px;border-left:3px solid var(--brown);
-             background:#fff;border-radius:0 12px 12px 0;font-size:15px;line-height:1.9;color:#5E5347;}
-        .note strong{color:var(--brown);}
-        footer{margin-top:34px;text-align:center;font-size:12px;color:#A89B8A;letter-spacing:.1em;}
+        .note{margin-top:34px;padding:18px 20px;border-left:3px solid var(--brown);
+             background:#fff;border-radius:0 12px 12px 0;font-size:14.5px;line-height:1.85;color:#5E5347;}
+        .note strong{display:block;color:var(--brown);font-size:13px;letter-spacing:.08em;margin-bottom:10px;}
+        .note p{margin:0 0 10px;}
+        .note p:last-child{margin-bottom:0;}
+        footer{margin-top:34px;text-align:center;color:#A89B8A;}
+        footer span{display:block;}
+        .brand{font-size:12px;letter-spacing:.1em;}
+        .slogan{font-size:13px;color:var(--brown);opacity:.85;margin-top:6px;}
+        .by{font-size:11px;margin-top:6px;opacity:.8;}
         @media print{body{background:#fff}.note{break-inside:avoid}}
         </style>
         </head>
         <body>
         <div class="wrap">
-          <p class="kicker">\(esc(String(localized: "share.kicker")))</p>
+          <p class="kicker">\(esc(String(format: String(localized: "share.intro"), person.name)))</p>
           <img class="photo" alt="\(esc(displayName))" src="data:image/jpeg;base64,\(jpeg.base64EncodedString())">
           <h1>\(esc(displayName))</h1>
           <p class="owner">\(esc(person.name))\(person.birthYear.isEmpty ? "" : " · \(esc(person.birthYear))")</p>
@@ -305,10 +311,17 @@ enum ShareExporter {
           \(audioBlock)
 
           <div class="note">
-            \(esc(String(localized: "share.readonly.hint")))
+            <strong>\(esc(String(localized: "share.about.title")))</strong>
+            <p>\(esc(String(localized: "share.about.what")))</p>
+            <p>\(esc(String(localized: "share.about.why")))</p>
+            <p>\(esc(String(localized: "share.about.todo")))</p>
           </div>
 
-          <footer>\(esc(String(localized: "share.footer")))</footer>
+          <footer>
+            <span class="brand">\(esc(String(localized: "share.footer")))</span>
+            <span class="slogan">\(esc(String(localized: "share.brand.slogan")))</span>
+            <span class="by">\(esc(String(localized: "share.brand.by")))</span>
+          </footer>
         </div>
         </body>
         </html>
@@ -347,10 +360,14 @@ enum ShareExporter {
         let titleFont = UIFont.systemFont(ofSize: 46, weight: .semibold)
         let storyFont = UIFont.systemFont(ofSize: 29)
         let ownerFont = UIFont.systemFont(ofSize: 26)
-        let footFont = UIFont.systemFont(ofSize: 22, weight: .medium)
 
         let storyText = ArchiveText.paragraphs(photo.story)
-        let storyTrim = storyText.count > 260 ? String(storyText.prefix(260)) + "…" : storyText
+        let storyTrim = storyText.count > 220 ? String(storyText.prefix(220)) + "…" : storyText
+
+        let aboutFont = UIFont.systemFont(ofSize: 24)
+        let sloganFont = UIFont.systemFont(ofSize: 23)
+        let aboutText = String(localized: "share.card.about")
+        let sloganText = String(localized: "share.brand.slogan")
 
         func measured(_ text: String, _ font: UIFont, _ width: CGFloat, spacing: CGFloat) -> CGFloat {
             guard !text.isEmpty else { return 0 }
@@ -365,17 +382,22 @@ enum ShareExporter {
         let ownerText = "\(person.name)\(person.birthYear.isEmpty ? "" : " · \(person.birthYear)")"
         let ownerH = measured(ownerText, ownerFont, contentWidth, spacing: 0)
         let storyH = measured(storyTrim, storyFont, contentWidth, spacing: 10)
+        let aboutH = measured(aboutText, aboutFont, contentWidth, spacing: 8)
+        let sloganH = measured(sloganText, sloganFont, contentWidth, spacing: 4)
 
         let topGap: CGFloat = 56
-        let belowPhoto: CGFloat = 40
+        let belowPhoto: CGFloat = 36
         let belowTitle: CGFloat = 10
-        let belowOwner: CGFloat = 26
-        let beforeFoot: CGFloat = 46
-        let footH: CGFloat = 34
-        let bottomPad: CGFloat = 56
+        let belowOwner: CGFloat = 24
+        let aboutGap: CGFloat = 34
+        let brandGap: CGFloat = 30
+        let bottomPad: CGFloat = 80
 
         let totalH = pad + topGap * 0.6 + photoH + belowPhoto + titleH + belowTitle + ownerH
-            + (storyH > 0 ? belowOwner + storyH : 0) + beforeFoot + footH + bottomPad
+            + (storyH > 0 ? belowOwner + storyH : 0)
+            + aboutGap + 34 + aboutH
+            + brandGap + 40 + sloganH
+            + bottomPad
 
         let size = CGSize(width: width, height: totalH)
         let format = UIGraphicsImageRendererFormat()
@@ -415,50 +437,70 @@ enum ShareExporter {
             titlePara.lineSpacing = 6
             let titleAttr = NSAttributedString(string: displayName, attributes: [
                 .font: titleFont, .foregroundColor: brown, .paragraphStyle: titlePara])
-            let titleRect = CGRect(x: pad, y: y, width: contentWidth,
-                                   height: titleAttr.boundingRect(with: CGSize(width: contentWidth, height: .greatestFiniteMagnitude),
-                                                                  options: [.usesLineFragmentOrigin, .usesFontLeading], context: nil).height)
+            let titleRect = CGRect(x: pad, y: y, width: contentWidth, height: titleH)
             titleAttr.draw(with: titleRect, options: [.usesLineFragmentOrigin, .usesFontLeading], context: nil)
             y = titleRect.maxY + belowTitle
 
             // 归属
             let ownerAttr = NSAttributedString(string: ownerText, attributes: [
                 .font: ownerFont, .foregroundColor: muted])
-            let ownerRect = CGRect(x: pad, y: y, width: contentWidth,
-                                   height: ownerAttr.boundingRect(with: CGSize(width: contentWidth, height: .greatestFiniteMagnitude),
-                                                                  options: [.usesLineFragmentOrigin, .usesFontLeading], context: nil).height)
-            ownerAttr.draw(with: ownerRect, options: [.usesLineFragmentOrigin, .usesFontLeading], context: nil)
-            y = ownerRect.maxY
+            ownerAttr.draw(at: CGPoint(x: pad, y: y))
+            y += ownerH
 
             // 故事摘录
             if !storyTrim.isEmpty {
                 y += belowOwner
                 let storyPara = NSMutableParagraphStyle()
                 storyPara.lineSpacing = 10
-                storyPara.firstLineHeadIndent = 0
                 let storyAttr = NSAttributedString(string: storyTrim, attributes: [
                     .font: storyFont, .foregroundColor: ink, .paragraphStyle: storyPara])
-                let storyRect = CGRect(x: pad, y: y, width: contentWidth,
-                                       height: storyAttr.boundingRect(with: CGSize(width: contentWidth, height: .greatestFiniteMagnitude),
-                                                                      options: [.usesLineFragmentOrigin, .usesFontLeading], context: nil).height)
+                let storyRect = CGRect(x: pad, y: y, width: contentWidth, height: storyH)
                 storyAttr.draw(with: storyRect, options: [.usesLineFragmentOrigin, .usesFontLeading], context: nil)
                 y = storyRect.maxY
             }
 
-            // 页脚
-            y = size.height - bottomPad - footH
+            // 分隔线
+            y += aboutGap
             let line = UIBezierPath()
-            line.move(to: CGPoint(x: pad, y: y - 18))
-            line.addLine(to: CGPoint(x: width - pad, y: y - 18))
+            line.move(to: CGPoint(x: pad, y: y))
+            line.addLine(to: CGPoint(x: width - pad, y: y))
             UIColor(red: 0.89, green: 0.85, blue: 0.78, alpha: 1).setStroke()
             line.lineWidth = 1
             line.stroke()
+            y += 22
 
-            let footText = String(localized: "share.footer")
-            let footAttr = NSAttributedString(string: footText, attributes: [
-                .font: footFont, .foregroundColor: muted])
-            let footSize = footAttr.size()
-            footAttr.draw(at: CGPoint(x: (width - footSize.width) / 2, y: y))
+            // 关于这份分享
+            let aboutTitleAttr = NSAttributedString(string: String(localized: "share.about.title"), attributes: [
+                .font: UIFont.systemFont(ofSize: 27, weight: .semibold),
+                .foregroundColor: brown,
+                .kern: 1.6
+            ])
+            aboutTitleAttr.draw(at: CGPoint(x: pad, y: y))
+            y += 32
+
+            let aboutPara = NSMutableParagraphStyle()
+            aboutPara.lineSpacing = 8
+            let aboutAttr = NSAttributedString(string: aboutText, attributes: [
+                .font: aboutFont, .foregroundColor: muted, .paragraphStyle: aboutPara])
+            aboutAttr.draw(with: CGRect(x: pad, y: y, width: contentWidth, height: aboutH),
+                           options: [.usesLineFragmentOrigin, .usesFontLeading], context: nil)
+            y = y + aboutH + brandGap
+
+            // 品牌
+            let brandAttr = NSAttributedString(string: String(localized: "share.footer"), attributes: [
+                .font: UIFont.systemFont(ofSize: 27, weight: .medium),
+                .foregroundColor: brown,
+                .kern: 1.0
+            ])
+            brandAttr.draw(at: CGPoint(x: pad, y: y))
+            y += 40
+
+            let sloganPara = NSMutableParagraphStyle()
+            sloganPara.lineSpacing = 4
+            let sloganAttr = NSAttributedString(string: sloganText, attributes: [
+                .font: sloganFont, .foregroundColor: muted, .paragraphStyle: sloganPara])
+            sloganAttr.draw(with: CGRect(x: pad, y: y, width: contentWidth, height: sloganH),
+                            options: [.usesLineFragmentOrigin, .usesFontLeading], context: nil)
         }
         return card
     }
@@ -505,9 +547,10 @@ enum ShareExporter {
 
             func drawFooter() {
                 let attr = NSAttributedString(string: String(localized: "share.footer"),
-                                              attributes: [.font: UIFont.systemFont(ofSize: 9), .foregroundColor: muted])
+                                              attributes: [.font: UIFont.systemFont(ofSize: 9),
+                                                           .foregroundColor: muted, .kern: 0.6])
                 let sz = attr.size()
-                attr.draw(at: CGPoint(x: (pageSize.width - sz.width) / 2, y: pageSize.height - 48))
+                attr.draw(at: CGPoint(x: (pageSize.width - sz.width) / 2, y: pageSize.height - 96))
             }
 
             func beginFreshPage() {
@@ -518,7 +561,7 @@ enum ShareExporter {
             beginFreshPage()
 
             // 顶部小字
-            let kicker = NSAttributedString(string: String(localized: "share.kicker").uppercased(),
+            let kicker = NSAttributedString(string: String(format: String(localized: "share.intro"), person.name),
                                             attributes: [.font: UIFont.systemFont(ofSize: 8.5),
                                                          .foregroundColor: muted,
                                                          .kern: 1.6])
@@ -589,19 +632,56 @@ enum ShareExporter {
                 y += h + 8
             }
 
-            // 结尾引导
-            if y + 60 < pageSize.height - footSpace {
-                y += 14
-                let noteStyle = NSMutableParagraphStyle()
-                noteStyle.lineSpacing = 4
-                let note = NSAttributedString(string: String(localized: "share.readonly.hint"), attributes: [
-                    .font: UIFont.systemFont(ofSize: 10.5), .foregroundColor: muted, .paragraphStyle: noteStyle
-                ])
-                let nH = note.boundingRect(with: CGSize(width: contentWidth, height: .greatestFiniteMagnitude),
-                                           options: [.usesLineFragmentOrigin, .usesFontLeading], context: nil).height
-                note.draw(with: CGRect(x: margin, y: y, width: contentWidth, height: nH),
-                          options: [.usesLineFragmentOrigin, .usesFontLeading], context: nil)
+            // 关于这份分享
+            y += 16
+            let rule = UIBezierPath()
+            rule.move(to: CGPoint(x: margin, y: y))
+            rule.addLine(to: CGPoint(x: pageSize.width - margin, y: y))
+            UIColor(red: 0.89, green: 0.85, blue: 0.78, alpha: 1).setStroke()
+            rule.lineWidth = 0.8
+            rule.stroke()
+            y += 16
+
+            let aboutTitle = NSAttributedString(string: String(localized: "share.about.title"), attributes: [
+                .font: UIFont.systemFont(ofSize: 10.5, weight: .semibold),
+                .foregroundColor: brown,
+                .kern: 1.0
+            ])
+            aboutTitle.draw(at: CGPoint(x: margin, y: y))
+            y += 16
+
+            let aboutStyle = NSMutableParagraphStyle()
+            aboutStyle.lineSpacing = 5
+            aboutStyle.alignment = .justified
+            let aboutBody = [
+                String(localized: "share.about.what"),
+                String(localized: "share.about.why"),
+                String(localized: "share.about.todo")
+            ].joined(separator: "\n")
+            let aboutAttr = NSAttributedString(string: aboutBody, attributes: [
+                .font: UIFont.systemFont(ofSize: 9.5), .foregroundColor: muted, .paragraphStyle: aboutStyle
+            ])
+            let aboutH = aboutAttr.boundingRect(with: CGSize(width: contentWidth, height: .greatestFiniteMagnitude),
+                                                options: [.usesLineFragmentOrigin, .usesFontLeading], context: nil).height
+            if y + aboutH > pageSize.height - footSpace {
+                drawFooter()
+                beginFreshPage()
             }
+            aboutAttr.draw(with: CGRect(x: margin, y: y, width: contentWidth, height: aboutH),
+                           options: [.usesLineFragmentOrigin, .usesFontLeading], context: nil)
+
+            // 品牌行（页脚上方）
+            let sloganAttr = NSAttributedString(string: String(localized: "share.brand.slogan"), attributes: [
+                .font: UIFont.systemFont(ofSize: 9), .foregroundColor: brown.withAlphaComponent(0.85)
+            ])
+            let szSlogan = sloganAttr.size()
+            sloganAttr.draw(at: CGPoint(x: (pageSize.width - szSlogan.width) / 2, y: pageSize.height - 66))
+
+            let byAttr = NSAttributedString(string: String(localized: "share.brand.by"), attributes: [
+                .font: UIFont.systemFont(ofSize: 8.5), .foregroundColor: muted
+            ])
+            let szBy = byAttr.size()
+            byAttr.draw(at: CGPoint(x: (pageSize.width - szBy.width) / 2, y: pageSize.height - 30))
 
             drawFooter()
         }
