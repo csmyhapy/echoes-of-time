@@ -211,3 +211,7 @@
 "share.brand.slogan" = "Keep the story behind the photo with the family.";
 "share.brand.by" = "Made with Echoes of Time · iOS";
 "share.card.about" = "A private memory kept on the family’s own phone. If you would like to say something, just reply on WeChat.";
+"share.head.title" = "A photo left for you";
+"share.head.p1" = "This is one page from the life of %@. The family picked it out and set it aside for you.";
+"share.head.p2" = "It is for you alone — there is no need to pass it on.";
+"share.head.p3" = "If it brings something to mind, leave a few words below. The family will keep them for you.";
