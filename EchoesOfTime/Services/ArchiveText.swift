@@ -72,12 +72,18 @@ enum ArchiveText {
         clean(raw)
     }
 
-    /// 是否含中日韩文字（决定要不要按中文排版做缩进）
+    /// 是否含中日韩文字（决定要不要按中文排版做缩进）。
+    /// 日文含汉字即可触发；这里再纳入平假名/片假名，避免纯假名段落漏缩进。
     static func containsCJK(_ text: String) -> Bool {
         text.unicodeScalars.contains { scalar in
-            (0x4E00...0x9FFF).contains(scalar.value) ||
-            (0x3400...0x4DBF).contains(scalar.value) ||
-            (0x3000...0x303F).contains(scalar.value)
+            let v = scalar.value
+            return (0x4E00...0x9FFF).contains(v) ||        // CJK 统一汉字
+                   (0x3400...0x4DBF).contains(v) ||       // 扩展 A
+                   (0x3000...0x303F).contains(v) ||       // CJK 标点
+                   (0x3040...0x309F).contains(v) ||       // 平假名
+                   (0x30A0...0x30FF).contains(v) ||       // 片假名
+                   (0x31A0...0x31BF).contains(v) ||       // 假名扩展
+                   (0xFF65...0xFF9F).contains(v)          // 半角片假名
         }
     }
 
