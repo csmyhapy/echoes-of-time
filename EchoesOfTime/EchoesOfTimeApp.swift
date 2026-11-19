@@ -163,7 +163,15 @@ struct RootView: View {
             if let r = ShareExporter.parseReply("转发给你的回信：\n" + raw + "\n谢谢！") {
                 out2 = "name=\(r.name) | content=\(r.content)"
             }
-            try? (out + "\n---\n" + out2).write(to: docs.appendingPathComponent("debug-reply.txt"),
+            var out3 = "no parse"
+            if let r = ShareExporter.parseReply("张阿姨：看到这张照片就想起你妈妈年轻的时候，真好。\n那年她还在纺织厂。") {
+                out3 = "name=\(r.name) | content=\(r.content)"
+            }
+            var out4 = "no parse"
+            if let r = ShareExporter.parseReply("看到这张照片，我眼泪都下来了。") {
+                out4 = "name=\(r.name) | content=\(r.content)"
+            }
+            try? ([out, "---", out2, "---", out3, "---", out4].joined(separator: "\n")).write(to: docs.appendingPathComponent("debug-reply.txt"),
                                                   atomically: true, encoding: .utf8)
         }
 
@@ -180,6 +188,10 @@ struct RootView: View {
                    let cardURL = ShareExporter.writeCard(card, person: person, caption: photo.caption) {
                     try? FileManager.default.removeItem(at: docs.appendingPathComponent("debug-card.jpg"))
                     try? FileManager.default.copyItem(at: cardURL, to: docs.appendingPathComponent("debug-card.jpg"))
+                }
+                if let pdf = ShareExporter.makePhotoPDF(photo: photo, person: person, personID: person.id) {
+                    try? FileManager.default.removeItem(at: docs.appendingPathComponent("debug-page.pdf"))
+                    try? FileManager.default.copyItem(at: pdf, to: docs.appendingPathComponent("debug-page.pdf"))
                 }
             }
         }

@@ -288,20 +288,11 @@ enum ShareExporter {
         .audio{margin:22px 0 6px;padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:#fff;}
         .audio .label{display:block;font-size:12px;letter-spacing:.12em;color:var(--brown);opacity:.8;margin-bottom:8px;}
         .audio audio{width:100%;}
-        .leave{margin-top:34px;padding:22px 18px;border-radius:14px;background:#fff;border:1px solid var(--line);}
-        .leave h2{font-size:17px;margin:0 0 6px;color:var(--brown);}
-        .leave .hint{font-size:13px;color:#8A7C6B;margin:0 0 14px;line-height:1.6;}
-        .leave input,.leave textarea{width:100%;border:1px solid var(--line);border-radius:10px;
-             padding:12px;font-size:16px;font-family:inherit;background:var(--paper);color:var(--ink);margin-bottom:10px;}
-        .leave textarea{min-height:96px;resize:vertical;}
-        .leave button{width:100%;padding:14px;border:0;border-radius:10px;background:var(--brown);color:#fff;
-             font-size:16px;font-weight:600;font-family:inherit;}
-        #out{margin-top:16px;display:none;}
-        #out p{font-size:13px;color:#8A7C6B;line-height:1.6;margin:0 0 10px;}
-        #code{width:100%;height:104px;border:1px dashed var(--brown);border-radius:10px;padding:10px;
-             font-size:12px;font-family:ui-monospace,Menlo,monospace;background:#FFFDF9;color:#4A3F33;resize:none;}
-        #copyBtn{margin-top:10px;background:#5C7A4E;}
-        footer{margin-top:36px;text-align:center;font-size:12px;color:#A89B8A;letter-spacing:.1em;}
+        .note{margin-top:32px;padding:18px 20px;border-left:3px solid var(--brown);
+             background:#fff;border-radius:0 12px 12px 0;font-size:15px;line-height:1.9;color:#5E5347;}
+        .note strong{color:var(--brown);}
+        footer{margin-top:34px;text-align:center;font-size:12px;color:#A89B8A;letter-spacing:.1em;}
+        @media print{body{background:#fff}.note{break-inside:avoid}}
         </style>
         </head>
         <body>
@@ -313,43 +304,12 @@ enum ShareExporter {
           \(storyBlock)
           \(audioBlock)
 
-          <div class="leave">
-            <h2>\(esc(String(localized: "share.leave.title")))</h2>
-            <p class="hint">\(esc(String(localized: "share.leave.hint")))</p>
-            <input id="nick" maxlength="40" placeholder="\(esc(String(localized: "share.leave.name")))">
-            <textarea id="msg" maxlength="600" placeholder="\(esc(String(localized: "share.leave.placeholder")))"></textarea>
-            <button type="button" onclick="gen()">\(esc(String(localized: "share.leave.generate")))</button>
-            <div id="out">
-              <p>\(esc(String(localized: "share.leave.generated")))</p>
-              <textarea id="code" readonly></textarea>
-              <button type="button" id="copyBtn" onclick="copyCode()">\(esc(String(localized: "share.leave.copy")))</button>
-            </div>
+          <div class="note">
+            \(esc(String(localized: "share.readonly.hint")))
           </div>
 
           <footer>\(esc(String(localized: "share.footer")))</footer>
         </div>
-        <script>
-        var PERSON_NAME = "\(js(person.name))";
-        var PHOTO_NAME = "\(js(displayName))";
-        function gen(){
-          var nick = document.getElementById('nick').value.trim() || "\(js(String(localized: "share.leave.anonymous")))";
-          var msg = document.getElementById('msg').value.trim();
-          if(!msg){ alert("\(js(String(localized: "share.leave.empty")))"); return; }
-          var obj = { v:1, person:PERSON_NAME, photo:PHOTO_NAME, name:nick, text:msg,
-                      date:new Date().toISOString().slice(0,10) };
-          var b64 = btoa(unescape(encodeURIComponent(JSON.stringify(obj))));
-          document.getElementById('code').value = "\(replyPrefix)" + b64;
-          document.getElementById('out').style.display = 'block';
-        }
-        function copyCode(){
-          var t = document.getElementById('code');
-          t.select(); t.setSelectionRange(0, t.value.length);
-          var ok = false;
-          try { ok = document.execCommand('copy'); } catch(e) { ok = false; }
-          if(ok){ alert("\(js(String(localized: "share.leave.copied")))"); }
-          else { alert("\(js(String(localized: "share.leave.copyManually")))"); }
-        }
-        </script>
         </body>
         </html>
         """
@@ -517,13 +477,156 @@ enum ShareExporter {
         }
     }
 
+
+    // MARK: 单张照片 PDF（A4，微信可直接预览）
+
+    static func makePhotoPDF(photo: Photo, person: Person, personID: UUID) -> URL? {
+        guard let img = MediaStore.loadImage(fileName: photo.imageFileName, personID: personID) else { return nil }
+
+        let pageSize = CGSize(width: 595, height: 842)
+        let margin: CGFloat = 46
+        let contentWidth = pageSize.width - margin * 2
+        let footSpace: CGFloat = 40
+
+        let caption = photo.caption.trimmingCharacters(in: .whitespacesAndNewlines)
+        let displayName = caption.isEmpty ? String(localized: "share.untitled.photo") : caption
+
+        let brown = UIColor(red: 0.42, green: 0.29, blue: 0.16, alpha: 1)
+        let ink = UIColor(red: 0.23, green: 0.20, blue: 0.16, alpha: 1)
+        let muted = UIColor(red: 0.54, green: 0.48, blue: 0.41, alpha: 1)
+
+        let paragraphs = ArchiveText.splitParagraphs(ArchiveText.normalized(photo.story))
+        let storyFont = UIFont.systemFont(ofSize: 11.5)
+        let lineSpacing: CGFloat = 4.5
+
+        let renderer = UIGraphicsPDFRenderer(bounds: CGRect(origin: .zero, size: pageSize))
+        let data = renderer.pdfData { ctx in
+            var y: CGFloat = margin
+
+            func drawFooter() {
+                let attr = NSAttributedString(string: String(localized: "share.footer"),
+                                              attributes: [.font: UIFont.systemFont(ofSize: 9), .foregroundColor: muted])
+                let sz = attr.size()
+                attr.draw(at: CGPoint(x: (pageSize.width - sz.width) / 2, y: pageSize.height - 48))
+            }
+
+            func beginFreshPage() {
+                ctx.beginPage()
+                y = margin
+            }
+
+            beginFreshPage()
+
+            // 顶部小字
+            let kicker = NSAttributedString(string: String(localized: "share.kicker").uppercased(),
+                                            attributes: [.font: UIFont.systemFont(ofSize: 8.5),
+                                                         .foregroundColor: muted,
+                                                         .kern: 1.6])
+            kicker.draw(at: CGPoint(x: margin, y: y))
+            y += 18
+
+            // 照片（等比填满，超出裁剪）
+            let imgRatio = img.size.height / max(1, img.size.width)
+            var photoH = contentWidth * imgRatio
+            photoH = min(photoH, 470)
+            let photoRect = CGRect(x: margin, y: y, width: contentWidth, height: photoH)
+
+            ctx.cgContext.saveGState()
+            UIBezierPath(roundedRect: photoRect, cornerRadius: 8).addClip()
+            let fillRatio = img.size.width / max(1, img.size.height)
+            var drawRect = photoRect
+            if fillRatio > contentWidth / photoH {
+                let w = photoH * fillRatio
+                drawRect = CGRect(x: photoRect.midX - w / 2, y: photoRect.minY, width: w, height: photoH)
+            } else {
+                let h = contentWidth / fillRatio
+                drawRect = CGRect(x: margin, y: photoRect.minY, width: contentWidth, height: h)
+            }
+            img.draw(in: drawRect)
+            ctx.cgContext.restoreGState()
+            y = photoRect.maxY + 24
+
+            // 照片名称
+            let titlePara = NSMutableParagraphStyle()
+            titlePara.lineSpacing = 3
+            let titleAttr = NSAttributedString(string: displayName, attributes: [
+                .font: UIFont.systemFont(ofSize: 19, weight: .semibold),
+                .foregroundColor: brown,
+                .paragraphStyle: titlePara
+            ])
+            let titleH = titleAttr.boundingRect(with: CGSize(width: contentWidth, height: .greatestFiniteMagnitude),
+                                                options: [.usesLineFragmentOrigin, .usesFontLeading], context: nil).height
+            titleAttr.draw(with: CGRect(x: margin, y: y, width: contentWidth, height: titleH),
+                           options: [.usesLineFragmentOrigin, .usesFontLeading], context: nil)
+            y += titleH + 5
+
+            // 归属
+            let ownerText = "\(person.name)\(person.birthYear.isEmpty ? "" : "  ·  \(person.birthYear)")"
+            let ownerAttr = NSAttributedString(string: ownerText, attributes: [
+                .font: UIFont.systemFont(ofSize: 10.5), .foregroundColor: muted
+            ])
+            let ownerH = ownerAttr.size().height
+            ownerAttr.draw(at: CGPoint(x: margin, y: y))
+            y += ownerH + 20
+
+            // 故事（自动分页）
+            for para in paragraphs {
+                let style = NSMutableParagraphStyle()
+                style.lineSpacing = lineSpacing
+                style.alignment = .justified
+                style.firstLineHeadIndent = 0
+                let attr = NSAttributedString(string: para, attributes: [
+                    .font: storyFont, .foregroundColor: ink, .paragraphStyle: style
+                ])
+                let h = attr.boundingRect(with: CGSize(width: contentWidth, height: .greatestFiniteMagnitude),
+                                          options: [.usesLineFragmentOrigin, .usesFontLeading], context: nil).height
+                if y + h > pageSize.height - footSpace {
+                    drawFooter()
+                    beginFreshPage()
+                }
+                attr.draw(with: CGRect(x: margin, y: y, width: contentWidth, height: h),
+                          options: [.usesLineFragmentOrigin, .usesFontLeading], context: nil)
+                y += h + 8
+            }
+
+            // 结尾引导
+            if y + 60 < pageSize.height - footSpace {
+                y += 14
+                let noteStyle = NSMutableParagraphStyle()
+                noteStyle.lineSpacing = 4
+                let note = NSAttributedString(string: String(localized: "share.readonly.hint"), attributes: [
+                    .font: UIFont.systemFont(ofSize: 10.5), .foregroundColor: muted, .paragraphStyle: noteStyle
+                ])
+                let nH = note.boundingRect(with: CGSize(width: contentWidth, height: .greatestFiniteMagnitude),
+                                           options: [.usesLineFragmentOrigin, .usesFontLeading], context: nil).height
+                note.draw(with: CGRect(x: margin, y: y, width: contentWidth, height: nH),
+                          options: [.usesLineFragmentOrigin, .usesFontLeading], context: nil)
+            }
+
+            drawFooter()
+        }
+
+        let name = PDFExporter.safeFileName(displayName)
+        let url = FileManager.default.temporaryDirectory
+            .appendingPathComponent("\(PDFExporter.safeFileName(person.name))-\(name).pdf")
+        do {
+            try data.write(to: url, options: .atomic)
+            return url
+        } catch {
+            return nil
+        }
+    }
+
     // MARK: 回信解析
 
     /// 解析亲友回传的文本，返回昵称与留言
     static func parseReply(_ raw: String) -> ShareReply? {
         var text = raw.trimmingCharacters(in: .whitespacesAndNewlines)
         // 允许整段复制时带上说明文字
-        guard let range = text.range(of: replyPrefix) else { return nil }
+        guard let range = text.range(of: replyPrefix) else {
+            // 没有回信码：当作微信里直接发来的一段话
+            return parsePlainText(text)
+        }
         text = String(text[range.upperBound...])
         text = text.components(separatedBy: .whitespacesAndNewlines).joined()
 
@@ -544,6 +647,32 @@ enum ShareExporter {
         return ShareReply(name: name?.isEmpty == false ? name! : String(localized: "share.leave.anonymous"),
                           content: content,
                           date: date)
+    }
+
+    /// 普通文本：首行形如「张三：想说的话」时拆出昵称，否则整段当作内容
+    private static func parsePlainText(_ raw: String) -> ShareReply? {
+        let text = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !text.isEmpty, text.count <= 2000 else { return nil }
+
+        let lines = text.split(separator: "\n", maxSplits: 1, omittingEmptySubsequences: false)
+        if let firstLine = lines.first {
+            let head = String(firstLine)
+            if let sep = head.firstIndex(where: { $0 == "：" || $0 == ":" }) {
+                let name = String(head[head.startIndex..<sep]).trimmingCharacters(in: .whitespaces)
+                let restOnLine = String(head[head.index(after: sep)...]).trimmingCharacters(in: .whitespaces)
+                let tail = lines.count > 1 ? String(lines[1]).trimmingCharacters(in: .whitespacesAndNewlines) : ""
+                if !name.isEmpty, name.count <= 12,
+                   !name.contains("。"), !name.contains("，") {
+                    let body = [restOnLine, tail].filter { !$0.isEmpty }.joined(separator: "\n")
+                    if !body.isEmpty {
+                        return ShareReply(name: name, content: body, date: Date())
+                    }
+                }
+            }
+        }
+        return ShareReply(name: String(localized: "share.leave.anonymous"),
+                          content: text,
+                          date: Date())
     }
 
     // MARK: 文本转义

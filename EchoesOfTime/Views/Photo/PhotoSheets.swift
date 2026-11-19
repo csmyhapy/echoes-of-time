@@ -303,9 +303,15 @@ struct PhotoShareSheet: View {
             List {
                 Section {
                     Button {
+                        makePDF()
+                    } label: {
+                        Label("share.option.pdf", systemImage: "doc.text")
+                    }
+
+                    Button {
                         makePage()
                     } label: {
-                        Label("share.option.page", systemImage: "doc.richtext")
+                        Label("share.option.page", systemImage: "safari")
                     }
 
                     Button {
@@ -372,6 +378,19 @@ struct PhotoShareSheet: View {
                 payload = SharePayload(url: url)
             } else {
                 errorMessage = String(localized: "share.error.page")
+            }
+            working = false
+        }
+    }
+
+    private func makePDF() {
+        working = true
+        errorMessage = nil
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+            if let url = ShareExporter.makePhotoPDF(photo: photo, person: person, personID: personID) {
+                payload = SharePayload(url: url)
+            } else {
+                errorMessage = String(localized: "share.error.pdf")
             }
             working = false
         }
