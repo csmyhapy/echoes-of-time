@@ -303,27 +303,7 @@ struct NodeDetailView: View {
                     spacing: 6
                 ) {
                     ForEach(visiblePhotos) { photo in
-                        Button {
-                            selectedPhoto = photo
-                        } label: {
-                            thumbnail(photo)
-                        }
-                        .buttonStyle(.plain)
-                        .contextMenu {
-                            if !isReader {
-                                Button {
-                                    node.coverImageFileName = photo.imageFileName
-                                    try? context.save()
-                                } label: {
-                                    Label("node.action.set.cover", systemImage: "rectangle.badge.checkmark")
-                                }
-                                Divider()
-                                Button("photo.moveLeft") { move(photo, by: -1) }
-                                Button("photo.moveRight") { move(photo, by: 1) }
-                                Button("common.edit.photo") { photoToEdit = photo }
-                                Button("common.delete", role: .destructive) { delete(photo) }
-                            }
-                        }
+                        photoCell(photo)
                     }
                 }
 
@@ -402,6 +382,48 @@ struct NodeDetailView: View {
             }
     }
 
+    // MARK: - 照片单元格（长按拖拽排序）
+
+    @ViewBuilder
+    private func photoCell(_ photo: Photo) -> some View {
+        Button {
+            selectedPhoto = photo
+        } label: {
+            thumbnail(photo)
+        }
+        .buttonStyle(.plain)
+        .contextMenu {
+            if !isReader {
+                Button {
+                    node.coverImageFileName = photo.imageFileName
+                    try? context.save()
+                } label: {
+                    Label("node.action.set.cover", systemImage: "rectangle.badge.checkmark")
+                }
+                Divider()
+                Button("photo.moveLeft") { move(photo, by: -1) }
+                Button("photo.moveRight") { move(photo, by: 1) }
+                Button("common.edit.photo") { photoToEdit = photo }
+                Button("common.delete", role: .destructive) { delete(photo) }
+            }
+        }
+        .onDrag {
+            guard !isReader else { return NSItemProvider() }
+            return NSItemProvider(object: photo.id.uuidString as NSString)
+        }
+        .onDrop(of: [.text], isTargeted: nil) { providers in
+            guard !isReader, let item = providers.first else { return false }
+            item.loadObject(ofClass: NSString.self) { value, _ in
+                DispatchQueue.main.async {
+                    guard let s = value as? String,
+                          let fromID = UUID(uuidString: s), fromID != photo.id else { return }
+                    reorder(from: fromID, to: photo.id)
+                }
+            }
+            return true
+        }
+    }
+
     // MARK: - 照片操作
 
     private func addPhotos(_ items: [PhotosPickerItem]) async {
@@ -443,6 +465,17 @@ struct NodeDetailView: View {
         let tmp = photo.sortOrder
         photo.sortOrder = other.sortOrder
         other.sortOrder = tmp
+        try? context.save()
+    }
+
+    /// 长按拖拽：把 fromID 照片插到 toID 照片位置，并重排连续序号
+    private func reorder(from fromID: UUID, to toID: UUID) {
+        var arr = photos
+        guard let fromIdx = arr.firstIndex(where: { $0.id == fromID }),
+              let toIdx = arr.firstIndex(where: { $0.id == toID }) else { return }
+        let moved = arr.remove(at: fromIdx)
+        arr.insert(moved, at: toIdx)
+        for (i, p) in arr.enumerated() { p.sortOrder = i }
         try? context.save()
     }
 }
