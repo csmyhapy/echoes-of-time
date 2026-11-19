@@ -127,10 +127,10 @@ enum ArchiveImporter {
         let dto = try JSONDecoder.archive.decode(PersonArchiveDTO.self, from: jsonData)
 
         let person = Person(
-            name: dto.name.isEmpty ? "Untitled" : dto.name,
-            birthYear: dto.birthYear,
-            summary: dto.summary,
-            story: dto.story
+            name: dto.name.isEmpty ? "Untitled" : ArchiveText.inline(dto.name),
+            birthYear: ArchiveText.inline(dto.birthYear),
+            summary: ArchiveText.inline(dto.summary),
+            story: ArchiveText.clean(dto.story)
         )
         context.insert(person)
 
@@ -163,10 +163,10 @@ enum ArchiveImporter {
 
         for nodeDTO in dto.nodes {
             let node = Node(
-                name: nodeDTO.name,
-                yearRange: nodeDTO.yearRange,
-                summary: nodeDTO.summary,
-                story: nodeDTO.story,
+                name: ArchiveText.inline(nodeDTO.name),
+                yearRange: ArchiveText.inline(nodeDTO.yearRange),
+                summary: ArchiveText.inline(nodeDTO.summary),
+                story: ArchiveText.clean(nodeDTO.story),
                 coverImageFileName: nodeDTO.coverImageFileName.flatMap { writtenMedia.contains($0) ? $0 : nil },
                 sortOrder: nodeDTO.sortOrder,
                 isVisible: nodeDTO.isVisible
@@ -184,8 +184,8 @@ enum ArchiveImporter {
             let photo = Photo(
                 imageFileName: photoDTO.imageFileName,
                 audioFileName: photoDTO.audioFileName.flatMap { writtenMedia.contains($0) ? $0 : nil },
-                caption: photoDTO.caption,
-                story: photoDTO.story,
+                caption: ArchiveText.inline(photoDTO.caption),
+                story: ArchiveText.clean(photoDTO.story),
                 tags: "",
                 sortOrder: photoDTO.sortOrder
             )
@@ -221,8 +221,8 @@ enum ArchiveImporter {
         // 留言
         for messageDTO in dto.messages where !messageDTO.content.isEmpty {
             let message = Message(
-                userName: messageDTO.userName,
-                content: messageDTO.content,
+                userName: ArchiveText.inline(messageDTO.userName),
+                content: ArchiveText.clean(messageDTO.content),
                 role: messageDTO.role,
                 createdAt: messageDTO.createdAt
             )

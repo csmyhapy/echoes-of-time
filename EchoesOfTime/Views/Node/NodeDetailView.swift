@@ -48,13 +48,13 @@ struct NodeDetailView: View {
                 voiceSection
 
                 if showsSummary {
-                    Text(node.summary)
+                    Text(ArchiveText.inline(node.summary))
                         .font(.system(size: isReader ? 24 : 16))
                         .lineSpacing(6)
                 }
 
                 if !node.story.isEmpty {
-                    Text(node.story)
+                    Text(ArchiveText.paragraphs(node.story))
                         .font(.system(size: isReader ? 24 : 16))
                         .lineSpacing(6)
                 }

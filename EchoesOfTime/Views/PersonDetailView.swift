@@ -10,6 +10,7 @@ import SwiftData
 
 struct PersonDetailView: View {
     @Environment(\.modelContext) private var context
+    @Environment(AppState.self) private var appState
 
     let person: Person
     var isReader: Bool = false
@@ -21,6 +22,7 @@ struct PersonDetailView: View {
     @State private var exportItem: ExportItem?
     @State private var showExportError = false
     @State private var storyExpanded = false
+    @State private var timelineExpanded = false
     @AppStorage("bgmEnabled") private var bgmEnabled = true
 
     // MARK: - 背景音乐开关（仅人物页有音乐）
@@ -165,7 +167,7 @@ struct PersonDetailView: View {
                     .font(.system(size: isReader ? 22 : 15))
                     .foregroundStyle(.secondary)
             } else {
-                ForEach(sortedNodes) { node in
+                ForEach(visibleNodes) { node in
                     NavigationLink {
                         NodeDetailView(node: node, isReader: isReader)
                     } label: {
@@ -179,8 +181,38 @@ struct PersonDetailView: View {
                         }
                     }
                 }
+
+                if sortedNodes.count > 3 {
+                    Button {
+                        withAnimation(.easeInOut(duration: 0.2)) { timelineExpanded.toggle() }
+                    } label: {
+                        HStack(spacing: 4) {
+                            Text(timelineMoreText)
+                            Image(systemName: timelineExpanded ? "chevron.up" : "chevron.down")
+                                .font(.system(size: 12, weight: .semibold))
+                        }
+                        .font(.system(size: isReader ? 18 : 14, weight: .medium))
+                        .foregroundStyle(.brown)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 8)
+                    }
+                    .buttonStyle(.borderless)
+                }
             }
         }
+    }
+
+    /// 时间线默认只显示前 3 章，展开看全部
+    private var visibleNodes: [Node] {
+        timelineExpanded ? sortedNodes : Array(sortedNodes.prefix(3))
+    }
+
+    private var timelineMoreText: String {
+        let hidden = max(0, sortedNodes.count - 3)
+        if appState.language == .zhHans {
+            return timelineExpanded ? "收起" : "展开全部 \(sortedNodes.count) 个章节（还有 \(hidden) 个）"
+        }
+        return timelineExpanded ? "Show less" : "Show all \(sortedNodes.count) chapters"
     }
 
     // MARK: - 人生故事（折叠）
@@ -190,7 +222,7 @@ struct PersonDetailView: View {
             Text("person.section.story")
                 .font(.system(size: isReader ? 26 : 20, weight: .semibold))
 
-            Text(person.story)
+            Text(ArchiveText.paragraphs(person.story))
                 .font(.system(size: isReader ? 24 : 16))
                 .lineSpacing(6)
                 .lineLimit((isReader || storyExpanded) ? nil : 4)
@@ -372,7 +404,7 @@ struct NodeCard: View {
             }
 
             if !node.summary.isEmpty {
-                Text(node.summary)
+                Text(ArchiveText.inline(node.summary))
                     .font(.system(size: large ? 22 : 15))
                     .foregroundStyle(.secondary)
                     .lineSpacing(5)

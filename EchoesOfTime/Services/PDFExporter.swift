@@ -42,7 +42,7 @@ enum PDFExporter {
                 drawCover(person, pageRect: pageRect, margin: margin, context: context)
 
                 // 2. 简介与人生故事
-                if !person.summary.isEmpty || !person.story.isEmpty {
+                if !person.summary.isEmpty || !ArchiveText.paragraphs(person.story).isEmpty {
                     beginPage()
                     var y = margin
                     y = drawText("A Life Remembered",
@@ -55,8 +55,8 @@ enum PDFExporter {
                                      color: .darkGray, x: margin, y: y,
                                      width: contentWidth, lineSpacing: 4) + 16
                     }
-                    if !person.story.isEmpty {
-                        _ = drawText(person.story,
+                    if !ArchiveText.paragraphs(person.story).isEmpty {
+                        _ = drawText(ArchiveText.paragraphs(person.story),
                                      font: .systemFont(ofSize: 13),
                                      color: .black, x: margin, y: y,
                                      width: contentWidth, lineSpacing: 6)
@@ -84,8 +84,8 @@ enum PDFExporter {
                                      color: .darkGray, x: margin, y: y,
                                      width: contentWidth, lineSpacing: 4) + 10
                     }
-                    if !node.story.isEmpty {
-                        _ = drawText(node.story,
+                    if !ArchiveText.paragraphs(node.story).isEmpty {
+                        _ = drawText(ArchiveText.paragraphs(node.story),
                                      font: .systemFont(ofSize: 12),
                                      color: .black, x: margin, y: y,
                                      width: contentWidth, lineSpacing: 5)
@@ -181,8 +181,8 @@ enum PDFExporter {
                          color: .black, x: margin, y: y,
                          width: contentWidth, lineSpacing: 2) + 6
         }
-        if !photo.story.isEmpty {
-            _ = drawText(photo.story,
+        if !ArchiveText.clean(photo.story).isEmpty {
+            _ = drawText(ArchiveText.clean(photo.story),
                          font: .systemFont(ofSize: 12),
                          color: .darkGray, x: margin, y: y,
                          width: contentWidth, lineSpacing: 5)

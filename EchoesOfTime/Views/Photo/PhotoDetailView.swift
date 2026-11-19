@@ -122,12 +122,12 @@ struct PhotoLightboxView: View {
     private func bottomBar(_ p: Photo) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             if !p.caption.isEmpty {
-                Text(p.caption)
+                Text(ArchiveText.inline(p.caption))
                     .font(.headline)
                     .foregroundStyle(.white)
             }
             if !p.story.isEmpty {
-                Text(p.story)
+                Text(ArchiveText.inline(p.story))
                     .font(.subheadline)
                     .foregroundStyle(.white.opacity(0.85))
                     .lineLimit(5)
