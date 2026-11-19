@@ -142,3 +142,7 @@
 "settings.developer.note" = "解锁本设备的人物档案数量限制。仅供开发者本人使用。";
 "settings.developer.hint" = "连点版本号 5 次可解锁开发者模式。";
 "settings.developer.unlocked" = "已解锁开发者模式。";
+
+"settings.import.archive" = "导入档案包";
+"settings.import.note" = "选择从旧网站或另一台设备导出的 .echosarchive.zip 文件。";
+"settings.import.result" = "导入结果";

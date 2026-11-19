@@ -142,3 +142,7 @@
 "settings.developer.note" = "Unlocks unlimited archives on this device. Intended for the developer only.";
 "settings.developer.hint" = "Tap the version number five times to unlock developer mode.";
 "settings.developer.unlocked" = "Developer mode unlocked.";
+
+"settings.import.archive" = "Import Archive Package";
+"settings.import.note" = "Choose an .echosarchive.zip exported from the old site or another device.";
+"settings.import.result" = "Import Result";

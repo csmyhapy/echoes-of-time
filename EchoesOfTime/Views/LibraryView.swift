@@ -51,8 +51,19 @@ struct LibraryView: View {
 
                     if realPersons.isEmpty {
                         createPrompt
-                    } else {
+                    } else if realPersons.count == 1 {
                         actionButtons
+                    } else if appState.isDeveloper {
+                        // 多档案（开发者）：新建入口单独保留，其余操作在各档案详情页内
+                        Button {
+                            showingNewPerson = true
+                        } label: {
+                            Label("library.create.person", systemImage: "person.badge.plus")
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 13)
+                        }
+                        .buttonStyle(.bordered)
+                        .tint(.brown)
                     }
 
                     if !demoPersons.isEmpty {

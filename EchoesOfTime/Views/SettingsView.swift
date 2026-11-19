@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftData
+import UniformTypeIdentifiers
 
 struct SettingsView: View {
     @Environment(AppState.self) private var appState
@@ -18,6 +19,10 @@ struct SettingsView: View {
     @State private var showLimitAlert = false
     @State private var showUnlockAlert = false
     @State private var versionTapCount = 0
+    @State private var showImporter = false
+    @State private var importReport: String?
+    @State private var showImportReport = false
+    @State private var isImporting = false
 
     var body: some View {
         @Bindable var state = appState
@@ -78,6 +83,23 @@ struct SettingsView: View {
             if appState.isDeveloper {
                 Section {
                     Toggle("settings.developer.on", isOn: $state.isDeveloper)
+
+                    Button {
+                        showImporter = true
+                    } label: {
+                        HStack {
+                            Label("settings.import.archive", systemImage: "square.and.arrow.down")
+                            Spacer()
+                            if isImporting {
+                                ProgressView()
+                            }
+                        }
+                    }
+                    .disabled(isImporting)
+
+                    Text("settings.import.note")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
                 } header: {
                     Text("settings.section.developer.mode")
                 } footer: {
@@ -110,6 +132,49 @@ struct SettingsView: View {
         }
         .alert("settings.developer.unlocked", isPresented: $showUnlockAlert) {
             Button("common.save", role: .cancel) {}
+        }
+        .fileImporter(
+            isPresented: $showImporter,
+            allowedContentTypes: [.zip],
+            allowsMultipleSelection: true
+        ) { result in
+            handleImport(result)
+        }
+        .alert("settings.import.result", isPresented: $showImportReport) {
+            Button("common.save", role: .cancel) {}
+        } message: {
+            Text(importReport ?? "")
+        }
+    }
+
+    // MARK: - 导入档案包（开发者 / 迁移用）
+
+    private func handleImport(_ result: Result<[URL], Error>) {
+        switch result {
+        case .success(let urls):
+            guard !urls.isEmpty else { return }
+            isImporting = true
+            var lines: [String] = []
+            for url in urls {
+                do {
+                    let outcome = try ArchiveImporter.importArchive(at: url, context: context)
+                    var line = "\(outcome.personName) · \(outcome.nodeCount) chapters · \(outcome.photoCount) photos"
+                    if outcome.skippedPhotos > 0 {
+                        line += " · \(outcome.skippedPhotos) missing"
+                    }
+                    lines.append(line)
+                } catch {
+                    lines.append("\(url.lastPathComponent): \(error.localizedDescription)")
+                }
+            }
+            isImporting = false
+            importReport = lines.joined(separator: "\n")
+            showImportReport = true
+
+        case .failure(let error):
+            isImporting = false
+            importReport = error.localizedDescription
+            showImportReport = true
         }
     }
 

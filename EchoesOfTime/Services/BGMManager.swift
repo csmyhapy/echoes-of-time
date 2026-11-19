@@ -21,8 +21,8 @@ final class BGMManager {
 
     var isPlaying: Bool { player?.isPlaying ?? false }
 
-    /// 背景音乐音量（原 0.30 的 60%）
-    static let defaultVolume: Float = 0.18
+    /// 背景音乐音量（0.18 的 60%，约为原始 0.30 的 36%，只作氛围不打扰）
+    static let defaultVolume: Float = 0.108
 
     var isEnabled: Bool {
         (UserDefaults.standard.object(forKey: "bgmEnabled") as? Bool) ?? true
@@ -40,7 +40,7 @@ final class BGMManager {
         do {
             let newPlayer = try AVAudioPlayer(contentsOf: url)
             newPlayer.numberOfLoops = -1      // 循环
-            newPlayer.volume = Self.defaultVolume   // 0.18（原 0.30 的 60%，轻声陪伴不打扰）
+            newPlayer.volume = Self.defaultVolume   // 0.108（0.18 的 60%）
             newPlayer.prepareToPlay()
             newPlayer.play()
             player = newPlayer
