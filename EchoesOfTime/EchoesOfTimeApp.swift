@@ -149,6 +149,41 @@ struct RootView: View {
             }
         }
 
+        if args.contains("debug-test-reply") {
+            let payload = #"{"v":1,"person":"戴老师的前半生","photo":"AI生成的小时候照片","name":"李阿姨","text":"看到这张照片就想起你妈妈年轻的时候，真好。","date":"2026-11-18"}"#
+            let b64 = Data(payload.utf8).base64EncodedString()
+            let raw = ShareExporter.replyPrefix + b64
+            let docs = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+            var out = "no parse"
+            if let r = ShareExporter.parseReply(raw) {
+                out = "name=\(r.name) | content=\(r.content) | date=\(r.date)"
+            }
+            // 再测一次「微信转发时带说明文字」的情况
+            var out2 = "no parse"
+            if let r = ShareExporter.parseReply("转发给你的回信：\n" + raw + "\n谢谢！") {
+                out2 = "name=\(r.name) | content=\(r.content)"
+            }
+            try? (out + "\n---\n" + out2).write(to: docs.appendingPathComponent("debug-reply.txt"),
+                                                  atomically: true, encoding: .utf8)
+        }
+
+        if args.contains("debug-share") {
+            let persons = (try? context.fetch(FetchDescriptor<Person>())) ?? []
+            if let person = persons.first(where: { !$0.isDemo }),
+               let photo = person.photos.sorted(by: { $0.sortOrder < $1.sortOrder }).first {
+                let docs = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+                if let page = ShareExporter.makePage(photo: photo, person: person, personID: person.id) {
+                    try? FileManager.default.removeItem(at: docs.appendingPathComponent("debug-share.html"))
+                    try? FileManager.default.copyItem(at: page, to: docs.appendingPathComponent("debug-share.html"))
+                }
+                if let card = ShareExporter.makeCard(photo: photo, person: person, personID: person.id),
+                   let cardURL = ShareExporter.writeCard(card, person: person, caption: photo.caption) {
+                    try? FileManager.default.removeItem(at: docs.appendingPathComponent("debug-card.jpg"))
+                    try? FileManager.default.copyItem(at: cardURL, to: docs.appendingPathComponent("debug-card.jpg"))
+                }
+            }
+        }
+
         if args.contains("debug-set-bgm") {
             let persons = (try? context.fetch(FetchDescriptor<Person>())) ?? []
             if let person = persons.first(where: { !$0.isDemo }) {

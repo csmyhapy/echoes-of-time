@@ -20,6 +20,7 @@ struct PhotoLightboxView: View {
     @State private var showRecorder = false
     @State private var showMessages = false
     @State private var showEdit = false
+    @State private var showShare = false
     @State private var storyExpanded = false
     @State private var narrationTotal: Double = 0
     @Environment(\.dismiss) private var dismiss
@@ -84,6 +85,11 @@ struct PhotoLightboxView: View {
                 PhotoEditSheet(photo: p, person: person)
             }
         }
+        .sheet(isPresented: $showShare) {
+            if let person, let p = photo {
+                PhotoShareSheet(photo: p, person: person, personID: personID)
+            }
+        }
         .sheet(isPresented: $showRecorder) {
             RecorderSheet(personID: personID, titleKey: "recorder.photo.title") { name, _ in
                 guard let p = photo else { return }
@@ -121,6 +127,11 @@ struct PhotoLightboxView: View {
                     Image(systemName: "bubble.left.and.bubble.right")
                 }
                 .accessibilityLabel(Text("photo.messages"))
+
+                Button { showShare = true } label: {
+                    Image(systemName: "square.and.arrow.up")
+                }
+                .accessibilityLabel(Text("share.title"))
             }
 
             Button {

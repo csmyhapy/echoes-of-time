@@ -281,3 +281,201 @@ struct PhotoOrderSheet: View {
         }
     }
 }
+
+// MARK: - 照片分享（网页 / 长图 / 导入回信）
+
+/// 分享面板：把这一张照片做成可以发给亲友的东西
+struct PhotoShareSheet: View {
+    let photo: Photo
+    let person: Person
+    let personID: UUID
+
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var context
+
+    @State private var payload: SharePayload?
+    @State private var showImport = false
+    @State private var working = false
+    @State private var errorMessage: String?
+
+    var body: some View {
+        NavigationStack {
+            List {
+                Section {
+                    Button {
+                        makePage()
+                    } label: {
+                        Label("share.option.page", systemImage: "doc.richtext")
+                    }
+
+                    Button {
+                        makeCard()
+                    } label: {
+                        Label("share.option.card", systemImage: "photo.on.rectangle.angled")
+                    }
+                } header: {
+                    Text("share.section.send")
+                } footer: {
+                    Text("share.send.footer")
+                }
+
+                Section {
+                    Button {
+                        showImport = true
+                    } label: {
+                        Label("share.option.import", systemImage: "tray.and.arrow.down")
+                    }
+                } footer: {
+                    Text("share.import.footer")
+                }
+
+                if working {
+                    Section {
+                        HStack(spacing: 10) {
+                            ProgressView()
+                            Text("share.working")
+                                .font(.footnote)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                }
+
+                if let errorMessage {
+                    Section {
+                        Text(errorMessage)
+                            .font(.footnote)
+                            .foregroundStyle(.red)
+                    }
+                }
+            }
+            .navigationTitle("share.title")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("common.close") { dismiss() }
+                }
+            }
+            .sheet(item: $payload) { item in
+                ActivityView(url: item.url)
+            }
+            .sheet(isPresented: $showImport) {
+                PhotoReplyImportSheet(photo: photo, person: person)
+            }
+        }
+    }
+
+    private func makePage() {
+        working = true
+        errorMessage = nil
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+            if let url = ShareExporter.makePage(photo: photo, person: person, personID: personID) {
+                payload = SharePayload(url: url)
+            } else {
+                errorMessage = String(localized: "share.error.page")
+            }
+            working = false
+        }
+    }
+
+    private func makeCard() {
+        working = true
+        errorMessage = nil
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+            if let img = ShareExporter.makeCard(photo: photo, person: person, personID: personID),
+               let url = ShareExporter.writeCard(img, person: person, caption: photo.caption) {
+                payload = SharePayload(url: url)
+            } else {
+                errorMessage = String(localized: "share.error.card")
+            }
+            working = false
+        }
+    }
+}
+
+/// 系统分享用的载荷
+struct SharePayload: Identifiable {
+    let id = UUID()
+    let url: URL
+}
+
+/// 粘贴亲友回信 → 存成这张照片的留言
+struct PhotoReplyImportSheet: View {
+    let photo: Photo
+    let person: Person
+
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var context
+
+    @State private var raw = ""
+    @State private var saved = false
+
+    private var parsed: ShareReply? {
+        ShareExporter.parseReply(raw)
+    }
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section {
+                    TextEditor(text: $raw)
+                        .frame(minHeight: 130)
+                        .font(.system(size: 14, design: .monospaced))
+                } header: {
+                    Text("share.import.field")
+                } footer: {
+                    Text("share.import.hint")
+                }
+
+                if let reply = parsed {
+                    Section {
+                        HStack(spacing: 8) {
+                            Image(systemName: "person.crop.circle")
+                                .foregroundStyle(.brown)
+                            Text(reply.name)
+                                .font(.system(size: 15, weight: .semibold))
+                        }
+                        Text(reply.content)
+                            .font(.system(size: 15))
+                            .lineSpacing(4)
+                            .fixedSize(horizontal: false, vertical: true)
+                    } header: {
+                        Text("share.import.preview")
+                    }
+                } else if !raw.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    Section {
+                        Label("share.import.invalid", systemImage: "exclamationmark.triangle")
+                            .font(.footnote)
+                            .foregroundStyle(.orange)
+                    }
+                }
+            }
+            .navigationTitle("share.import.title")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("common.cancel") { dismiss() }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("common.save") { save() }
+                        .disabled(parsed == nil)
+                }
+            }
+        }
+    }
+
+    private func save() {
+        guard let reply = parsed else { return }
+        let message = Message(
+            userName: reply.name,
+            content: reply.content,
+            role: "visitor",
+            isDeleted: false,
+            createdAt: reply.date
+        )
+        message.photo = photo
+        message.person = person
+        context.insert(message)
+        try? context.save()
+        dismiss()
+    }
+}
