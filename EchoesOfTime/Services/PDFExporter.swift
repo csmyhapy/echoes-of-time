@@ -469,13 +469,16 @@ enum ShareExporter {
         let headText = [
             String(format: String(localized: "share.head.p1"), person.name),
             String(localized: "share.head.p2")
-        ].joined(separator: "\n\n")
+        ].joined(separator: "\n")          // 段间不空行，靠段间距区分
         let sloganText = String(localized: "share.brand.slogan")
 
-        func measured(_ text: String, _ font: UIFont, _ width: CGFloat, spacing: CGFloat) -> CGFloat {
+        func measured(_ text: String, _ font: UIFont, _ width: CGFloat, spacing: CGFloat,
+                      paraSpacing: CGFloat = 0, indent: CGFloat = 0) -> CGFloat {
             guard !text.isEmpty else { return 0 }
             let para = NSMutableParagraphStyle()
             para.lineSpacing = spacing
+            para.paragraphSpacing = paraSpacing
+            para.firstLineHeadIndent = indent
             let attr = NSAttributedString(string: text, attributes: [.font: font, .paragraphStyle: para])
             return attr.boundingRect(with: CGSize(width: width, height: .greatestFiniteMagnitude),
                                      options: [.usesLineFragmentOrigin, .usesFontLeading], context: nil).height
@@ -486,7 +489,9 @@ enum ShareExporter {
         let ownerH = measured(ownerText, ownerFont, contentWidth, spacing: 0)
         let storyH = measured(storyTrim, storyFont, contentWidth, spacing: 10)
         let headTitleH = measured(String(localized: "share.head.title"), headTitleFont, contentWidth, spacing: 0)
-        let headH = measured(headText, headFont, contentWidth, spacing: 14)
+        // 行距 10（≈1.33em），段间距取其 1.3 倍；首行缩进 2 字符
+        let headH = measured(headText, headFont, contentWidth, spacing: 10,
+                             paraSpacing: 14, indent: headFont.pointSize * 2)
         let sloganH = measured(sloganText, sloganFont, contentWidth, spacing: 4)
 
         let topPad: CGFloat = 66
@@ -536,7 +541,9 @@ enum ShareExporter {
             y += 26
 
             let headPara = NSMutableParagraphStyle()
-            headPara.lineSpacing = 14
+            headPara.lineSpacing = 10
+            headPara.paragraphSpacing = 14                                  // 段间距 ≈ 行间距 × 1.3
+            headPara.firstLineHeadIndent = headFont.pointSize * 2           // 段首空两格
             let headAttr = NSAttributedString(string: headText, attributes: [
                 .font: headFont, .foregroundColor: ink, .paragraphStyle: headPara
             ])
