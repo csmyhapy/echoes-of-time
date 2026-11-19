@@ -193,6 +193,10 @@ struct RootView: View {
                     try? FileManager.default.removeItem(at: docs.appendingPathComponent("debug-page.pdf"))
                     try? FileManager.default.copyItem(at: pdf, to: docs.appendingPathComponent("debug-page.pdf"))
                 }
+                if let noteImg = ShareExporter.makeNoteCard(person: person),
+                   let data = noteImg.jpegData(compressionQuality: 0.9) {
+                    try? data.write(to: docs.appendingPathComponent("debug-note.jpg"))
+                }
             }
         }
 

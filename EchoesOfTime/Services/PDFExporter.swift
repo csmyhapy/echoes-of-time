@@ -341,6 +341,106 @@ enum ShareExporter {
 
     // MARK: 纪念长图
 
+
+    private static func bodyAttrDraw(_ text: String, _ font: UIFont, _ color: UIColor,
+                                     _ para: NSMutableParagraphStyle, _ x: CGFloat, _ y: CGFloat,
+                                     _ w: CGFloat, _ h: CGFloat) {
+        let attr = NSAttributedString(string: text, attributes: [
+            .font: font, .foregroundColor: color, .paragraphStyle: para
+        ])
+        attr.draw(with: CGRect(x: x, y: y, width: w, height: h),
+                  options: [.usesLineFragmentOrigin, .usesFontLeading], context: nil)
+    }
+
+    /// 纯文字卡：微信的系统分享只接收图片、会丢弃文字，
+    /// 所以把这段说明单独排成一张竖版卡，和照片卡一起发出去，两条都能进对话。
+    static func makeNoteCard(person: Person) -> UIImage? {
+        let width: CGFloat = 1080
+        let pad: CGFloat = 104
+        let contentWidth = width - pad * 2
+
+        let titleFont = UIFont.systemFont(ofSize: 40, weight: .semibold)
+        let bodyFont = UIFont.systemFont(ofSize: 35)
+        let brandFont = UIFont.systemFont(ofSize: 25)
+        let sloganFont = UIFont.systemFont(ofSize: 22)
+
+        let titleText = String(localized: "share.head.title")
+        let bodyText = [
+            String(format: String(localized: "share.head.p1"), person.name),
+            String(localized: "share.head.p2")
+        ].joined(separator: "\n\n")
+        let brandText = String(localized: "share.footer")
+        let sloganText = String(localized: "share.brand.slogan")
+
+        func measured(_ text: String, _ font: UIFont, spacing: CGFloat) -> CGFloat {
+            let para = NSMutableParagraphStyle()
+            para.lineSpacing = spacing
+            let attr = NSAttributedString(string: text, attributes: [.font: font, .paragraphStyle: para])
+            return attr.boundingRect(with: CGSize(width: contentWidth, height: .greatestFiniteMagnitude),
+                                     options: [.usesLineFragmentOrigin, .usesFontLeading], context: nil).height
+        }
+
+        let titleH = measured(titleText, titleFont, spacing: 0)
+        let bodyH = measured(bodyText, bodyFont, spacing: 18)
+        let brandH = measured(brandText, brandFont, spacing: 0)
+        let sloganH = measured(sloganText, sloganFont, spacing: 4)
+
+        // 内容块整体高度（标题—细线—正文—品牌两行）
+        let contentH = titleH + 34 + 44 + bodyH + 62 + brandH + 8 + sloganH
+        // 竖版 4:5，微信里缩略大、字更大；内容少时上下留白，内容多时按需加长
+        let totalH = max(contentH + 200, width * 1.25)
+        let startY = (totalH - contentH) / 2
+
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1
+        format.opaque = true
+        let renderer = UIGraphicsImageRenderer(size: CGSize(width: width, height: totalH), format: format)
+        return renderer.image { ctx in
+            UIColor(red: 0.984, green: 0.969, blue: 0.941, alpha: 1).setFill()
+            ctx.fill(CGRect(x: 0, y: 0, width: width, height: totalH))
+
+            let brown = UIColor(red: 0.42, green: 0.29, blue: 0.16, alpha: 1)
+            let ink = UIColor(red: 0.23, green: 0.20, blue: 0.16, alpha: 1)
+            let muted = UIColor(red: 0.54, green: 0.48, blue: 0.41, alpha: 1)
+            let hairline = UIColor(red: 0.89, green: 0.85, blue: 0.78, alpha: 1)
+
+            var y: CGFloat = startY
+
+            let titleAttr = NSAttributedString(string: titleText, attributes: [
+                .font: titleFont, .foregroundColor: brown, .kern: 3
+            ])
+            titleAttr.draw(at: CGPoint(x: pad, y: y))
+            y += titleH + 34 - 16
+
+            let rule = UIBezierPath()
+            rule.move(to: CGPoint(x: pad, y: y))
+            rule.addLine(to: CGPoint(x: width - pad, y: y))
+            hairline.setStroke()
+            rule.lineWidth = 1.5
+            rule.stroke()
+            y += 44
+
+            let bodyPara = NSMutableParagraphStyle()
+            bodyPara.lineSpacing = 18
+            bodyAttrDraw(bodyText, bodyFont, ink, bodyPara, pad, y, contentWidth, bodyH)
+            y += bodyH + 62
+
+            let brandAttr = NSAttributedString(string: brandText, attributes: [
+                .font: brandFont, .foregroundColor: brown, .kern: 1.2
+            ])
+            brandAttr.draw(at: CGPoint(x: pad, y: y))
+            y += brandH + 8
+
+            let sloganPara = NSMutableParagraphStyle()
+            sloganPara.lineSpacing = 4
+            let sloganAttr = NSAttributedString(string: sloganText, attributes: [
+                .font: sloganFont, .foregroundColor: muted, .paragraphStyle: sloganPara
+            ])
+            sloganAttr.draw(with: CGRect(x: pad, y: y, width: contentWidth, height: sloganH),
+                            options: [.usesLineFragmentOrigin, .usesFontLeading], context: nil)
+        }
+    }
+
     static func makeCard(photo: Photo, person: Person, personID: UUID) -> UIImage? {
         guard let img = MediaStore.loadImage(fileName: photo.imageFileName, personID: personID),
               let jpeg = img.jpegData(compressionQuality: 0.9) else { return nil }

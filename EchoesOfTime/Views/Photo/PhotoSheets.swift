@@ -297,6 +297,7 @@ struct PhotoShareSheet: View {
     @State private var showImport = false
     @State private var working = false
     @State private var errorMessage: String?
+    @State private var copied = false
 
     var body: some View {
         NavigationStack {
@@ -319,6 +320,12 @@ struct PhotoShareSheet: View {
                     } label: {
                         Label("share.option.card", systemImage: "photo.on.rectangle.angled")
                     }
+
+                    Button {
+                        copyNote()
+                    } label: {
+                        Label("share.option.copy", systemImage: "doc.on.clipboard")
+                    }
                 } header: {
                     Text("share.section.send")
                 } footer: {
@@ -333,6 +340,14 @@ struct PhotoShareSheet: View {
                     }
                 } footer: {
                     Text("share.import.footer")
+                }
+
+                if copied {
+                    Section {
+                        Label("share.copied", systemImage: "checkmark.circle")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    }
                 }
 
                 if working {
@@ -396,20 +411,27 @@ struct PhotoShareSheet: View {
         }
     }
 
+    private func copyNote() {
+        let note = [
+            String(localized: "share.head.title"),
+            String(format: String(localized: "share.head.p1"), person.name),
+            String(localized: "share.head.p2")
+        ].joined(separator: "\n\n")
+        UIPasteboard.general.string = note
+        copied = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) { copied = false }
+    }
+
     private func makeCard() {
         working = true
         errorMessage = nil
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
-            if let img = ShareExporter.makeCard(photo: photo, person: person, personID: personID) {
-                // 图片本身不再烧进“为你留下的一张照片”这段说明，
-                // 而是把说明作为文本一起发出去 —— 收信人一眼就知道这是什么。
-                let note = [
-                    String(localized: "share.head.title"),
-                    String(format: String(localized: "share.head.p1"), person.name),
-                    String(localized: "share.head.p2")
-                ].joined(separator: "\n\n")
+            // 微信的系统分享只接收图片、会把文字丢掉，所以分成两张卡：
+            // 第一张是这段说明（文字卡），第二张是照片。两条都会进对话。
+            if let img = ShareExporter.makeCard(photo: photo, person: person, personID: personID),
+               let noteImg = ShareExporter.makeNoteCard(person: person) {
                 _ = ShareExporter.writeCard(img, person: person, caption: photo.caption)
-                payload = SharePayload(items: [note, img])
+                payload = SharePayload(items: [noteImg, img])
             } else {
                 errorMessage = String(localized: "share.error.card")
             }

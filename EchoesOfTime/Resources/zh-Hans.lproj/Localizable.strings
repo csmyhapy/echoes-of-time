@@ -174,7 +174,7 @@
 "share.title" = "分享";
 "share.section.send" = "发送给亲友";
 "share.option.page" = "分享这一页（网页）";
-"share.option.card" = "分享图片（附文字说明）";
+"share.option.card" = "分享图片（说明卡 + 照片卡）";
 "share.send.footer" = "PDF 微信里点开就能看，最稳；网页只显示这一张照片，需要浏览器或 HTML 查看器；长图适合直接发微信。";
 "share.option.import" = "粘贴亲友留言";
 "share.import.footer" = "亲友微信发来的话，粘贴进来就能存成这张照片下的留言。";
@@ -215,3 +215,5 @@
 "share.head.p1" = "这是我的回忆「%@」一生里的一页。家人把它挑出来，特意留给您。";
 "share.head.p2" = "若它让您想起些什么，写在下面就好。发给我，我会将您的回复放在我的回忆里，成为回忆中的一份子。";
 "share.head.p3" = "";
+"share.option.copy" = "复制说明文字";
+"share.copied" = "已复制，可直接粘贴到微信";

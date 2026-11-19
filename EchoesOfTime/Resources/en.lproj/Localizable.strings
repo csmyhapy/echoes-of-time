@@ -174,7 +174,7 @@
 "share.title" = "Share";
 "share.section.send" = "Send to family and friends";
 "share.option.page" = "Share this page (web page)";
-"share.option.card" = "Photo with note";
+"share.option.card" = "Share images (note card + photo card)";
 "share.send.footer" = "PDF opens straight in WeChat and is the safest. The web page shows only this photo and needs a browser or HTML viewer. The card suits direct WeChat sharing.";
 "share.option.import" = "Paste a message from a friend";
 "share.import.footer" = "Paste a message a friend sent you; it is saved under this photo.";
@@ -215,3 +215,5 @@
 "share.head.p1" = "This is a memory of mine — one page from the life of %@. The family picked it out and set it aside for you.";
 "share.head.p2" = "If something comes to mind, write it below and send it to me. I will put your reply into my recollections, so that it becomes part of the memory.";
 "share.head.p3" = "";
+"share.option.copy" = "Copy the note text";
+"share.copied" = "Copied — paste it into WeChat";
