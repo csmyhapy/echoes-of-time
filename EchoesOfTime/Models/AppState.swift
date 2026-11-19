@@ -14,6 +14,7 @@ import Observation
 enum AppLanguage: String, CaseIterable, Identifiable {
     case en = "en"
     case es = "es"
+    case fr = "fr"
     case zhHans = "zh-Hans"
 
     var id: String { rawValue }
@@ -23,6 +24,7 @@ enum AppLanguage: String, CaseIterable, Identifiable {
         case .zhHans: return "中文"
         case .en: return "English"
         case .es: return "Español"
+        case .fr: return "Français"
         }
     }
 
