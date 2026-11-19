@@ -37,8 +37,14 @@ struct PersonDetailView: View {
             }
         } label: {
             Image(systemName: bgmEnabled ? "speaker.wave.2.fill" : "speaker.slash.fill")
-                .font(.system(size: 15, weight: .medium))
-                .foregroundStyle(bgmEnabled ? Color.brown : Color.secondary)
+                .font(.system(size: 18, weight: .medium))
+                .foregroundStyle(.white)
+                .frame(width: 48, height: 48)
+                .background(
+                    Circle().fill(bgmEnabled ? Color.brown : Color.gray.opacity(0.8))
+                )
+                .overlay(Circle().stroke(.white.opacity(0.25), lineWidth: 0.5))
+                .shadow(color: .black.opacity(0.2), radius: 8, y: 3)
         }
         .accessibilityLabel(Text(bgmEnabled ? "bgm.off" : "bgm.on"))
     }
@@ -67,15 +73,17 @@ struct PersonDetailView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 22) {
-                header
-
-                timelineSection
-
-                voiceSection
+                coverBlock
+                infoBlock
+                summaryBlock
 
                 if !person.story.isEmpty {
                     storySection
                 }
+
+                voiceSection
+
+                timelineSection
 
                 MessageSection(person: person, isReader: isReader)
             }
@@ -334,7 +342,7 @@ struct PersonDetailView: View {
         try? context.save()
     }
 
-    private var header: some View {
+    private var coverBlock: some View {
         VStack(alignment: .leading, spacing: 12) {
             Group {
                 if let img = MediaStore.loadImage(fileName: person.resolvedCoverFileName, personID: person.id) {
@@ -356,8 +364,11 @@ struct PersonDetailView: View {
             .frame(height: isReader ? 260 : 200)
             .clipped()
             .clipShape(RoundedRectangle(cornerRadius: 16))
+        }
+    }
 
-            VStack(alignment: .leading, spacing: 8) {
+    private var infoBlock: some View {
+        VStack(alignment: .leading, spacing: 8) {
                 Text(person.name)
                     .font(.system(size: isReader ? 32 : 26, weight: .bold))
 
@@ -370,8 +381,11 @@ struct PersonDetailView: View {
                     Spacer()
                     statsRow
                 }
-            }
+        }
+    }
 
+    private var summaryBlock: some View {
+        Group {
             if !person.summary.isEmpty {
                 Text(ArchiveText.inline(person.summary))
                     .font(.system(size: isReader ? 22 : 15))

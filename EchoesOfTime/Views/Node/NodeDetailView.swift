@@ -41,60 +41,60 @@ struct NodeDetailView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
+                // 1 节点图片
                 cover
 
+                // 2 时间段
                 if !node.yearRange.isEmpty {
                     Text(node.yearRange)
                         .font(.system(size: isReader ? 22 : 15))
                         .foregroundStyle(.brown)
                 }
 
-                photoSection
+                // 3 节点故事
+                if !node.story.isEmpty {
+                    VStack(alignment: .leading, spacing: 8) {
+                        ArchiveParagraphView(
+                            paragraphs: storyBody.paragraphs,
+                            expanded: isReader || storyExpanded,
+                            fontSize: isReader ? 24 : 16,
+                            lineSpacing: 6
+                        )
 
+                        if !isReader && storyBody.paragraphs.count > 1 {
+                            Button(storyExpanded ? "person.story.collapse" : "person.story.expand") {
+                                withAnimation(.easeInOut(duration: 0.2)) { storyExpanded.toggle() }
+                            }
+                            .font(.system(size: 15, weight: .medium))
+                            .foregroundStyle(.brown)
+                            .buttonStyle(.borderless)
+                        }
+
+                        if storyBody.hasSignature && (isReader || storyExpanded) {
+                            VStack(alignment: .trailing, spacing: 4) {
+                                if !storyBody.separator.isEmpty {
+                                    Text(storyBody.separator)
+                                        .font(.system(size: isReader ? 15 : 12))
+                                        .foregroundStyle(.secondary)
+                                }
+                                Text(storyBody.signature)
+                                    .font(.system(size: isReader ? 18 : 14))
+                                    .foregroundStyle(.secondary)
+                                    .multilineTextAlignment(.trailing)
+                            }
+                            .frame(maxWidth: .infinity, alignment: .trailing)
+                            .padding(.top, 2)
+                        }
+                    }
+                }
+
+                // 4 节点旁白
                 voiceSection
 
-                if showsSummary {
-                    Text(ArchiveText.inline(node.summary))
-                        .font(.system(size: isReader ? 24 : 16))
-                        .lineSpacing(6)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .padding(.leading, isReader ? 44 : 32)
-                }
+                // 5 节点照片
+                photoSection
 
-                if !node.story.isEmpty {
-                    ArchiveParagraphView(
-                        paragraphs: storyBody.paragraphs,
-                        expanded: isReader || storyExpanded,
-                        fontSize: isReader ? 24 : 16,
-                        lineSpacing: 6
-                    )
-
-                    if !isReader && storyBody.paragraphs.count > 1 {
-                        Button(storyExpanded ? "person.story.collapse" : "person.story.expand") {
-                            withAnimation(.easeInOut(duration: 0.2)) { storyExpanded.toggle() }
-                        }
-                        .font(.system(size: 15, weight: .medium))
-                        .foregroundStyle(.brown)
-                        .buttonStyle(.borderless)
-                    }
-
-                    if storyBody.hasSignature && (isReader || storyExpanded) {
-                        VStack(alignment: .trailing, spacing: 4) {
-                            if !storyBody.separator.isEmpty {
-                                Text(storyBody.separator)
-                                    .font(.system(size: isReader ? 15 : 12))
-                                    .foregroundStyle(.secondary)
-                            }
-                            Text(storyBody.signature)
-                                .font(.system(size: isReader ? 18 : 14))
-                                .foregroundStyle(.secondary)
-                                .multilineTextAlignment(.trailing)
-                        }
-                        .frame(maxWidth: .infinity, alignment: .trailing)
-                        .padding(.top, 2)
-                    }
-                }
-
+                // 6 家人留言
                 if let person = node.person {
                     MessageSection(person: person, node: node, isReader: isReader)
                 }
