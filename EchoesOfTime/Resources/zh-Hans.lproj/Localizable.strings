@@ -174,7 +174,7 @@
 "share.title" = "分享";
 "share.section.send" = "发送给亲友";
 "share.option.page" = "分享这一页（网页）";
-"share.option.card" = "分享图片（说明卡 + 照片卡）";
+"share.option.card" = "分享图片";
 "share.send.footer" = "PDF 微信里点开就能看，最稳；网页只显示这一张照片，需要浏览器或 HTML 查看器；长图适合直接发微信。";
 "share.option.import" = "粘贴亲友留言";
 "share.import.footer" = "亲友微信发来的话，粘贴进来就能存成这张照片下的留言。";

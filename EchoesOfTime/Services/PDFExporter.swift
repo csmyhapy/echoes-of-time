@@ -452,7 +452,7 @@ enum ShareExporter {
         let src = UIImage(data: jpeg) ?? img
         let ratio = src.size.height / max(1, src.size.width)
         var photoH = contentWidth * ratio
-        photoH = min(photoH, 780)   // 说明文字改走消息正文，图里可以多给照片一些位置
+        photoH = min(photoH, 620)   // 说明用大字占位后，照片让出一部分高度
 
         let caption = photo.caption.trimmingCharacters(in: .whitespacesAndNewlines)
         let displayName = caption.isEmpty ? String(localized: "share.untitled.photo") : caption
@@ -460,10 +460,16 @@ enum ShareExporter {
         let titleFont = UIFont.systemFont(ofSize: 46, weight: .semibold)
         let ownerFont = UIFont.systemFont(ofSize: 26)
         let storyFont = UIFont.systemFont(ofSize: 29)
+        let headTitleFont = UIFont.systemFont(ofSize: 36, weight: .semibold)
+        let headFont = UIFont.systemFont(ofSize: 30)     // 大字，读起来不费力
         let sloganFont = UIFont.systemFont(ofSize: 23)
 
         let storyText = ArchiveText.paragraphs(photo.story)
         let storyTrim = storyText.count > 220 ? String(storyText.prefix(220)) + "…" : storyText
+        let headText = [
+            String(format: String(localized: "share.head.p1"), person.name),
+            String(localized: "share.head.p2")
+        ].joined(separator: "\n\n")
         let sloganText = String(localized: "share.brand.slogan")
 
         func measured(_ text: String, _ font: UIFont, _ width: CGFloat, spacing: CGFloat) -> CGFloat {
@@ -475,13 +481,17 @@ enum ShareExporter {
                                      options: [.usesLineFragmentOrigin, .usesFontLeading], context: nil).height
         }
 
-        let titleH = measured(displayName, titleFont, contentWidth, spacing: 0)
+        let titleH = measured(displayName, titleFont, contentWidth, spacing: 6)
         let ownerText = "\(person.name)\(person.birthYear.isEmpty ? "" : " · \(person.birthYear)")"
         let ownerH = measured(ownerText, ownerFont, contentWidth, spacing: 0)
         let storyH = measured(storyTrim, storyFont, contentWidth, spacing: 10)
+        let headTitleH = measured(String(localized: "share.head.title"), headTitleFont, contentWidth, spacing: 0)
+        let headH = measured(headText, headFont, contentWidth, spacing: 14)
         let sloganH = measured(sloganText, sloganFont, contentWidth, spacing: 4)
 
-        let topPad: CGFloat = 56
+        let topPad: CGFloat = 66
+        let headTitleGap: CGFloat = 18
+        let afterHead: CGFloat = 40
         let belowPhoto: CGFloat = 40
         let belowTitle: CGFloat = 10
         let belowOwner: CGFloat = 24
@@ -489,13 +499,14 @@ enum ShareExporter {
         let brandH: CGFloat = 40
         let bottomPad: CGFloat = 80
 
-        let totalH = topPad + photoH + belowPhoto + titleH + belowTitle + ownerH
+        let totalH = topPad + headTitleH + headTitleGap + headH + afterHead
+            + photoH + belowPhoto + titleH + belowTitle + ownerH
             + (storyH > 0 ? belowOwner + storyH : 0)
             + brandGap + brandH + sloganH + bottomPad
 
         let size = CGSize(width: width, height: totalH)
         let format = UIGraphicsImageRendererFormat()
-        format.scale = 1          // 按 1080px 出图，微信传输体积友好
+        format.scale = 1
         format.opaque = true
         let renderer = UIGraphicsImageRenderer(size: size, format: format)
         let card = renderer.image { ctx in
@@ -508,6 +519,30 @@ enum ShareExporter {
             let hairline = UIColor(red: 0.89, green: 0.85, blue: 0.78, alpha: 1)
 
             var y: CGFloat = topPad
+
+            // ---------- 头部说明（大字）----------
+            let headTitleAttr = NSAttributedString(string: String(localized: "share.head.title"), attributes: [
+                .font: headTitleFont, .foregroundColor: brown, .kern: 2.4
+            ])
+            headTitleAttr.draw(at: CGPoint(x: pad, y: y))
+            y += headTitleH + headTitleGap - 8
+
+            let rule1 = UIBezierPath()
+            rule1.move(to: CGPoint(x: pad, y: y))
+            rule1.addLine(to: CGPoint(x: width - pad, y: y))
+            hairline.setStroke()
+            rule1.lineWidth = 1
+            rule1.stroke()
+            y += 26
+
+            let headPara = NSMutableParagraphStyle()
+            headPara.lineSpacing = 14
+            let headAttr = NSAttributedString(string: headText, attributes: [
+                .font: headFont, .foregroundColor: ink, .paragraphStyle: headPara
+            ])
+            headAttr.draw(with: CGRect(x: pad, y: y, width: contentWidth, height: headH),
+                          options: [.usesLineFragmentOrigin, .usesFontLeading], context: nil)
+            y += headH + afterHead
 
             // ---------- 照片 ----------
             let photoRect = CGRect(x: pad, y: y, width: contentWidth, height: photoH)

@@ -426,12 +426,10 @@ struct PhotoShareSheet: View {
         working = true
         errorMessage = nil
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
-            // 微信的系统分享只接收图片、会把文字丢掉，所以分成两张卡：
-            // 第一张是这段说明（文字卡），第二张是照片。两条都会进对话。
-            if let img = ShareExporter.makeCard(photo: photo, person: person, personID: personID),
-               let noteImg = ShareExporter.makeNoteCard(person: person) {
+            // 说明与照片在同一张图里（微信只接收图片，文字会丢，所以必须一图说清）
+            if let img = ShareExporter.makeCard(photo: photo, person: person, personID: personID) {
                 _ = ShareExporter.writeCard(img, person: person, caption: photo.caption)
-                payload = SharePayload(items: [noteImg, img])
+                payload = SharePayload(items: [img])
             } else {
                 errorMessage = String(localized: "share.error.card")
             }

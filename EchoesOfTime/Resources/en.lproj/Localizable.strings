@@ -174,7 +174,7 @@
 "share.title" = "Share";
 "share.section.send" = "Send to family and friends";
 "share.option.page" = "Share this page (web page)";
-"share.option.card" = "Share images (note card + photo card)";
+"share.option.card" = "Photo card";
 "share.send.footer" = "PDF opens straight in WeChat and is the safest. The web page shows only this photo and needs a browser or HTML viewer. The card suits direct WeChat sharing.";
 "share.option.import" = "Paste a message from a friend";
 "share.import.footer" = "Paste a message a friend sent you; it is saved under this photo.";
