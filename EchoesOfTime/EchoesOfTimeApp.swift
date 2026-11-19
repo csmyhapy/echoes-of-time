@@ -55,6 +55,9 @@ struct RootView: View {
             }
         }
         .onAppear {
+            // 触发内购单例初始化（启动交易监听、拉取商品），并核对 Apple 端已购权益
+            _ = PurchaseManager.shared
+            Task { await PurchaseManager.shared.refreshPurchased() }
             lock.lockIfNeeded()
             seedDemoIfNeeded()
             #if DEBUG

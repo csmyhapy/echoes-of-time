@@ -223,3 +223,24 @@
 "share.head.p3" = "";
 "share.option.copy" = "Copier le texte de la note";
 "share.copied" = "Copié — collez-le dans votre message";
+
+/* Achats intégrés */
+"common.ok" = "OK";
+"paywall.title" = "Débloquer la version complète";
+"paywall.heading" = "Un seul achat, toute une vie conservée";
+"paywall.subtitle" = "La version complète offre chapitres, photos, messages vocaux et messages illimités, avec partage et exportation.";
+"paywall.plan.pro.title" = "Version complète (à vie)";
+"paywall.plan.pro.f1" = "Chapitres et photos illimités";
+"paywall.plan.pro.f2" = "Messages vocaux et messages familiaux illimités";
+"paywall.plan.pro.f3" = "Partage libre et exportation PDF / archive";
+"paywall.plan.basic.title" = "Version de démarrage";
+"paywall.plan.basic.f1" = "Jusqu'à 5 chapitres et 80 photos";
+"paywall.plan.basic.f2" = "3 messages vocaux, 3 messages";
+"paywall.plan.basic.f3" = "Partage et exportation limités";
+"paywall.buy.full" = "Acheter la version complète";
+"paywall.buy.basic" = "Commencer avec la version de démarrage";
+"paywall.buy.upgrade" = "Passer à la version complète";
+"paywall.pro.unlocked" = "Version complète débloquée. Merci !";
+"paywall.restore" = "Restaurer les achats";
+"paywall.unavailable" = "Les produits ne sont pas encore configurés dans la boutique. Réessayez plus tard.";
+"paywall.error" = "Achat non terminé";

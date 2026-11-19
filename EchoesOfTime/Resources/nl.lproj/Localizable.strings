@@ -223,3 +223,24 @@
 "share.head.p3" = "";
 "share.option.copy" = "Notitietekst kopiëren";
 "share.copied" = "Gekopieerd — plak het in je bericht";
+
+/* In-app aankopen */
+"common.ok" = "OK";
+"paywall.title" = "Volledige versie ontgrendelen";
+"paywall.heading" = "Eén aankoop, een heel leven bewaard";
+"paywall.subtitle" = "De volledige versie heeft onbeperkt hoofdstukken, foto's, spraakberichten en berichten, met delen en exporteren.";
+"paywall.plan.pro.title" = "Volledige versie (levenslang)";
+"paywall.plan.pro.f1" = "Onbeperkt hoofdstukken en foto's";
+"paywall.plan.pro.f2" = "Onbeperkt spraakberichten en familieberichten";
+"paywall.plan.pro.f3" = "Deel vrij en exporteer PDF / archief";
+"paywall.plan.basic.title" = "Startversie";
+"paywall.plan.basic.f1" = "Maximaal 5 hoofdstukken en 80 foto's";
+"paywall.plan.basic.f2" = "3 spraakberichten, 3 berichten";
+"paywall.plan.basic.f3" = "Delen en exporteren beperkt";
+"paywall.buy.full" = "Volledige versie kopen";
+"paywall.buy.basic" = "Starten met de startversie";
+"paywall.buy.upgrade" = "Upgraden naar volledige versie";
+"paywall.pro.unlocked" = "Volledige versie ontgrendeld. Bedankt!";
+"paywall.restore" = "Aankopen herstellen";
+"paywall.unavailable" = "De producten zijn nog niet ingesteld in de winkel. Probeer het later opnieuw.";
+"paywall.error" = "Aankoop niet voltooid";

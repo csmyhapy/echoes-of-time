@@ -223,3 +223,24 @@
 "share.head.p3" = "";
 "share.option.copy" = "メモの文章をコピー";
 "share.copied" = "コピーしました — メッセージに貼り付けてください";
+
+/* アプリ内課金 */
+"common.ok" = "OK";
+"paywall.title" = "フルバージョンを解除";
+"paywall.heading" = "一度の購入で、一生分を残せます";
+"paywall.subtitle" = "フルバージョンでは章・写真・音声メッセージ・メッセージが無制限で、共有と書き出しも可能です。";
+"paywall.plan.pro.title" = "フルバージョン（買い切り）";
+"paywall.plan.pro.f1" = "章と写真が無制限";
+"paywall.plan.pro.f2" = "音声メッセージ・家族のメッセージが無制限";
+"paywall.plan.pro.f3" = "自由に共有、PDF／アーカイブを書き出し";
+"paywall.plan.basic.title" = "入門版";
+"paywall.plan.basic.f1" = "最大5章・80枚の写真";
+"paywall.plan.basic.f2" = "音声3件、メッセージ3件";
+"paywall.plan.basic.f3" = "共有・書き出しは制限付き";
+"paywall.buy.full" = "フルバージョンを購入";
+"paywall.buy.basic" = "入門版で始める";
+"paywall.buy.upgrade" = "フルバージョンへアップグレード";
+"paywall.pro.unlocked" = "フルバージョンを解除しました。ありがとうございます！";
+"paywall.restore" = "購入を復元";
+"paywall.unavailable" = "商品はまだストアに設定されていません。後でもう一度お試しください。";
+"paywall.error" = "購入が完了しませんでした";

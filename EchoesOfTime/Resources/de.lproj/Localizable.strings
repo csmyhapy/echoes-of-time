@@ -223,3 +223,24 @@
 "share.head.p3" = "";
 "share.option.copy" = "Notiztext kopieren";
 "share.copied" = "Kopiert — fügen Sie es in Ihre Nachricht ein";
+
+/* In-App-Käufe */
+"common.ok" = "OK";
+"paywall.title" = "Vollversion freischalten";
+"paywall.heading" = "Ein Kauf, ein ganzes Leben";
+"paywall.subtitle" = "Die Vollversion bietet unbegrenzt Kapitel, Fotos, Sprachnachrichten und Nachrichten sowie Teilen und Export.";
+"paywall.plan.pro.title" = "Vollversion (lebenslang)";
+"paywall.plan.pro.f1" = "Unbegrenzt Kapitel und Fotos";
+"paywall.plan.pro.f2" = "Unbegrenzt Sprachnachrichten und Familiennachrichten";
+"paywall.plan.pro.f3" = "Frei teilen und PDF / Archiv exportieren";
+"paywall.plan.basic.title" = "Einstiegsversion";
+"paywall.plan.basic.f1" = "Bis zu 5 Kapitel und 80 Fotos";
+"paywall.plan.basic.f2" = "3 Sprachnachrichten, 3 Nachrichten";
+"paywall.plan.basic.f3" = "Teilen und Export eingeschränkt";
+"paywall.buy.full" = "Vollversion kaufen";
+"paywall.buy.basic" = "Mit der Einstiegsversion starten";
+"paywall.buy.upgrade" = "Auf Vollversion upgraden";
+"paywall.pro.unlocked" = "Vollversion freigeschaltet. Danke!";
+"paywall.restore" = "Käufe wiederherstellen";
+"paywall.unavailable" = "Die Produkte sind im Store noch nicht konfiguriert. Bitte später erneut versuchen.";
+"paywall.error" = "Kauf nicht abgeschlossen";

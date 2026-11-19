@@ -222,3 +222,24 @@
 "share.head.p3" = "";
 "share.option.copy" = "复制说明文字";
 "share.copied" = "已复制，可直接粘贴到微信";
+
+/* 内购 */
+"common.ok" = "确定";
+"paywall.title" = "解锁完整版";
+"paywall.heading" = "一次买断，留住完整一生";
+"paywall.subtitle" = "完整版不限章节、照片、语音与留言，可自由分享与导出。";
+"paywall.plan.pro.title" = "完整版（买断）";
+"paywall.plan.pro.f1" = "不限章节数与照片数";
+"paywall.plan.pro.f2" = "语音旁白、家人留言不限量";
+"paywall.plan.pro.f3" = "自由分享与导出 PDF / 档案包";
+"paywall.plan.basic.title" = "入门版";
+"paywall.plan.basic.f1" = "最多 5 个章节、80 张照片";
+"paywall.plan.basic.f2" = "语音 3 段、留言 3 条";
+"paywall.plan.basic.f3" = "分享与导出受限";
+"paywall.buy.full" = "买断完整版";
+"paywall.buy.basic" = "入门版开始使用";
+"paywall.buy.upgrade" = "补差价升级完整版";
+"paywall.pro.unlocked" = "已解锁完整版，感谢支持";
+"paywall.restore" = "恢复购买";
+"paywall.unavailable" = "商品尚未在商店配置，稍后再试。";
+"paywall.error" = "购买未完成";

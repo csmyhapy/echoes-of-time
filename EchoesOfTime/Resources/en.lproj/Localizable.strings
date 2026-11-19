@@ -222,3 +222,24 @@
 "share.head.p3" = "";
 "share.option.copy" = "Copy the note text";
 "share.copied" = "Copied — paste it into your message";
+
+/* In-app purchase */
+"common.ok" = "OK";
+"paywall.title" = "Unlock the Full Version";
+"paywall.heading" = "One purchase, a lifetime preserved";
+"paywall.subtitle" = "The full version has unlimited chapters, photos, voice notes and messages, with sharing and export.";
+"paywall.plan.pro.title" = "Full Version (Lifetime)";
+"paywall.plan.pro.f1" = "Unlimited chapters and photos";
+"paywall.plan.pro.f2" = "Unlimited voice notes and family messages";
+"paywall.plan.pro.f3" = "Share freely and export PDF / archive";
+"paywall.plan.basic.title" = "Starter";
+"paywall.plan.basic.f1" = "Up to 5 chapters and 80 photos";
+"paywall.plan.basic.f2" = "3 voice notes, 3 messages";
+"paywall.plan.basic.f3" = "Sharing and export limited";
+"paywall.buy.full" = "Buy Full Version";
+"paywall.buy.basic" = "Start with Starter";
+"paywall.buy.upgrade" = "Upgrade to Full Version";
+"paywall.pro.unlocked" = "Full version unlocked. Thank you!";
+"paywall.restore" = "Restore Purchases";
+"paywall.unavailable" = "Products aren't configured in the store yet. Please try later.";
+"paywall.error" = "Purchase not completed";

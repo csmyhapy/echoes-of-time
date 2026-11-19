@@ -223,3 +223,24 @@
 "share.head.p3" = "";
 "share.option.copy" = "Copiar el texto de la nota";
 "share.copied" = "Copiado — pégalo en tu mensaje";
+
+/* Compras dentro de la app */
+"common.ok" = "Aceptar";
+"paywall.title" = "Desbloquea la versión completa";
+"paywall.heading" = "Una compra, una vida completa";
+"paywall.subtitle" = "La versión completa tiene capítulos, fotos, notas de voz y mensajes ilimitados, con uso compartido y exportación.";
+"paywall.plan.pro.title" = "Versión completa (de por vida)";
+"paywall.plan.pro.f1" = "Capítulos y fotos ilimitados";
+"paywall.plan.pro.f2" = "Notas de voz y mensajes familiares ilimitados";
+"paywall.plan.pro.f3" = "Comparte libremente y exporta PDF / archivo";
+"paywall.plan.basic.title" = "Versión inicial";
+"paywall.plan.basic.f1" = "Hasta 5 capítulos y 80 fotos";
+"paywall.plan.basic.f2" = "3 notas de voz, 3 mensajes";
+"paywall.plan.basic.f3" = "Uso compartido y exportación limitados";
+"paywall.buy.full" = "Comprar versión completa";
+"paywall.buy.basic" = "Empezar con la versión inicial";
+"paywall.buy.upgrade" = "Mejorar a la versión completa";
+"paywall.pro.unlocked" = "Versión completa desbloqueada. ¡Gracias!";
+"paywall.restore" = "Restaurar compras";
+"paywall.unavailable" = "Los productos aún no están configurados en la tienda. Inténtalo más tarde.";
+"paywall.error" = "Compra no completada";
