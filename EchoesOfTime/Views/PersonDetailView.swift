@@ -83,10 +83,14 @@ struct PersonDetailView: View {
         }
         .navigationTitle(person.name)
         .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
+        .overlay(alignment: .bottomTrailing) {
+            if !isReader {
                 bgmButton
+                    .padding(.trailing, 16)
+                    .padding(.bottom, 26)
             }
+        }
+        .toolbar {
             if !isReader {
                 ToolbarItem(placement: .topBarTrailing) {
                     Menu {
@@ -224,11 +228,12 @@ struct PersonDetailView: View {
             Text("person.section.story")
                 .font(.system(size: isReader ? 26 : 20, weight: .semibold))
 
-            Text(body.text)
-                .font(.system(size: isReader ? 24 : 16))
-                .lineSpacing(6)
-                .lineLimit(expanded ? nil : 4)
-                .fixedSize(horizontal: false, vertical: true)
+            ArchiveParagraphView(
+                paragraphs: body.paragraphs,
+                expanded: expanded,
+                fontSize: isReader ? 24 : 16,
+                lineSpacing: 6
+            )
 
             if body.hasSignature && expanded {
                 signatureBlock(body)
@@ -368,11 +373,12 @@ struct PersonDetailView: View {
             }
 
             if !person.summary.isEmpty {
-                Text(person.summary)
+                Text(ArchiveText.inline(person.summary))
                     .font(.system(size: isReader ? 22 : 15))
                     .foregroundStyle(.secondary)
                     .lineSpacing(4)
                     .fixedSize(horizontal: false, vertical: true)
+                    .padding(.leading, isReader ? 44 : 30)
             }
         }
     }

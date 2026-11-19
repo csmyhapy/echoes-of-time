@@ -15,11 +15,15 @@ enum ArchiveText {
 
     /// 正文解析结果：正文（已排版） + 分隔线 + 落款
     struct Body {
-        var text: String
+        /// 已排版的段落（每段已带首行缩进）
+        var paragraphs: [String]
         var separator: String
         var signature: String
 
         var hasSignature: Bool { !signature.isEmpty }
+
+        /// 折叠预览用：段落直接换行相连，不留空行
+        var text: String { paragraphs.joined(separator: "\n") }
     }
 
     // MARK: - 基础清洗
@@ -95,7 +99,7 @@ enum ArchiveText {
     /// 规则：文本里最后一个分隔行（---）之后若只有 1–3 行、总字数不超过 48，视为落款
     static func parse(_ raw: String) -> Body {
         let normalizedText = normalized(raw)
-        guard !normalizedText.isEmpty else { return Body(text: "", separator: "", signature: "") }
+        guard !normalizedText.isEmpty else { return Body(paragraphs: [], separator: "", signature: "") }
 
         let lines = normalizedText.components(separatedBy: "\n")
         if let sepIndex = lines.lastIndex(where: { isSeparatorLine($0) }) {
@@ -106,14 +110,14 @@ enum ArchiveText {
             let head = Array(lines[..<sepIndex])
             if !tail.isEmpty, tail.count <= 3, signature.count <= 48 {
                 return Body(
-                    text: indent(head.joined(separator: "\n")),
+                    paragraphs: splitParagraphs(head.joined(separator: "\n")),
                     separator: lines[sepIndex],
                     signature: signature
                 )
             }
         }
 
-        return Body(text: indent(normalizedText), separator: "", signature: "")
+        return Body(paragraphs: splitParagraphs(normalizedText), separator: "", signature: "")
     }
 
     /// 去掉落款、只留正文（用于预览、摘要）
@@ -121,14 +125,24 @@ enum ArchiveText {
         parse(raw).text
     }
 
-    private static func indent(_ cleaned: String) -> String {
-        guard !cleaned.isEmpty else { return "" }
-        let useIndent = containsCJK(cleaned)
-        let parts = cleaned.components(separatedBy: "\n")
+    /// 单段文本缩进（简介、说明用）
+    static func indented(_ raw: String) -> String {
+        splitParagraphs(clean(raw)).first ?? ""
+    }
+
+    /// 切成段落，中文段落加两个全角空格
+    static func splitParagraphs(_ cleaned: String) -> [String] {
+        let trimmed = cleaned.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return [] }
+        let useIndent = containsCJK(trimmed)
+        let prefix = useIndent ? "　　" : ""
+        return trimmed.components(separatedBy: "\n")
             .map { $0.trimmingCharacters(in: .whitespaces) }
             .filter { !$0.isEmpty && !isSeparatorLine($0) }
-        guard !parts.isEmpty else { return "" }
-        let prefix = useIndent ? "　　" : ""
-        return parts.map { prefix + $0 }.joined(separator: "\n\n")
+            .map { prefix + $0 }
+    }
+
+    private static func indent(_ cleaned: String) -> String {
+        splitParagraphs(cleaned).joined(separator: "\n")
     }
 }

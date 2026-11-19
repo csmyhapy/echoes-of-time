@@ -15,6 +15,7 @@ struct NodeDetailView: View {
     var isReader: Bool = false
 
     @Environment(\.modelContext) private var context
+    @Environment(AppState.self) private var appState
 
     @State private var selectedPhoto: Photo?
     @State private var pickerItems: [PhotosPickerItem] = []
@@ -22,6 +23,9 @@ struct NodeDetailView: View {
     @State private var showVoiceRecorder = false
     @State private var showAssignFromLibrary = false
     @State private var showOrder = false
+    @State private var showNodeEdit = false
+    @State private var photoExpanded = false
+    @State private var storyExpanded = false
 
     private var personID: UUID? { node.person?.id }
     private var photos: [Photo] {
@@ -53,14 +57,28 @@ struct NodeDetailView: View {
                     Text(ArchiveText.inline(node.summary))
                         .font(.system(size: isReader ? 24 : 16))
                         .lineSpacing(6)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .padding(.leading, isReader ? 44 : 32)
                 }
 
                 if !node.story.isEmpty {
-                    Text(storyBody.text)
-                        .font(.system(size: isReader ? 24 : 16))
-                        .lineSpacing(6)
+                    ArchiveParagraphView(
+                        paragraphs: storyBody.paragraphs,
+                        expanded: isReader || storyExpanded,
+                        fontSize: isReader ? 24 : 16,
+                        lineSpacing: 6
+                    )
 
-                    if storyBody.hasSignature {
+                    if !isReader && storyBody.paragraphs.count > 1 {
+                        Button(storyExpanded ? "person.story.collapse" : "person.story.expand") {
+                            withAnimation(.easeInOut(duration: 0.2)) { storyExpanded.toggle() }
+                        }
+                        .font(.system(size: 15, weight: .medium))
+                        .foregroundStyle(.brown)
+                        .buttonStyle(.borderless)
+                    }
+
+                    if storyBody.hasSignature && (isReader || storyExpanded) {
                         VStack(alignment: .trailing, spacing: 4) {
                             if !storyBody.separator.isEmpty {
                                 Text(storyBody.separator)
@@ -105,6 +123,10 @@ struct NodeDetailView: View {
                         Button { showVoiceRecorder = true } label: {
                             Label("node.action.voice", systemImage: "mic")
                         }
+                        Divider()
+                        Button { showNodeEdit = true } label: {
+                            Label("node.action.edit", systemImage: "pencil")
+                        }
                     } label: {
                         Image(systemName: "plus")
                     }
@@ -114,6 +136,11 @@ struct NodeDetailView: View {
         .sheet(isPresented: $showVoiceRecorder) {
             RecorderSheet(personID: personID ?? UUID(), titleKey: "recorder.node.title") { name, duration in
                 saveVoice(fileName: name, duration: duration)
+            }
+        }
+        .sheet(isPresented: $showNodeEdit) {
+            if let person = node.person {
+                NodeEditView(person: person, node: node)
             }
         }
         .sheet(isPresented: $showAssignFromLibrary) {
@@ -269,7 +296,7 @@ struct NodeDetailView: View {
                     columns: Array(repeating: GridItem(.flexible(), spacing: 6), count: 3),
                     spacing: 6
                 ) {
-                    ForEach(photos) { photo in
+                    ForEach(visiblePhotos) { photo in
                         Button {
                             selectedPhoto = photo
                         } label: {
@@ -285,8 +312,38 @@ struct NodeDetailView: View {
                         }
                     }
                 }
+
+                if photos.count > 6 {
+                    Button {
+                        withAnimation(.easeInOut(duration: 0.2)) { photoExpanded.toggle() }
+                    } label: {
+                        HStack(spacing: 4) {
+                            Text(photoMoreText)
+                            Image(systemName: photoExpanded ? "chevron.up" : "chevron.down")
+                                .font(.system(size: 12, weight: .semibold))
+                        }
+                        .font(.system(size: isReader ? 18 : 14, weight: .medium))
+                        .foregroundStyle(.brown)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 6)
+                    }
+                    .buttonStyle(.borderless)
+                }
             }
         }
+    }
+
+    /// 照片默认只显示 6 张
+    private var visiblePhotos: [Photo] {
+        photoExpanded ? photos : Array(photos.prefix(6))
+    }
+
+    private var photoMoreText: String {
+        let hidden = max(0, photos.count - 6)
+        if appState.language == .zhHans {
+            return photoExpanded ? "收起" : "展开全部 \(photos.count) 张（还有 \(hidden) 张）"
+        }
+        return photoExpanded ? "Show less" : "Show all \(photos.count) photos"
     }
 
     private func thumbnail(_ photo: Photo) -> some View {
