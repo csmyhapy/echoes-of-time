@@ -92,6 +92,18 @@ struct RootView: View {
             return
         }
 
+        // 旧版示例档案（照片少、无人声旁白）：删除后重新播种，让新内容生效
+        if let demo = persons.first(where: { $0.isDemo && DemoData.demoLanguage(of: $0) == appState.language }) {
+            let hasPersonVoice = demo.voiceNotes.contains { $0.scope == .person }
+            if demo.photos.count < 12 || !hasPersonVoice {
+                MediaStore.deleteFolder(for: demo.id)
+                context.delete(demo)
+                try? context.save()
+                DemoData.insert(into: context, language: appState.language)
+                return
+            }
+        }
+
         // 库里只有示例、且语言不匹配：换成当前语言的示例（正式档案不受影响）
         let demos = persons.filter { $0.isDemo }
         if persons.count == 1, demos.count == 1,
