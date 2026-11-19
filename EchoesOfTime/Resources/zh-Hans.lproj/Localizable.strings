@@ -84,7 +84,7 @@
 "messages.title" = "家人留言";
 "messages.empty" = "还没有留言，来做第一个留言的人吧。";
 "messages.placeholder" = "写一句留言…";
-"photo.messages" = "留言";
+"photo.messages" = "家人留言";
 "settings.section.privacy" = "隐私";
 "settings.requireFaceID" = "开启面容 ID 解锁";
 "settings.familyName" = "你的名字（用于留言）";
@@ -162,3 +162,6 @@
 "photo.untitled" = "未命名";
 "common.done" = "完成";
 "node.action.edit" = "编辑本章节";
+"photo.story.title" = "照片故事";
+"photo.narration.title" = "旁白";
+"common.close" = "关闭";

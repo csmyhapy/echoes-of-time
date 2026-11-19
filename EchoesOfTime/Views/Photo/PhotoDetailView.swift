@@ -2,7 +2,9 @@
 //  PhotoDetailView.swift
 //  EchoesOfTime
 //
-//  照片灯箱：全屏大图 + 左右翻页 + 标题/故事 + 旁白播放
+//  照片页：上方大图（黑底，图片靠上），下方浅色信息面板
+//  右上角三个内容按钮：编辑 / 录制旁白 / 家人留言
+//  面板顺序：照片名称 → 照片故事 → 旁白 → 家人留言（默认折叠）
 //
 
 import SwiftUI
@@ -18,6 +20,7 @@ struct PhotoLightboxView: View {
     @State private var showRecorder = false
     @State private var showMessages = false
     @State private var showEdit = false
+    @State private var storyExpanded = false
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var context
 
@@ -34,24 +37,32 @@ struct PhotoLightboxView: View {
     }
 
     var body: some View {
-        ZStack {
-            Color.black.ignoresSafeArea()
+        GeometryReader { geo in
+            ZStack {
+                Color.black.ignoresSafeArea()
 
-            TabView(selection: $index) {
-                ForEach(Array(photos.enumerated()), id: \.element.id) { i, p in
-                    page(p).tag(i)
+                VStack(spacing: 0) {
+                    topBar
+
+                    TabView(selection: $index) {
+                        ForEach(Array(photos.enumerated()), id: \.element.id) { i, p in
+                            page(p).tag(i)
+                        }
+                    }
+                    .tabViewStyle(.page(indexDisplayMode: .never))
+                    .frame(height: max(180, geo.size.height * 0.5))
+
+                    if let p = photo {
+                        contentPanel(p)
+                    }
                 }
             }
-            .tabViewStyle(.page(indexDisplayMode: .never))
-            .ignoresSafeArea()
-
-            VStack {
-                topBar
-                Spacer()
-                if let photo { bottomBar(photo) }
-            }
         }
-        .onChange(of: index) { _, _ in player.stop() }
+        .ignoresSafeArea(edges: .bottom)
+        .onChange(of: index) { _, _ in
+            player.stop()
+            storyExpanded = false
+        }
         .onDisappear { player.stop() }
         .sheet(isPresented: $showMessages) {
             if let person, let p = photo {
@@ -82,25 +93,47 @@ struct PhotoLightboxView: View {
         }
     }
 
-    // MARK: - 顶栏
+    // MARK: - 顶栏（右上角三个内容按钮）
 
     private var topBar: some View {
-        HStack {
+        HStack(spacing: 18) {
             Text("\(index + 1) / \(photos.count)")
                 .font(.footnote)
-                .foregroundStyle(.white.opacity(0.75))
+                .foregroundStyle(.white.opacity(0.7))
+
             Spacer()
+
+            if !isReader, person != nil {
+                Button { showEdit = true } label: {
+                    Image(systemName: "square.and.pencil")
+                }
+                .accessibilityLabel(Text("photo.edit.action"))
+
+                Button { showRecorder = true } label: {
+                    Image(systemName: (photo?.audioFileName == nil) ? "mic" : "mic.fill")
+                }
+                .accessibilityLabel(Text("photo.record"))
+
+                Button { showMessages = true } label: {
+                    Image(systemName: "bubble.left.and.bubble.right")
+                }
+                .accessibilityLabel(Text("photo.messages"))
+            }
+
             Button {
                 player.stop()
                 dismiss()
             } label: {
                 Image(systemName: "xmark.circle.fill")
-                    .font(.title2)
-                    .foregroundStyle(.white.opacity(0.85))
+                    .font(.title3)
             }
+            .accessibilityLabel(Text("common.close"))
         }
+        .font(.system(size: 19, weight: .medium))
+        .foregroundStyle(.white.opacity(0.92))
         .padding(.horizontal, 18)
-        .padding(.top, 12)
+        .padding(.top, 6)
+        .padding(.bottom, 4)
     }
 
     // MARK: - 图片页
@@ -111,6 +144,7 @@ struct PhotoLightboxView: View {
                 Image(uiImage: img)
                     .resizable()
                     .scaledToFit()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             } else {
                 VStack(spacing: 10) {
                     Image(systemName: "photo")
@@ -119,86 +153,109 @@ struct PhotoLightboxView: View {
                         .font(.footnote)
                 }
                 .foregroundStyle(.white.opacity(0.5))
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
+        .padding(.horizontal, 10)
     }
 
-    // MARK: - 底部信息与播放
+    // MARK: - 下方信息面板
 
-    private func bottomBar(_ p: Photo) -> some View {
-        VStack(alignment: .leading, spacing: 10) {
-            if !p.caption.isEmpty {
-                Text(ArchiveText.inline(p.caption))
-                    .font(.headline)
-                    .foregroundStyle(.white)
-            }
-            if !p.story.isEmpty {
-                Text(ArchiveText.inline(p.story))
-                    .font(.subheadline)
-                    .foregroundStyle(.white.opacity(0.85))
-                    .lineLimit(5)
-            }
-
-            if let person {
-                let count = person.messages.filter { $0.photo?.id == p.id && !$0.isDeleted }.count
-                Button {
-                    showMessages = true
-                } label: {
-                    Label("photo.messages \(count)", systemImage: "bubble.left.and.bubble.right")
-                        .font(.subheadline.weight(.semibold))
+    private func contentPanel(_ p: Photo) -> some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 18) {
+                if !p.caption.isEmpty {
+                    Text(ArchiveText.inline(p.caption))
+                        .font(.system(size: 20, weight: .semibold))
+                        .lineLimit(2)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
-                .buttonStyle(.borderless)
-                .foregroundStyle(.white.opacity(0.95))
-            }
 
-            if !isReader, person != nil {
-                Button {
-                    showEdit = true
-                } label: {
-                    Label("photo.edit.action", systemImage: "square.and.pencil")
-                        .font(.subheadline.weight(.semibold))
-                }
-                .buttonStyle(.borderless)
-                .foregroundStyle(.white.opacity(0.95))
-            }
+                if !p.story.isEmpty {
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("photo.story.title")
+                            .font(.system(size: 13, weight: .semibold))
+                            .foregroundStyle(.secondary)
 
-            if !isReader {
-                Button {
-                    showRecorder = true
-                } label: {
-                    Label(p.audioFileName == nil ? "photo.record" : "photo.rerecord",
-                          systemImage: "mic.circle")
-                        .font(.subheadline.weight(.semibold))
+                        Text(ArchiveText.clean(p.story))
+                            .font(.system(size: 15))
+                            .lineSpacing(5)
+                            .lineLimit(storyExpanded ? nil : 3)
+                            .fixedSize(horizontal: false, vertical: true)
+
+                        if p.story.count > 50 {
+                            Button(storyExpanded ? "person.story.collapse" : "person.story.expand") {
+                                withAnimation(.easeInOut(duration: 0.2)) { storyExpanded.toggle() }
+                            }
+                            .font(.system(size: 14, weight: .medium))
+                            .foregroundStyle(.brown)
+                            .buttonStyle(.borderless)
+                        }
+                    }
                 }
-                .buttonStyle(.borderless)
-                .foregroundStyle(.white.opacity(0.95))
+
+                narrationRow(p)
+
+                if let person {
+                    MessageSection(person: person, photo: p)
+                }
+            }
+            .padding(.horizontal, 20)
+            .padding(.top, 16)
+            .padding(.bottom, 30)
+        }
+        .background(Color(.systemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .padding(.top, 6)
+    }
+
+    @ViewBuilder
+    private func narrationRow(_ p: Photo) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(spacing: 8) {
+                Text("photo.narration.title")
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(.secondary)
+
+                Spacer()
+
+                if !isReader {
+                    Button {
+                        showRecorder = true
+                    } label: {
+                        Label(p.audioFileName == nil ? "photo.record" : "photo.rerecord",
+                              systemImage: "mic.circle")
+                            .font(.system(size: 13, weight: .medium))
+                    }
+                    .buttonStyle(.borderless)
+                    .foregroundStyle(.brown)
+                }
             }
 
             if p.audioFileName != nil {
                 TimelineView(.periodic(from: .now, by: 0.2)) { _ in
-                    VStack(alignment: .leading, spacing: 8) {
+                    VStack(alignment: .leading, spacing: 6) {
                         ProgressView(value: player.progress)
-                            .tint(.white)
+                            .tint(.brown)
                         Button {
                             toggle(p)
                         } label: {
                             Label(
                                 player.isPlayingNow ? "photo.narration.pause" : "photo.narration.play",
-                                systemImage: player.isPlayingNow ? "pause.circle.fill" : "play.circle.fill"
+                                systemImage: player.isPlayingNow ? "pause.fill" : "play.fill"
                             )
-                            .font(.subheadline.weight(.semibold))
+                            .font(.system(size: 14, weight: .medium))
                         }
                         .buttonStyle(.borderless)
-                        .foregroundStyle(.white)
+                        .foregroundStyle(.brown)
                     }
                 }
+            } else {
+                Text("voice.empty")
+                    .font(.system(size: 13))
+                    .foregroundStyle(.tertiary)
             }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(16)
-        .background(.black.opacity(0.55), in: RoundedRectangle(cornerRadius: 14))
-        .padding(.horizontal, 16)
-        .padding(.bottom, 20)
     }
 
     private func toggle(_ p: Photo) {

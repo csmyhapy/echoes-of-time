@@ -84,7 +84,7 @@
 "messages.title" = "Family Messages";
 "messages.empty" = "No messages yet. Be the first to leave a memory.";
 "messages.placeholder" = "Leave a message…";
-"photo.messages" = "Messages";
+"photo.messages" = "Family Messages";
 "settings.section.privacy" = "Privacy";
 "settings.requireFaceID" = "Require Face ID";
 "settings.familyName" = "Your Name (for messages)";
@@ -162,3 +162,6 @@
 "photo.untitled" = "Untitled";
 "common.done" = "Done";
 "node.action.edit" = "Edit this chapter";
+"photo.story.title" = "Story";
+"photo.narration.title" = "Narration";
+"common.close" = "Close";

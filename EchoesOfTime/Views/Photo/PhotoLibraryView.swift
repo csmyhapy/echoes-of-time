@@ -125,6 +125,14 @@ struct PhotoLibraryView: View {
                 person: person
             )
         }
+        #if DEBUG
+        .onAppear {
+            if ProcessInfo.processInfo.arguments.contains("debug-photo"), !displayedPhotos.isEmpty {
+                lightboxStart = 0
+                showLightbox = true
+            }
+        }
+        #endif
         .confirmationDialog("library.photos.delete.confirm", isPresented: $showDeleteConfirm, titleVisibility: .visible) {
             Button("common.delete", role: .destructive) { deleteSelected() }
             Button("common.cancel", role: .cancel) {}
