@@ -25,29 +25,7 @@ struct PersonDetailView: View {
     @State private var timelineExpanded = false
     @AppStorage("bgmEnabled") private var bgmEnabled = true
 
-    // MARK: - 背景音乐开关（仅人物页有音乐）
-
-    private var bgmButton: some View {
-        Button {
-            bgmEnabled.toggle()
-            if bgmEnabled {
-                BGMManager.shared.play(fileName: person.bgmFileName, personID: person.id)
-            } else {
-                BGMManager.shared.stop()
-            }
-        } label: {
-            Image(systemName: bgmEnabled ? "speaker.wave.2.fill" : "speaker.slash.fill")
-                .font(.system(size: 18, weight: .medium))
-                .foregroundStyle(.white)
-                .frame(width: 48, height: 48)
-                .background(
-                    Circle().fill(bgmEnabled ? Color.brown : Color.gray.opacity(0.8))
-                )
-                .overlay(Circle().stroke(.white.opacity(0.25), lineWidth: 0.5))
-                .shadow(color: .black.opacity(0.2), radius: 8, y: 3)
-        }
-        .accessibilityLabel(Text(bgmEnabled ? "bgm.off" : "bgm.on"))
-    }
+    // MARK: - 背景音乐开关（仅人物页有音乐；开关位于底部栏）
 
     private var sortedNodes: [Node] {
         // sortOrder 相同时按年代起始年排序（网站导入的 sortOrder 全是 0，需要兜底）
@@ -91,15 +69,11 @@ struct PersonDetailView: View {
         }
         .navigationTitle(person.name)
         .navigationBarTitleDisplayMode(.inline)
-        .overlay(alignment: .bottomTrailing) {
-            if !isReader {
-                bgmButton
-                    .padding(.trailing, 16)
-                    .padding(.bottom, 26)
-            }
-        }
         .toolbar {
             if !isReader {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("common.edit") { showingEditPerson = true }
+                }
                 ToolbarItem(placement: .topBarTrailing) {
                     Menu {
                         Button {
@@ -115,9 +89,6 @@ struct PersonDetailView: View {
                     } label: {
                         Image(systemName: "square.and.arrow.up")
                     }
-                }
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("common.edit") { showingEditPerson = true }
                 }
             }
         }
@@ -142,7 +113,9 @@ struct PersonDetailView: View {
             Button("common.save", role: .cancel) {}
         }
         .onAppear {
-            BGMManager.shared.play(fileName: person.bgmFileName, personID: person.id)
+            if bgmEnabled {
+                BGMManager.shared.play(fileName: person.bgmFileName, personID: person.id)
+            }
         }
         .onDisappear {
             BGMManager.shared.stop()
@@ -150,7 +123,7 @@ struct PersonDetailView: View {
         .onChange(of: showVoiceRecorder) { _, isShowing in
             if isShowing {
                 BGMManager.shared.stop()
-            } else {
+            } else if bgmEnabled {
                 BGMManager.shared.play(fileName: person.bgmFileName, personID: person.id)
             }
         }

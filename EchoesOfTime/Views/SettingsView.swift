@@ -29,12 +29,19 @@ struct SettingsView: View {
 
         Form {
             Section("settings.section.language") {
-                Picker("settings.language", selection: $state.language) {
-                    ForEach(AppLanguage.allCases) { lang in
-                        Text(lang.displayName).tag(lang)
+                NavigationLink {
+                    LanguagePickerView()
+                } label: {
+                    HStack {
+                        Text("settings.language")
+                        Spacer()
+                        Text(appState.language.displayName)
+                            .foregroundStyle(.secondary)
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 13, weight: .semibold))
+                            .foregroundStyle(.tertiary)
                     }
                 }
-                .pickerStyle(.segmented)
 
                 Text("settings.language.note")
                     .font(.footnote)
@@ -42,12 +49,19 @@ struct SettingsView: View {
             }
 
             Section("settings.section.mode") {
-                Picker("settings.mode", selection: $state.mode) {
-                    ForEach(AppMode.allCases) { mode in
-                        Text(LocalizedStringKey(mode.titleKey)).tag(mode)
+                NavigationLink {
+                    ModePickerView()
+                } label: {
+                    HStack {
+                        Text("settings.mode")
+                        Spacer()
+                        Text(LocalizedStringKey(appState.mode.titleKey))
+                            .foregroundStyle(.secondary)
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 13, weight: .semibold))
+                            .foregroundStyle(.tertiary)
                     }
                 }
-                .pickerStyle(.inline)
 
                 Text("settings.mode.note")
                     .font(.footnote)
@@ -201,5 +215,76 @@ struct SettingsView: View {
             appState.isDeveloper = true
             showUnlockAlert = true
         }
+    }
+}
+
+// MARK: - 二级：语言选择（苹果式单选列表）
+
+struct LanguagePickerView: View {
+    @Environment(AppState.self) private var appState
+
+    var body: some View {
+        @Bindable var state = appState
+        Form {
+            ForEach(AppLanguage.allCases) { lang in
+                Button {
+                    state.language = lang
+                } label: {
+                    HStack {
+                        Text(lang.displayName)
+                            .foregroundStyle(.primary)
+                        Spacer()
+                        if appState.language == lang {
+                            Image(systemName: "checkmark")
+                                .fontWeight(.semibold)
+                                .foregroundStyle(.brown)
+                        }
+                    }
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .navigationTitle("settings.section.language")
+        .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+// MARK: - 二级：使用模式选择（苹果式单选列表）
+
+struct ModePickerView: View {
+    @Environment(AppState.self) private var appState
+
+    var body: some View {
+        @Bindable var state = appState
+        Form {
+            ForEach(AppMode.allCases) { mode in
+                Button {
+                    state.mode = mode
+                } label: {
+                    HStack {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(LocalizedStringKey(mode.titleKey))
+                                .foregroundStyle(.primary)
+                            if mode == .reader {
+                                Text("settings.mode.note")
+                                    .font(.footnote)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                        Spacer()
+                        if appState.mode == mode {
+                            Image(systemName: "checkmark")
+                                .fontWeight(.semibold)
+                                .foregroundStyle(.brown)
+                        }
+                    }
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .navigationTitle("settings.mode")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }

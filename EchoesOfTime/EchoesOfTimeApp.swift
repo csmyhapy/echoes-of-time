@@ -231,22 +231,44 @@ struct RootView: View {
 // MARK: - 编辑模式（子女使用）
 
 struct EditorRootView: View {
+    @State private var selected = 0
+    @AppStorage("bgmEnabled") private var bgmEnabled = true
+
     var body: some View {
-        TabView {
-            NavigationStack {
-                LibraryView()
-            }
-            .tabItem {
-                Label("tab.library", systemImage: "books.vertical")
+        ZStack(alignment: .bottomTrailing) {
+            Group {
+                if selected == 0 {
+                    NavigationStack { LibraryView() }
+                } else {
+                    NavigationStack { SettingsView() }
+                }
             }
 
-            NavigationStack {
-                SettingsView()
+            VStack(spacing: 14) {
+                fab("books.vertical", active: selected == 0) { selected = 0 }
+                fab("gearshape", active: selected == 1) { selected = 1 }
+                fab(bgmEnabled ? "speaker.wave.2.fill" : "speaker.slash.fill", active: bgmEnabled) {
+                    bgmEnabled.toggle()
+                    if !bgmEnabled {
+                        BGMManager.shared.stop()
+                    }
+                }
             }
-            .tabItem {
-                Label("tab.settings", systemImage: "gearshape")
-            }
+            .padding(.trailing, 18)
+            .padding(.bottom, 24)
         }
+    }
+
+    private func fab(_ icon: String, active: Bool, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Image(systemName: icon)
+                .font(.system(size: 21, weight: .medium))
+                .foregroundStyle(active ? Color.white : Color.primary)
+                .frame(width: 52, height: 52)
+                .background(active ? Color.brown : Color(.secondarySystemBackground), in: Circle())
+                .shadow(color: .black.opacity(0.2), radius: 8, y: 3)
+        }
+        .buttonStyle(.plain)
     }
 }
 
@@ -256,6 +278,16 @@ struct ReaderRootView: View {
     var body: some View {
         NavigationStack {
             LibraryView(isReader: true)
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        NavigationLink {
+                            SettingsView()
+                        } label: {
+                            Image(systemName: "gearshape")
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                }
         }
     }
 }

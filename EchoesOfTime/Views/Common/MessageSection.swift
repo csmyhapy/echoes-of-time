@@ -13,6 +13,8 @@ struct MessageSection: View {
     let node: Node?
     let photo: Photo?
     var isReader: Bool = false
+    /// 是否显示底部输入框；false 时仅展示留言（编辑入口放在别处）
+    var showsInput: Bool = true
 
     @Environment(\.modelContext) private var context
     @Environment(AppState.self) private var appState
@@ -20,11 +22,12 @@ struct MessageSection: View {
     @State private var draft = ""
     @State private var author = UserDefaults.standard.string(forKey: "familyName") ?? "Family"
 
-    init(person: Person, node: Node? = nil, photo: Photo? = nil, isReader: Bool = false) {
+    init(person: Person, node: Node? = nil, photo: Photo? = nil, isReader: Bool = false, showsInput: Bool = true) {
         self.person = person
         self.node = node
         self.photo = photo
         self.isReader = isReader
+        self.showsInput = showsInput
     }
 
     private var messages: [Message] {
@@ -78,7 +81,7 @@ struct MessageSection: View {
                 }
             }
 
-            if !isReader {
+            if showsInput && !isReader {
                 HStack(alignment: .bottom, spacing: 8) {
                     TextField("messages.placeholder", text: $draft, axis: .vertical)
                         .lineLimit(1...4)

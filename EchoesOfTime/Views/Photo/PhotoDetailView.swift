@@ -71,12 +71,7 @@ struct PhotoLightboxView: View {
         .sheet(isPresented: $showMessages) {
             if let person, let p = photo {
                 NavigationStack {
-                    ScrollView {
-                        MessageSection(person: person, photo: p)
-                            .padding(20)
-                    }
-                    .navigationTitle("photo.messages")
-                    .navigationBarTitleDisplayMode(.inline)
+                    PhotoMessageBoard(person: person, photo: p)
                 }
             }
         }
@@ -211,7 +206,7 @@ struct PhotoLightboxView: View {
                 narrationRow(p)
 
                 if let person {
-                    MessageSection(person: person, photo: p)
+                    MessageSection(person: person, photo: p, isReader: isReader, showsInput: false)
                 }
             }
             .padding(.horizontal, 20)
@@ -300,5 +295,127 @@ struct PhotoLightboxView: View {
         guard let name = p.audioFileName else { return }
         let url = MediaStore.url(fileName: name, personID: personID)
         player.toggle(url: url)
+    }
+}
+
+// MARK: - 照片留言板（独立弹出：留言列表在上，输入栏固定在键盘上方，顶部带关闭）
+
+struct PhotoMessageBoard: View {
+    let person: Person
+    let photo: Photo
+
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var context
+    @State private var draft = ""
+    @State private var expanded = false
+    @FocusState private var editing: Bool
+
+    private var messages: [Message] {
+        person.messages
+            .filter { !$0.isDeleted && $0.photo?.id == photo.id }
+            .sorted { $0.createdAt < $1.createdAt }
+    }
+
+    private var visibleMessages: [Message] {
+        expanded ? messages : Array(messages.suffix(2))
+    }
+
+    var body: some View {
+        VStack(spacing: 0) {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 12) {
+                    if messages.isEmpty {
+                        Text("messages.empty")
+                            .font(.system(size: 14))
+                            .foregroundStyle(.secondary)
+                            .padding(.top, 8)
+                    } else {
+                        ForEach(visibleMessages) { msg in
+                            messageRow(msg)
+                        }
+
+                        if messages.count > 2 {
+                            Button {
+                                withAnimation(.easeInOut(duration: 0.2)) { expanded.toggle() }
+                            } label: {
+                                HStack(spacing: 4) {
+                                    Text(expanded ? "person.story.collapse" : "person.story.expand")
+                                    Image(systemName: expanded ? "chevron.up" : "chevron.down")
+                                        .font(.system(size: 12, weight: .semibold))
+                                }
+                                .font(.system(size: 14, weight: .medium))
+                                .foregroundStyle(.brown)
+                            }
+                            .buttonStyle(.borderless)
+                        }
+                    }
+                }
+                .padding(20)
+            }
+            .scrollDismissesKeyboard(.interactively)
+
+            inputBar
+        }
+        .navigationTitle("photo.messages")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+                Button("common.close") { dismiss() }
+            }
+        }
+    }
+
+    private var inputBar: some View {
+        HStack(alignment: .bottom, spacing: 8) {
+            TextField("messages.placeholder", text: $draft, axis: .vertical)
+                .lineLimit(1...4)
+                .textFieldStyle(.roundedBorder)
+                .focused($editing)
+
+            Button {
+                send()
+            } label: {
+                Image(systemName: "paperplane.fill")
+                    .foregroundStyle(.brown)
+            }
+            .buttonStyle(.borderless)
+            .disabled(draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 10)
+        .background(.bar)
+    }
+
+    private func messageRow(_ msg: Message) -> some View {
+        VStack(alignment: .leading, spacing: 5) {
+            HStack {
+                Text(msg.userName.isEmpty ? "Family" : msg.userName)
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(.brown)
+                Spacer()
+                Text(msg.createdAt, style: .date)
+                    .font(.system(size: 11))
+                    .foregroundStyle(.secondary)
+            }
+            Text(ArchiveText.inline(msg.content))
+                .font(.system(size: 15))
+                .lineSpacing(4)
+        }
+        .padding(10)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color.brown.opacity(0.07), in: RoundedRectangle(cornerRadius: 10))
+    }
+
+    private func send() {
+        let text = draft.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !text.isEmpty else { return }
+        let author = UserDefaults.standard.string(forKey: "familyName") ?? "Family"
+        let msg = Message(userName: author.isEmpty ? "Family" : author, content: text, role: "family")
+        msg.person = person
+        msg.photo = photo
+        context.insert(msg)
+        try? context.save()
+        draft = ""
+        editing = false
     }
 }
