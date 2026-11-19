@@ -20,6 +20,8 @@ struct NodeDetailView: View {
     @State private var pickerItems: [PhotosPickerItem] = []
     @State private var showPicker = false
     @State private var showVoiceRecorder = false
+    @State private var showAssignFromLibrary = false
+    @State private var showOrder = false
 
     private var personID: UUID? { node.person?.id }
     private var photos: [Photo] {
@@ -86,7 +88,24 @@ struct NodeDetailView: View {
         .toolbar {
             if !isReader {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button { showPicker = true } label: {
+                    Menu {
+                        Button { showPicker = true } label: {
+                            Label("node.action.add.photos", systemImage: "photo.badge.plus")
+                        }
+                        if node.person != nil {
+                            Button { showAssignFromLibrary = true } label: {
+                                Label("node.action.from.library", systemImage: "square.grid.2x2")
+                            }
+                            if photos.count > 1 {
+                                Button { showOrder = true } label: {
+                                    Label("node.action.sort", systemImage: "arrow.up.arrow.down")
+                                }
+                            }
+                        }
+                        Button { showVoiceRecorder = true } label: {
+                            Label("node.action.voice", systemImage: "mic")
+                        }
+                    } label: {
                         Image(systemName: "plus")
                     }
                 }
@@ -96,6 +115,14 @@ struct NodeDetailView: View {
             RecorderSheet(personID: personID ?? UUID(), titleKey: "recorder.node.title") { name, duration in
                 saveVoice(fileName: name, duration: duration)
             }
+        }
+        .sheet(isPresented: $showAssignFromLibrary) {
+            if let person = node.person {
+                AddFromLibrarySheet(person: person, node: node)
+            }
+        }
+        .sheet(isPresented: $showOrder) {
+            PhotoOrderSheet(node: node, photos: photos, personID: personID ?? UUID())
         }
         .photosPicker(isPresented: $showPicker, selection: $pickerItems,
                       maxSelectionCount: 20, matching: .images)

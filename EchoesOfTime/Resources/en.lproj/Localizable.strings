@@ -130,7 +130,6 @@
 "person.story.expand" = "Read more";
 "person.story.collapse" = "Show less";
 "unit.messages" = "messages";
-
 /* 照片库 */
 "library.photos.title" = "Photo Library";
 "library.photos.select" = "Select";
@@ -143,3 +142,22 @@
 "library.photos.delete.confirm" = "Delete these photos?";
 "library.photos.assign.title" = "Choose chapters";
 "library.photos.assign.footer" = "A photo can belong to several chapters at once.";
+
+/* P-C 编辑 */
+"node.action.add.photos" = "Add photos";
+"node.action.from.library" = "Choose from library";
+"node.action.sort" = "Reorder photos";
+"node.action.voice" = "Record narration";
+"photo.edit.action" = "Edit";
+"photo.edit.title" = "Edit photo";
+"photo.edit.caption" = "Caption";
+"photo.edit.caption.placeholder" = "What is happening in this photo?";
+"photo.edit.story" = "Story";
+"photo.edit.story.placeholder" = "Tell the story behind it…";
+"photo.edit.chapters" = "Chapters";
+"photo.edit.no.chapter" = "No chapter yet";
+"photo.library.add.title" = "Add from library";
+"photo.library.only.unassigned" = "Only unassigned";
+"photo.order.title" = "Reorder";
+"photo.untitled" = "Untitled";
+"common.done" = "Done";

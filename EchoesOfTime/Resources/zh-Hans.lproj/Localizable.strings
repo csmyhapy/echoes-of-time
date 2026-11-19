@@ -130,7 +130,6 @@
 "person.story.expand" = "展开全文";
 "person.story.collapse" = "收起";
 "unit.messages" = "条留言";
-
 /* 照片库 */
 "library.photos.title" = "照片库";
 "library.photos.select" = "选择";
@@ -143,3 +142,22 @@
 "library.photos.delete.confirm" = "删除这些照片？";
 "library.photos.assign.title" = "选择章节";
 "library.photos.assign.footer" = "一张照片可以同时属于多个章节。";
+
+/* P-C 编辑 */
+"node.action.add.photos" = "从相册添加照片";
+"node.action.from.library" = "从照片库选择";
+"node.action.sort" = "整理照片顺序";
+"node.action.voice" = "录制旁白";
+"photo.edit.action" = "编辑";
+"photo.edit.title" = "编辑照片";
+"photo.edit.caption" = "照片说明";
+"photo.edit.caption.placeholder" = "这张照片里是什么？";
+"photo.edit.story" = "照片故事";
+"photo.edit.story.placeholder" = "写下它背后的故事…";
+"photo.edit.chapters" = "所属章节";
+"photo.edit.no.chapter" = "未分配章节";
+"photo.library.add.title" = "从照片库加入";
+"photo.library.only.unassigned" = "只看未分配";
+"photo.order.title" = "调整顺序";
+"photo.untitled" = "未命名";
+"common.done" = "完成";

@@ -17,6 +17,7 @@ struct PhotoLightboxView: View {
     @State private var player = AudioPlayer()
     @State private var showRecorder = false
     @State private var showMessages = false
+    @State private var showEdit = false
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var context
 
@@ -62,6 +63,11 @@ struct PhotoLightboxView: View {
                     .navigationTitle("photo.messages")
                     .navigationBarTitleDisplayMode(.inline)
                 }
+            }
+        }
+        .sheet(isPresented: $showEdit) {
+            if let person, let p = photo {
+                PhotoEditSheet(photo: p, person: person)
             }
         }
         .sheet(isPresented: $showRecorder) {
@@ -139,6 +145,17 @@ struct PhotoLightboxView: View {
                     showMessages = true
                 } label: {
                     Label("photo.messages \(count)", systemImage: "bubble.left.and.bubble.right")
+                        .font(.subheadline.weight(.semibold))
+                }
+                .buttonStyle(.borderless)
+                .foregroundStyle(.white.opacity(0.95))
+            }
+
+            if !isReader, person != nil {
+                Button {
+                    showEdit = true
+                } label: {
+                    Label("photo.edit.action", systemImage: "square.and.pencil")
                         .font(.subheadline.weight(.semibold))
                 }
                 .buttonStyle(.borderless)
