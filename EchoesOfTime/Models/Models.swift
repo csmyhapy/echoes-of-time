@@ -242,3 +242,31 @@ extension Photo {
         tags = nodes.map { $0.id.uuidString }.joined(separator: ",")
     }
 }
+
+// MARK: - 封面兜底（对齐网站：章节封面取 tags 里第一张照片）
+
+extension Person {
+    /// 人物封面：自身封面 → 第一张照片
+    var resolvedCoverFileName: String? {
+        if let c = coverImageFileName, !c.isEmpty { return c }
+        return photos.sorted { $0.sortOrder < $1.sortOrder }.first?.imageFileName
+    }
+}
+
+extension Node {
+    /// 章节封面：自身封面 → 本章节第一张照片
+    var resolvedCoverFileName: String? {
+        if let c = coverImageFileName, !c.isEmpty { return c }
+        guard let person else { return nil }
+        return person.photos
+            .filter { $0.belongs(to: self) }
+            .sorted { $0.sortOrder < $1.sortOrder }
+            .first?.imageFileName
+    }
+
+    /// 本章节实际照片数（按标签统计，不是单关系）
+    var resolvedPhotoCount: Int {
+        guard let person else { return photos.count }
+        return person.photos.filter { $0.belongs(to: self) }.count
+    }
+}

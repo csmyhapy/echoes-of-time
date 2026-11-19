@@ -20,6 +20,7 @@ struct PersonDetailView: View {
     @State private var showVoiceRecorder = false
     @State private var exportItem: ExportItem?
     @State private var showExportError = false
+    @State private var storyExpanded = false
     @AppStorage("bgmEnabled") private var bgmEnabled = true
 
     // MARK: - 背景音乐开关（仅人物页有音乐）
@@ -54,9 +55,25 @@ struct PersonDetailView: View {
                 MessageSection(person: person, isReader: isReader)
 
                 if !person.story.isEmpty {
-                    Text(person.story)
-                        .font(.system(size: isReader ? 24 : 16))
-                        .lineSpacing(6)
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text("person.section.story")
+                            .font(.system(size: isReader ? 26 : 20, weight: .semibold))
+
+                        Text(person.story)
+                            .font(.system(size: isReader ? 24 : 16))
+                            .lineSpacing(6)
+                            .lineLimit((isReader || storyExpanded) ? nil : 4)
+                            .fixedSize(horizontal: false, vertical: true)
+
+                        if !isReader {
+                            Button(storyExpanded ? "person.story.collapse" : "person.story.expand") {
+                                withAnimation(.easeInOut(duration: 0.2)) { storyExpanded.toggle() }
+                            }
+                            .font(.system(size: 15, weight: .medium))
+                            .foregroundStyle(.brown)
+                            .buttonStyle(.borderless)
+                        }
+                    }
                 }
 
                 if sortedNodes.isEmpty {
@@ -269,7 +286,7 @@ struct NodeCard: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(spacing: 12) {
                 Group {
-                    if let img = MediaStore.loadImage(fileName: node.coverImageFileName, personID: personID) {
+                    if let img = MediaStore.loadImage(fileName: node.resolvedCoverFileName, personID: personID) {
                         Image(uiImage: img).resizable().scaledToFill()
                     } else {
                         ZStack {

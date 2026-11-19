@@ -148,3 +148,6 @@
 "settings.import.result" = "Import Result";
 
 "privacy.title" = "Privacy Policy";
+"person.section.story" = "A Life in Full";
+"person.story.expand" = "Read more";
+"person.story.collapse" = "Show less";

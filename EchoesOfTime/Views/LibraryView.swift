@@ -310,7 +310,7 @@ struct ArchiveCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            CoverImage(fileName: person.coverImageFileName,
+            CoverImage(fileName: person.resolvedCoverFileName,
                        personID: person.id,
                        iconSize: large ? 56 : 40)
                 .frame(maxWidth: .infinity)

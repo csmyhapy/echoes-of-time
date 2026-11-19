@@ -43,7 +43,7 @@ struct NodeDetailView: View {
                         .foregroundStyle(.brown)
                 }
 
-                if !node.summary.isEmpty {
+                if showsSummary {
                     Text(node.summary)
                         .font(.system(size: isReader ? 24 : 16))
                         .lineSpacing(6)
@@ -105,7 +105,7 @@ struct NodeDetailView: View {
     private var cover: some View {
         Group {
             if let pid = personID,
-               let img = MediaStore.loadImage(fileName: node.coverImageFileName, personID: pid) {
+               let img = MediaStore.loadImage(fileName: node.resolvedCoverFileName, personID: pid) {
                 Image(uiImage: img)
                     .resizable()
                     .scaledToFill()
@@ -122,9 +122,20 @@ struct NodeDetailView: View {
                 }
             }
         }
-        .frame(height: isReader ? 220 : 170)
+        .frame(height: isReader ? 190 : 130)
         .frame(maxWidth: .infinity)
         .clipShape(RoundedRectangle(cornerRadius: 16))
+    }
+
+    /// 简介是否还值得显示：正文已经包含简介内容时隐藏，避免同一件事说两遍
+    private var showsSummary: Bool {
+        let summary = node.summary.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !summary.isEmpty else { return false }
+        let plain = summary.components(separatedBy: CharacterSet.punctuationCharacters).joined()
+        let storyPlain = node.story.components(separatedBy: CharacterSet.punctuationCharacters).joined()
+        let probe = String(plain.prefix(8))
+        guard !probe.isEmpty, !storyPlain.isEmpty else { return true }
+        return !storyPlain.contains(probe)
     }
 
     // MARK: - 章节旁白
@@ -135,25 +146,41 @@ struct NodeDetailView: View {
 
     private var voiceSection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Text("node.voice.title")
-                    .font(.system(size: isReader ? 26 : 20, weight: .semibold))
-                Spacer()
-                if !isReader, personID != nil {
-                    Button { showVoiceRecorder = true } label: {
-                        Label("voice.record", systemImage: "mic.circle.fill")
-                            .font(.system(size: isReader ? 22 : 15))
-                    }
-                    .buttonStyle(.borderless)
-                }
-            }
-
             if let note = nodeVoiceNote, let pid = personID {
+                HStack {
+                    Text("node.voice.title")
+                        .font(.system(size: isReader ? 26 : 20, weight: .semibold))
+                    Spacer()
+                    if !isReader {
+                        Button { showVoiceRecorder = true } label: {
+                            Label("voice.record", systemImage: "mic.circle.fill")
+                                .font(.system(size: isReader ? 22 : 15))
+                        }
+                        .buttonStyle(.borderless)
+                    }
+                }
                 VoiceNotePlayButton(fileName: note.audioFileName, personID: pid)
             } else {
-                Text("voice.empty")
-                    .font(.system(size: isReader ? 20 : 14))
-                    .foregroundStyle(.secondary)
+                // 没有旁白时收成一行，不占整块版面
+                HStack(spacing: 8) {
+                    Image(systemName: "mic")
+                        .font(.system(size: 13))
+                        .foregroundStyle(.tertiary)
+                    Text("voice.empty")
+                        .font(.system(size: 13))
+                        .foregroundStyle(.tertiary)
+                    Spacer()
+                    if !isReader, personID != nil {
+                        Button {
+                            showVoiceRecorder = true
+                        } label: {
+                            Text("voice.record")
+                                .font(.system(size: 13, weight: .medium))
+                                .foregroundStyle(.brown)
+                        }
+                        .buttonStyle(.borderless)
+                    }
+                }
             }
         }
         .padding(.top, 4)
@@ -194,8 +221,8 @@ struct NodeDetailView: View {
                     .padding(.vertical, 12)
             } else {
                 LazyVGrid(
-                    columns: [GridItem(.adaptive(minimum: isReader ? 150 : 110), spacing: 10)],
-                    spacing: 12
+                    columns: Array(repeating: GridItem(.flexible(), spacing: 6), count: 3),
+                    spacing: 6
                 ) {
                     ForEach(photos) { photo in
                         Button {
@@ -218,8 +245,9 @@ struct NodeDetailView: View {
     }
 
     private func thumbnail(_ photo: Photo) -> some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Group {
+        Color.clear
+            .aspectRatio(1, contentMode: .fit)
+            .overlay {
                 if let pid = personID,
                    let img = MediaStore.loadImage(fileName: photo.imageFileName, personID: pid) {
                     Image(uiImage: img)
@@ -227,30 +255,24 @@ struct NodeDetailView: View {
                         .scaledToFill()
                 } else {
                     ZStack {
-                        Rectangle().fill(Color.brown.opacity(0.12))
+                        Color.brown.opacity(0.12)
                         Image(systemName: "photo")
                             .foregroundStyle(.brown)
                     }
                 }
             }
-            .frame(maxWidth: .infinity)
-            .frame(height: isReader ? 160 : 120)
-            .clipShape(RoundedRectangle(cornerRadius: 10))
-
-            if !photo.caption.isEmpty {
-                Text(photo.caption)
-                    .font(.system(size: isReader ? 20 : 13))
-                    .foregroundStyle(.primary)
-                    .lineLimit(2)
-                    .multilineTextAlignment(.leading)
+            .clipped()
+            .clipShape(RoundedRectangle(cornerRadius: 8))
+            .overlay(alignment: .bottomTrailing) {
+                if photo.audioFileName != nil {
+                    Image(systemName: "waveform")
+                        .font(.system(size: 11, weight: .semibold))
+                        .foregroundStyle(.white)
+                        .padding(5)
+                        .background(.black.opacity(0.45), in: Circle())
+                        .padding(5)
+                }
             }
-
-            if photo.audioFileName != nil {
-                Label("photo.has.audio", systemImage: "waveform")
-                    .font(.system(size: isReader ? 17 : 11))
-                    .foregroundStyle(.brown.opacity(0.8))
-            }
-        }
     }
 
     // MARK: - 照片操作
