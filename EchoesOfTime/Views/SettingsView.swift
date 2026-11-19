@@ -109,6 +109,12 @@ struct SettingsView: View {
             }
 
             Section {
+                NavigationLink {
+                    PrivacyPolicyView()
+                } label: {
+                    Label("privacy.title", systemImage: "hand.raised")
+                }
+
                 HStack {
                     Text("settings.version")
                     Spacer()

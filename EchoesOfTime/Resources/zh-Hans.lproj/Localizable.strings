@@ -146,3 +146,5 @@
 "settings.import.archive" = "导入档案包";
 "settings.import.note" = "选择从旧网站或另一台设备导出的 .echosarchive.zip 文件。";
 "settings.import.result" = "导入结果";
+
+"privacy.title" = "隐私政策";

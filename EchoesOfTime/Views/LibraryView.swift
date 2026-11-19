@@ -19,7 +19,6 @@ struct LibraryView: View {
     @State private var showLimitAlert = false
     @State private var editingPerson: Person?
     @State private var addingChapterFor: Person?
-    @AppStorage("bgmEnabled") private var bgmEnabled = true
 
     /// 用户自己的正式档案
     private var realPersons: [Person] { persons.filter { !$0.isDemo } }
@@ -97,40 +96,18 @@ struct LibraryView: View {
     // MARK: - 顶部
 
     private var header: some View {
-        ZStack(alignment: .topTrailing) {
-            VStack(spacing: 6) {
-                Text("app.title")
-                    .font(.system(size: isReader ? 40 : 32, weight: .bold))
-                    .frame(maxWidth: .infinity)
+        VStack(spacing: 6) {
+            Text("app.title")
+                .font(.system(size: isReader ? 40 : 32, weight: .bold))
+                .frame(maxWidth: .infinity)
 
-                Text("library.subtitle")
-                    .font(.system(size: isReader ? 20 : 13))
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-            }
-
-            bgmToggle
+            Text("library.subtitle")
+                .font(.system(size: isReader ? 20 : 13))
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
         }
         .padding(.top, 6)
         .padding(.bottom, 2)
-    }
-
-    /// 背景音乐开关（一键静音，方便不想听声音的用户）
-    private var bgmToggle: some View {
-        Button {
-            bgmEnabled.toggle()
-            if !bgmEnabled { BGMManager.shared.stop() }
-        } label: {
-            Image(systemName: bgmEnabled ? "speaker.wave.2.fill" : "speaker.slash.fill")
-                .font(.system(size: 15, weight: .medium))
-                .foregroundStyle(bgmEnabled ? Color.brown : Color.secondary)
-                .frame(width: 36, height: 36)
-                .background(Color(.secondarySystemGroupedBackground))
-                .clipShape(Circle())
-                .shadow(color: .black.opacity(0.06), radius: 4, y: 1)
-        }
-        .buttonStyle(.plain)
-        .accessibilityLabel(Text(bgmEnabled ? "bgm.off" : "bgm.on"))
     }
 
     // MARK: - 空状态（连示例都没有）

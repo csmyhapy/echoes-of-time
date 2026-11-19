@@ -20,6 +20,25 @@ struct PersonDetailView: View {
     @State private var showVoiceRecorder = false
     @State private var exportItem: ExportItem?
     @State private var showExportError = false
+    @AppStorage("bgmEnabled") private var bgmEnabled = true
+
+    // MARK: - 背景音乐开关（仅人物页有音乐）
+
+    private var bgmButton: some View {
+        Button {
+            bgmEnabled.toggle()
+            if bgmEnabled {
+                BGMManager.shared.play(fileName: person.bgmFileName, personID: person.id)
+            } else {
+                BGMManager.shared.stop()
+            }
+        } label: {
+            Image(systemName: bgmEnabled ? "speaker.wave.2.fill" : "speaker.slash.fill")
+                .font(.system(size: 15, weight: .medium))
+                .foregroundStyle(bgmEnabled ? Color.brown : Color.secondary)
+        }
+        .accessibilityLabel(Text(bgmEnabled ? "bgm.off" : "bgm.on"))
+    }
 
     private var sortedNodes: [Node] {
         person.nodes.sorted { $0.sortOrder < $1.sortOrder }
@@ -83,6 +102,9 @@ struct PersonDetailView: View {
         .navigationTitle(person.name)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                bgmButton
+            }
             if !isReader {
                 ToolbarItem(placement: .topBarTrailing) {
                     Menu {

@@ -146,3 +146,5 @@
 "settings.import.archive" = "Import Archive Package";
 "settings.import.note" = "Choose an .echosarchive.zip exported from the old site or another device.";
 "settings.import.result" = "Import Result";
+
+"privacy.title" = "Privacy Policy";
