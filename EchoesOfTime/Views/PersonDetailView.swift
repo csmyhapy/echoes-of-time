@@ -218,15 +218,21 @@ struct PersonDetailView: View {
     // MARK: - 人生故事（折叠）
 
     private var storySection: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        let body = ArchiveText.parse(person.story)
+        let expanded = isReader || storyExpanded
+        return VStack(alignment: .leading, spacing: 10) {
             Text("person.section.story")
                 .font(.system(size: isReader ? 26 : 20, weight: .semibold))
 
-            Text(ArchiveText.paragraphs(person.story))
+            Text(body.text)
                 .font(.system(size: isReader ? 24 : 16))
                 .lineSpacing(6)
-                .lineLimit((isReader || storyExpanded) ? nil : 4)
+                .lineLimit(expanded ? nil : 4)
                 .fixedSize(horizontal: false, vertical: true)
+
+            if body.hasSignature && expanded {
+                signatureBlock(body)
+            }
 
             if !isReader {
                 Button(storyExpanded ? "person.story.collapse" : "person.story.expand") {
@@ -237,6 +243,23 @@ struct PersonDetailView: View {
                 .buttonStyle(.borderless)
             }
         }
+    }
+
+    /// 落款：分隔线 + 署名，整体右对齐
+    private func signatureBlock(_ body: ArchiveText.Body) -> some View {
+        VStack(alignment: .trailing, spacing: 4) {
+            if !body.separator.isEmpty {
+                Text(body.separator)
+                    .font(.system(size: isReader ? 15 : 12))
+                    .foregroundStyle(.secondary)
+            }
+            Text(body.signature)
+                .font(.system(size: isReader ? 18 : 14))
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.trailing)
+        }
+        .frame(maxWidth: .infinity, alignment: .trailing)
+        .padding(.top, 2)
     }
 
     // MARK: - 人物旁白

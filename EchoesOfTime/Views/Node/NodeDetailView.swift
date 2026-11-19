@@ -54,9 +54,25 @@ struct NodeDetailView: View {
                 }
 
                 if !node.story.isEmpty {
-                    Text(ArchiveText.paragraphs(node.story))
+                    Text(storyBody.text)
                         .font(.system(size: isReader ? 24 : 16))
                         .lineSpacing(6)
+
+                    if storyBody.hasSignature {
+                        VStack(alignment: .trailing, spacing: 4) {
+                            if !storyBody.separator.isEmpty {
+                                Text(storyBody.separator)
+                                    .font(.system(size: isReader ? 15 : 12))
+                                    .foregroundStyle(.secondary)
+                            }
+                            Text(storyBody.signature)
+                                .font(.system(size: isReader ? 18 : 14))
+                                .foregroundStyle(.secondary)
+                                .multilineTextAlignment(.trailing)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .trailing)
+                        .padding(.top, 2)
+                    }
                 }
 
                 if let person = node.person {
@@ -128,6 +144,8 @@ struct NodeDetailView: View {
     }
 
     /// 简介是否还值得显示：正文已经包含简介内容时隐藏，避免同一件事说两遍
+    private var storyBody: ArchiveText.Body { ArchiveText.parse(node.story) }
+
     private var showsSummary: Bool {
         let summary = node.summary.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !summary.isEmpty else { return false }

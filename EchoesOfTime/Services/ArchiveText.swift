@@ -3,30 +3,39 @@
 //  EchoesOfTime
 //
 //  导入文本的清洗与中文段落排版
-//  - 数据库导出里的字面 "\r\n" 会变成真实换行
+//  - 数据库导出里的字面 "\r\n" 转成真实换行
 //  - 去掉不可见控制字符、合并多余空行
 //  - 中文段落首行缩进两个全角空格
+//  - 识别末尾「---」分隔线之后的落款，交给视图右对齐
 //
 
 import Foundation
 
 enum ArchiveText {
 
-    /// 清理文本：字面转义序列 → 真实字符，去控制字符，压掉多余空行
-    static func clean(_ raw: String) -> String {
+    /// 正文解析结果：正文（已排版） + 分隔线 + 落款
+    struct Body {
+        var text: String
+        var separator: String
+        var signature: String
+
+        var hasSignature: Bool { !signature.isEmpty }
+    }
+
+    // MARK: - 基础清洗
+
+    /// 规范化：字面转义 → 真换行、去控制字符、行尾 trim、合并空行（保留分隔行）
+    static func normalized(_ raw: String) -> String {
         guard !raw.isEmpty else { return "" }
 
         var text = raw
-        // 字面反斜杠序列（SQL dump / JSON 双重转义常见）
         text = text.replacingOccurrences(of: "\\r\\n", with: "\n")
         text = text.replacingOccurrences(of: "\\n", with: "\n")
         text = text.replacingOccurrences(of: "\\r", with: "\n")
         text = text.replacingOccurrences(of: "\\t", with: " ")
-        // 真实换行统一为 \n
         text = text.replacingOccurrences(of: "\r\n", with: "\n")
         text = text.replacingOccurrences(of: "\r", with: "\n")
 
-        // 去掉控制字符（保留换行）
         text = String(String.UnicodeScalarView(text.unicodeScalars.filter { scalar in
             if scalar.value == 10 { return true }
             if scalar.value < 32 { return false }
@@ -35,13 +44,10 @@ enum ArchiveText {
             return true
         }))
 
-        // 行尾空白 + 连续空行压缩
         var lines: [String] = []
         for line in text.components(separatedBy: "\n") {
             let trimmed = line.trimmingCharacters(in: .whitespaces)
-            if isSeparatorLine(trimmed) {
-                if let last = lines.last, !last.isEmpty { lines.append("") }
-            } else if trimmed.isEmpty {
+            if trimmed.isEmpty {
                 if let last = lines.last, !last.isEmpty { lines.append("") }
             } else {
                 lines.append(trimmed)
@@ -50,11 +56,16 @@ enum ArchiveText {
         return lines.joined(separator: "\n").trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
-    /// 纯符号分隔线（--- / === / *** 等），排版时丢掉
-    private static func isSeparatorLine(_ line: String) -> Bool {
-        guard line.count >= 3 else { return false }
-        let separators: Set<Character> = ["-", "—", "–", "=", "*", "_", "~", "·", "|"]
-        return line.allSatisfy { separators.contains($0) }
+    /// 短文本清洗（标题、简介、留言、照片说明）：顺带丢掉纯符号行
+    static func clean(_ raw: String) -> String {
+        let lines = normalized(raw).components(separatedBy: "\n")
+        return lines.filter { !isSeparatorLine($0) }
+            .joined(separator: "\n")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    static func inline(_ raw: String) -> String {
+        clean(raw)
     }
 
     /// 是否含中日韩文字（决定要不要按中文排版做缩进）
@@ -66,21 +77,58 @@ enum ArchiveText {
         }
     }
 
-    /// 正文排版：按段落切分，中文段落首行缩进两个全角空格，段间空一行
-    static func paragraphs(_ raw: String) -> String {
-        let cleaned = clean(raw)
-        guard !cleaned.isEmpty else { return "" }
-        let indent = containsCJK(cleaned)
-        let parts = cleaned.components(separatedBy: "\n")
-            .map { $0.trimmingCharacters(in: .whitespaces) }
-            .filter { !$0.isEmpty }
-        guard !parts.isEmpty else { return "" }
-        let prefix = indent ? "　　" : ""
-        return parts.map { prefix + $0 }.joined(separator: "\n\n")
+    /// 纯符号分隔线（--- / === / *** 等）。在正文里它是落款的分界线，要保留
+    static func isSeparatorLine(_ line: String) -> Bool {
+        guard line.count >= 3 else { return false }
+        let separators: Set<Character> = ["-", "—", "–", "=", "*", "_", "~", "·", "|"]
+        return line.allSatisfy { separators.contains($0) }
     }
 
-    /// 单行/短文本：只清洗，不缩进、不空行
-    static func inline(_ raw: String) -> String {
-        clean(raw)
+    // MARK: - 段落排版
+
+    /// 正文排版：按段切分，中文段落首行缩进两个全角空格，段间空一行
+    static func paragraphs(_ raw: String) -> String {
+        indent(normalized(raw))
+    }
+
+    /// 解析正文 + 落款
+    /// 规则：文本里最后一个分隔行（---）之后若只有 1–3 行、总字数不超过 48，视为落款
+    static func parse(_ raw: String) -> Body {
+        let normalizedText = normalized(raw)
+        guard !normalizedText.isEmpty else { return Body(text: "", separator: "", signature: "") }
+
+        let lines = normalizedText.components(separatedBy: "\n")
+        if let sepIndex = lines.lastIndex(where: { isSeparatorLine($0) }) {
+            let tail = Array(lines[(sepIndex + 1)...])
+                .map { $0.trimmingCharacters(in: .whitespaces) }
+                .filter { !$0.isEmpty }
+            let signature = tail.joined(separator: "\n")
+            let head = Array(lines[..<sepIndex])
+            if !tail.isEmpty, tail.count <= 3, signature.count <= 48 {
+                return Body(
+                    text: indent(head.joined(separator: "\n")),
+                    separator: lines[sepIndex],
+                    signature: signature
+                )
+            }
+        }
+
+        return Body(text: indent(normalizedText), separator: "", signature: "")
+    }
+
+    /// 去掉落款、只留正文（用于预览、摘要）
+    static func bodyOnly(_ raw: String) -> String {
+        parse(raw).text
+    }
+
+    private static func indent(_ cleaned: String) -> String {
+        guard !cleaned.isEmpty else { return "" }
+        let useIndent = containsCJK(cleaned)
+        let parts = cleaned.components(separatedBy: "\n")
+            .map { $0.trimmingCharacters(in: .whitespaces) }
+            .filter { !$0.isEmpty && !isSeparatorLine($0) }
+        guard !parts.isEmpty else { return "" }
+        let prefix = useIndent ? "　　" : ""
+        return parts.map { prefix + $0 }.joined(separator: "\n\n")
     }
 }
