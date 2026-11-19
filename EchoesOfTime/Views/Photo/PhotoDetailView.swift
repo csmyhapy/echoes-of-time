@@ -21,6 +21,7 @@ struct PhotoLightboxView: View {
     @State private var showMessages = false
     @State private var showEdit = false
     @State private var storyExpanded = false
+    @State private var narrationTotal: Double = 0
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var context
 
@@ -62,7 +63,9 @@ struct PhotoLightboxView: View {
         .onChange(of: index) { _, _ in
             player.stop()
             storyExpanded = false
+            refreshNarrationDuration()
         }
+        .onAppear { refreshNarrationDuration() }
         .onDisappear { player.stop() }
         .sheet(isPresented: $showMessages) {
             if let person, let p = photo {
@@ -237,17 +240,26 @@ struct PhotoLightboxView: View {
                     VStack(alignment: .leading, spacing: 6) {
                         ProgressView(value: player.progress)
                             .tint(.brown)
-                        Button {
-                            toggle(p)
-                        } label: {
-                            Label(
-                                player.isPlayingNow ? "photo.narration.pause" : "photo.narration.play",
-                                systemImage: player.isPlayingNow ? "pause.fill" : "play.fill"
-                            )
-                            .font(.system(size: 14, weight: .medium))
+                        HStack(spacing: 10) {
+                            Button {
+                                toggle(p)
+                            } label: {
+                                Label(
+                                    player.isPlayingNow ? "photo.narration.pause" : "photo.narration.play",
+                                    systemImage: player.isPlayingNow ? "pause.fill" : "play.fill"
+                                )
+                                .font(.system(size: 14, weight: .medium))
+                            }
+                            .buttonStyle(.borderless)
+                            .foregroundStyle(.brown)
+
+                            if narrationTotal > 0 {
+                                Text(timerText)
+                                    .font(.system(size: 12, weight: .medium))
+                                    .foregroundStyle(.secondary)
+                                    .monospacedDigit()
+                            }
                         }
-                        .buttonStyle(.borderless)
-                        .foregroundStyle(.brown)
                     }
                 }
             } else {
@@ -256,6 +268,21 @@ struct PhotoLightboxView: View {
                     .foregroundStyle(.tertiary)
             }
         }
+    }
+
+    private var timerText: String {
+        if player.isPlayingNow {
+            return "\(AudioPlayer.timeText(player.currentTime)) / \(AudioPlayer.timeText(narrationTotal))"
+        }
+        return AudioPlayer.timeText(narrationTotal)
+    }
+
+    private func refreshNarrationDuration() {
+        guard let p = photo, let name = p.audioFileName else {
+            narrationTotal = 0
+            return
+        }
+        narrationTotal = AudioPlayer.duration(of: MediaStore.url(fileName: name, personID: personID))
     }
 
     private func toggle(_ p: Photo) {

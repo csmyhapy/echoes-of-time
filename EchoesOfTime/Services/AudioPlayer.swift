@@ -66,6 +66,18 @@ final class AudioPlayer {
         }
     }
 
+    /// 读取任意音频文件的时长（秒），用于未播放时显示总长
+    static func duration(of url: URL) -> Double {
+        guard FileManager.default.fileExists(atPath: url.path) else { return 0 }
+        return (try? AVAudioPlayer(contentsOf: url))?.duration ?? 0
+    }
+
+    /// 秒数格式化为 0:42 / 1:05
+    static func timeText(_ seconds: Double) -> String {
+        let total = Int(seconds.rounded())
+        return String(format: "%d:%02d", total / 60, total % 60)
+    }
+
     func stop() {
         player?.stop()
         player = nil

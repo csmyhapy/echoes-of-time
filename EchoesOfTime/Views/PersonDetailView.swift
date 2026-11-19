@@ -381,6 +381,13 @@ struct PersonDetailView: View {
                     Spacer()
                     statsRow
                 }
+
+                if let title = person.bgmTitle, !title.isEmpty {
+                    Label(title, systemImage: "music.note")
+                        .font(.system(size: isReader ? 16 : 12))
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                }
         }
     }
 

@@ -9,6 +9,7 @@ import SwiftUI
 import SwiftData
 import PhotosUI
 import UIKit
+import UniformTypeIdentifiers
 
 struct PersonEditView: View {
     @Environment(\.modelContext) private var context
@@ -25,6 +26,9 @@ struct PersonEditView: View {
     @State private var pickerItem: PhotosPickerItem?
     @State private var newID = UUID()
     @State private var loaded = false
+    @State private var bgmFileName: String?
+    @State private var bgmTitle = ""
+    @State private var showBgmImporter = false
 
     private var isNew: Bool { person == nil }
 
@@ -49,6 +53,26 @@ struct PersonEditView: View {
                 Section("edit.person.section.cover") {
                     coverPicker
                 }
+
+                Section("edit.person.section.bgm") {
+                    HStack(spacing: 8) {
+                        Image(systemName: "music.note")
+                            .foregroundStyle(.brown)
+                        Text(bgmTitle.isEmpty ? "edit.bgm.none" : bgmTitle)
+                            .foregroundStyle(bgmTitle.isEmpty ? .secondary : .primary)
+                            .lineLimit(1)
+                        Spacer()
+                        if !bgmTitle.isEmpty {
+                            Button("common.delete", role: .destructive) { removeBgm() }
+                                .font(.system(size: 14))
+                        }
+                    }
+                    Button {
+                        showBgmImporter = true
+                    } label: {
+                        Label("edit.bgm.choose", systemImage: "folder.badge.plus")
+                    }
+                }
             }
             .navigationTitle(isNew ? "edit.person.new.title" : "edit.person.edit.title")
             .navigationBarTitleDisplayMode(.inline)
@@ -63,6 +87,15 @@ struct PersonEditView: View {
             }
             .onAppear(perform: load)
             .onChange(of: pickerItem) { _, item in loadCover(item) }
+            .fileImporter(
+                isPresented: $showBgmImporter,
+                allowedContentTypes: [.audio, .mp3, .mpeg4Audio, .wav],
+                allowsMultipleSelection: false
+            ) { result in
+                if case .success(let urls) = result, let url = urls.first {
+                    importBgm(url)
+                }
+            }
         }
     }
 
@@ -96,6 +129,27 @@ struct PersonEditView: View {
         }
     }
 
+    // MARK: - 背景音乐
+
+    private func importBgm(_ url: URL) {
+        let pid = person?.id ?? newID
+        guard let name = MediaStore.saveAudioFile(from: url, personID: pid) else { return }
+        if let old = bgmFileName {
+            MediaStore.deleteFile(fileName: old, personID: pid)
+        }
+        bgmFileName = name
+        bgmTitle = url.deletingPathExtension().lastPathComponent
+    }
+
+    private func removeBgm() {
+        let pid = person?.id ?? newID
+        if let old = bgmFileName {
+            MediaStore.deleteFile(fileName: old, personID: pid)
+        }
+        bgmFileName = nil
+        bgmTitle = ""
+    }
+
     // MARK: - 载入与保存
 
     private func load() {
@@ -109,6 +163,8 @@ struct PersonEditView: View {
         if let f = person.coverImageFileName {
             coverImage = MediaStore.loadImage(fileName: f, personID: person.id)
         }
+        bgmFileName = person.bgmFileName
+        bgmTitle = person.bgmTitle ?? ""
     }
 
     private func save() {
@@ -124,6 +180,9 @@ struct PersonEditView: View {
         target.birthYear = birthYear.trimmingCharacters(in: .whitespacesAndNewlines)
         target.summary = summary
         target.story = story
+
+        target.bgmFileName = bgmFileName
+        target.bgmTitle = bgmTitle.isEmpty ? nil : bgmTitle
 
         if let img = coverImage {
             if let old = target.coverImageFileName {

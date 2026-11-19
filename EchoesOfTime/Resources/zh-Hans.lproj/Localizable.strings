@@ -165,3 +165,9 @@
 "photo.story.title" = "照片故事";
 "photo.narration.title" = "旁白";
 "common.close" = "关闭";
+"edit.person.section.bgm" = "背景音乐";
+"edit.bgm.none" = "还没有背景音乐";
+"edit.bgm.choose" = "选择音频文件";
+"node.action.set.cover" = "设为章节封面";
+"node.cover.badge" = "封面";
+"common.edit.photo" = "编辑这张照片";

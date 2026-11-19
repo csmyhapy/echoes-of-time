@@ -24,6 +24,7 @@ struct NodeDetailView: View {
     @State private var showAssignFromLibrary = false
     @State private var showOrder = false
     @State private var showNodeEdit = false
+    @State private var photoToEdit: Photo?
     @State private var photoExpanded = false
     @State private var storyExpanded = false
 
@@ -136,6 +137,11 @@ struct NodeDetailView: View {
         .sheet(isPresented: $showVoiceRecorder) {
             RecorderSheet(personID: personID ?? UUID(), titleKey: "recorder.node.title") { name, duration in
                 saveVoice(fileName: name, duration: duration)
+            }
+        }
+        .sheet(item: $photoToEdit) { photo in
+            if let person = node.person {
+                PhotoEditSheet(photo: photo, person: person)
             }
         }
         .sheet(isPresented: $showNodeEdit) {
@@ -305,8 +311,16 @@ struct NodeDetailView: View {
                         .buttonStyle(.plain)
                         .contextMenu {
                             if !isReader {
+                                Button {
+                                    node.coverImageFileName = photo.imageFileName
+                                    try? context.save()
+                                } label: {
+                                    Label("node.action.set.cover", systemImage: "rectangle.badge.checkmark")
+                                }
+                                Divider()
                                 Button("photo.moveLeft") { move(photo, by: -1) }
                                 Button("photo.moveRight") { move(photo, by: 1) }
+                                Button("common.edit.photo") { photoToEdit = photo }
                                 Button("common.delete", role: .destructive) { delete(photo) }
                             }
                         }
@@ -365,6 +379,17 @@ struct NodeDetailView: View {
             }
             .clipped()
             .clipShape(RoundedRectangle(cornerRadius: 8))
+            .overlay(alignment: .topLeading) {
+                if photo.imageFileName == node.coverImageFileName {
+                    Text("node.cover.badge")
+                        .font(.system(size: 10, weight: .semibold))
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 5)
+                        .padding(.vertical, 2)
+                        .background(Color.brown.opacity(0.9), in: Capsule())
+                        .padding(4)
+                }
+            }
             .overlay(alignment: .bottomTrailing) {
                 if photo.audioFileName != nil {
                     Image(systemName: "waveform")

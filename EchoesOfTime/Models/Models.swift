@@ -22,6 +22,7 @@ final class Person {
     var story: String              // 人生故事长文
     var coverImageFileName: String? // 封面图文件名（Media 目录内）
     var bgmFileName: String?        // 背景音乐文件名
+    var bgmTitle: String?           // 背景音乐曲名（显示用）
     var createdAt: Date
     /// 内置示例档案（虚构、仅供体验），不占用正式档案名额
     var isDemo: Bool = false
@@ -45,6 +46,8 @@ final class Person {
         summary: String = "",
         story: String = "",
         coverImageFileName: String? = nil,
+        bgmFileName: String? = nil,
+        bgmTitle: String? = nil,
         createdAt: Date = .now,
         isDemo: Bool = false
     ) {
@@ -54,6 +57,8 @@ final class Person {
         self.summary = summary
         self.story = story
         self.coverImageFileName = coverImageFileName
+        self.bgmFileName = bgmFileName
+        self.bgmTitle = bgmTitle
         self.createdAt = createdAt
         self.isDemo = isDemo
     }

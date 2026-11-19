@@ -106,19 +106,38 @@ struct VoiceNotePlayButton: View {
     let personID: UUID
 
     @State private var player = AudioPlayer()
+    @State private var total: Double = 0
 
     var body: some View {
         TimelineView(.periodic(from: .now, by: 0.2)) { _ in
-            Button {
-                player.toggle(url: MediaStore.url(fileName: fileName, personID: personID))
-            } label: {
-                Label(
-                    player.isPlayingNow ? "photo.narration.pause" : "voice.play",
-                    systemImage: player.isPlayingNow ? "pause.circle.fill" : "play.circle.fill"
-                )
+            HStack(spacing: 10) {
+                Button {
+                    player.toggle(url: MediaStore.url(fileName: fileName, personID: personID))
+                } label: {
+                    Label(
+                        player.isPlayingNow ? "photo.narration.pause" : "voice.play",
+                        systemImage: player.isPlayingNow ? "pause.circle.fill" : "play.circle.fill"
+                    )
+                }
+                .buttonStyle(.borderless)
+
+                Text(timeText)
+                    .font(.system(size: 12, weight: .medium))
+                    .foregroundStyle(.secondary)
+                    .monospacedDigit()
             }
-            .buttonStyle(.borderless)
+        }
+        .onAppear {
+            total = AudioPlayer.duration(of: MediaStore.url(fileName: fileName, personID: personID))
         }
         .onDisappear { player.stop() }
+    }
+
+    private var timeText: String {
+        guard total > 0 else { return "" }
+        if player.isPlayingNow {
+            return "\(AudioPlayer.timeText(player.currentTime)) / \(AudioPlayer.timeText(total))"
+        }
+        return AudioPlayer.timeText(total)
     }
 }

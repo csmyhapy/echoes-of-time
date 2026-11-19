@@ -165,3 +165,9 @@
 "photo.story.title" = "Story";
 "photo.narration.title" = "Narration";
 "common.close" = "Close";
+"edit.person.section.bgm" = "Background music";
+"edit.bgm.none" = "No music yet";
+"edit.bgm.choose" = "Choose an audio file";
+"node.action.set.cover" = "Set as chapter cover";
+"node.cover.badge" = "Cover";
+"common.edit.photo" = "Edit this photo";

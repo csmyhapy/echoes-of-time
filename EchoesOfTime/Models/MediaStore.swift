@@ -54,6 +54,26 @@ enum MediaStore {
         }
     }
 
+    /// 把外部音频文件拷进档案目录（背景音乐导入用）
+    static func saveAudioFile(from sourceURL: URL, personID: UUID) -> String? {
+        let ext = sourceURL.pathExtension.isEmpty ? "m4a" : sourceURL.pathExtension.lowercased()
+        let name = UUID().uuidString + "." + ext
+        let dest = url(fileName: name, personID: personID)
+
+        let scoped = sourceURL.startAccessingSecurityScopedResource()
+        defer { if scoped { sourceURL.stopAccessingSecurityScopedResource() } }
+
+        do {
+            if FileManager.default.fileExists(atPath: dest.path) {
+                try FileManager.default.removeItem(at: dest)
+            }
+            try FileManager.default.copyItem(at: sourceURL, to: dest)
+            return name
+        } catch {
+            return nil
+        }
+    }
+
     static func loadImage(fileName: String?, personID: UUID) -> UIImage? {
         guard let fileName else { return nil }
         let path = url(fileName: fileName, personID: personID).path
