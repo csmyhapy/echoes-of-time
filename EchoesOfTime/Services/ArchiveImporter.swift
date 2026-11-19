@@ -153,13 +153,15 @@ enum ArchiveImporter {
         }
         person.bgmFileName = "bgm_demo.m4a"
 
-        // 章节与照片
-        var nodeByName: [String: Node] = [:]
         var photoByCaption: [String: Photo] = [:]
         var photoTotal = 0
         var skipped = 0
 
-        for (index, nodeDTO) in dto.nodes.enumerated() {
+        // 章节：先全部建好，才能把照片的多章节标签映射回本机节点
+        var nodeByWebID: [Int: Node] = [:]
+        var nodeByName: [String: Node] = [:]
+
+        for nodeDTO in dto.nodes {
             let node = Node(
                 name: nodeDTO.name,
                 yearRange: nodeDTO.yearRange,
@@ -172,29 +174,47 @@ enum ArchiveImporter {
             node.person = person
             context.insert(node)
             nodeByName[nodeDTO.name] = node
-            _ = index
+            if let webID = nodeDTO.webID { nodeByWebID[webID] = node }
+        }
 
-            for photoDTO in nodeDTO.photos.sorted(by: { $0.sortOrder < $1.sortOrder }) {
-                guard writtenMedia.contains(photoDTO.imageFileName) else {
-                    skipped += 1
-                    continue
-                }
-                let photo = Photo(
-                    imageFileName: photoDTO.imageFileName,
-                    audioFileName: photoDTO.audioFileName.flatMap { writtenMedia.contains($0) ? $0 : nil },
-                    caption: photoDTO.caption,
-                    story: photoDTO.story,
-                    tags: photoDTO.tags,
-                    sortOrder: photoDTO.sortOrder
-                )
-                photo.person = person
-                photo.node = node
-                context.insert(photo)
-                photoTotal += 1
-                if !photoDTO.caption.isEmpty {
-                    photoByCaption[photoDTO.caption] = photo
-                }
+        // 照片：一张照片可同时挂多个章节（对应网站 tags 字段）
+        func makePhoto(_ photoDTO: PhotoArchiveDTO, primaryNode: Node?) -> Bool {
+            guard writtenMedia.contains(photoDTO.imageFileName) else { return false }
+            let photo = Photo(
+                imageFileName: photoDTO.imageFileName,
+                audioFileName: photoDTO.audioFileName.flatMap { writtenMedia.contains($0) ? $0 : nil },
+                caption: photoDTO.caption,
+                story: photoDTO.story,
+                tags: "",
+                sortOrder: photoDTO.sortOrder
+            )
+            photo.person = person
+            photo.node = primaryNode
+
+            let mapped = (photoDTO.webNodeIDs ?? []).compactMap { nodeByWebID[$0] }
+            if !mapped.isEmpty {
+                photo.setTaggedNodes(mapped)
+            } else if let primaryNode {
+                photo.setTaggedNodes([primaryNode])
             }
+            // 既无标签也无主章节 → 只存在于照片库，等待用户分配
+
+            context.insert(photo)
+            if !photoDTO.caption.isEmpty, photoByCaption[photoDTO.caption] == nil {
+                photoByCaption[photoDTO.caption] = photo
+            }
+            return true
+        }
+
+        for nodeDTO in dto.nodes {
+            guard let node = nodeByName[nodeDTO.name] else { continue }
+            for photoDTO in nodeDTO.photos.sorted(by: { $0.sortOrder < $1.sortOrder }) {
+                if makePhoto(photoDTO, primaryNode: node) { photoTotal += 1 } else { skipped += 1 }
+            }
+        }
+
+        for photoDTO in dto.unassignedPhotos ?? [] {
+            if makePhoto(photoDTO, primaryNode: nil) { photoTotal += 1 } else { skipped += 1 }
         }
 
         // 留言

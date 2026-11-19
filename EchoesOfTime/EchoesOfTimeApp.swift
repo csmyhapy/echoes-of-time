@@ -57,6 +57,9 @@ struct RootView: View {
         .onAppear {
             lock.lockIfNeeded()
             seedDemoIfNeeded()
+            #if DEBUG
+            importDebugArchivesIfNeeded()
+            #endif
         }
         .onChange(of: scenePhase) { _, phase in
             if phase == .active { lock.lockIfNeeded() }
@@ -100,6 +103,19 @@ struct RootView: View {
             DemoData.insert(into: context, language: appState.language)
         }
     }
+
+    #if DEBUG
+    /// 调试用：把沙盒 Documents 里的 .zip 档案包自动导入，用于核对真实数据的排版
+    @MainActor
+    private func importDebugArchivesIfNeeded() {
+        guard let docs = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first,
+              let files = try? FileManager.default.contentsOfDirectory(at: docs, includingPropertiesForKeys: nil) else { return }
+        for url in files where url.pathExtension == "zip" {
+            _ = try? ArchiveImporter.importArchive(at: url, context: context)
+            try? FileManager.default.removeItem(at: url)
+        }
+    }
+    #endif
 }
 
 // MARK: - 编辑模式（子女使用）

@@ -25,7 +25,49 @@ struct LibraryView: View {
     /// 内置示例（虚构，仅供体验）
     private var demoPersons: [Person] { persons.filter { $0.isDemo } }
 
+    @ViewBuilder
     var body: some View {
+        #if DEBUG
+        // 调试：启动参数直达人物页/章节页（截图与排版核对用，Release 不编译）
+        if let target = debugTarget, let first = realPersons.first {
+            if target == "node" {
+                let nodes = first.nodes.sorted { $0.sortOrder < $1.sortOrder }
+                let node = debugNodeName.flatMap { name in nodes.first { $0.name == name } } ?? nodes.first
+                if let node {
+                    NodeDetailView(node: node, isReader: isReader)
+                } else {
+                    mainContent
+                }
+            } else if target == "person" {
+                PersonDetailView(person: first, isReader: isReader)
+            } else {
+                mainContent
+            }
+        } else {
+            mainContent
+        }
+        #else
+        mainContent
+        #endif
+    }
+
+    #if DEBUG
+    private var debugTarget: String? {
+        let args = ProcessInfo.processInfo.arguments
+        if args.contains("debug-node") { return "node" }
+        if args.contains("debug-person") { return "person" }
+        return nil
+    }
+
+    private var debugNodeName: String? {
+        let args = ProcessInfo.processInfo.arguments
+        guard let i = args.firstIndex(of: "debug-node"), args.count > i + 1 else { return nil }
+        let next = args[i + 1]
+        return next.hasPrefix("-") || next.hasPrefix("debug") ? nil : next
+    }
+    #endif
+
+    private var mainContent: some View {
         ScrollView {
             VStack(spacing: 16) {
                 header

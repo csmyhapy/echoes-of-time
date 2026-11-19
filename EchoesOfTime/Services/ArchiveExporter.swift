@@ -125,9 +125,13 @@ struct PersonArchiveDTO: Codable {
     var nodes: [NodeArchiveDTO]
     var voiceNotes: [VoiceArchiveDTO]
     var messages: [MessageArchiveDTO]
+    /// 只在照片库、未分配到任何章节的照片（网站 tags 为空的那批）
+    var unassignedPhotos: [PhotoArchiveDTO]? = nil
 }
 
 struct NodeArchiveDTO: Codable {
+    /// 来源网站的节点 ID，导入时用于把照片的多章节标签映射回本机节点
+    var webID: Int? = nil
     var name: String
     var yearRange: String
     var summary: String
@@ -145,6 +149,8 @@ struct PhotoArchiveDTO: Codable {
     var story: String
     var tags: String
     var sortOrder: Int
+    /// 来源网站的 tags 字段（可属于多个章节），导入时映射为 App 内的节点 UUID 列表
+    var webNodeIDs: [Int]? = nil
 }
 
 struct VoiceArchiveDTO: Codable {

@@ -220,3 +220,25 @@ final class Message {
         self.createdAt = createdAt
     }
 }
+
+// MARK: - 照片的多章节标签（对齐网站 tags 字段）
+
+extension Photo {
+
+    /// 所属章节 UUID 列表（存于 tags，逗号分隔）
+    var taggedNodeIDs: [UUID] {
+        tags.split(separator: ",").compactMap {
+            UUID(uuidString: String($0).trimmingCharacters(in: .whitespaces))
+        }
+    }
+
+    /// 是否属于某个章节：主章节命中，或任一标签命中
+    func belongs(to node: Node) -> Bool {
+        if self.node?.id == node.id { return true }
+        return taggedNodeIDs.contains(node.id)
+    }
+
+    func setTaggedNodes(_ nodes: [Node]) {
+        tags = nodes.map { $0.id.uuidString }.joined(separator: ",")
+    }
+}

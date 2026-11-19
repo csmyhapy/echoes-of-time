@@ -23,7 +23,13 @@ struct NodeDetailView: View {
 
     private var personID: UUID? { node.person?.id }
     private var photos: [Photo] {
-        node.photos.sorted { $0.sortOrder < $1.sortOrder }
+        guard let person = node.person else {
+            return node.photos.sorted { $0.sortOrder < $1.sortOrder }
+        }
+        // 一个照片可同时属于多个章节（对齐网站 tags 多标签）
+        return person.photos
+            .filter { $0.belongs(to: node) }
+            .sorted { $0.sortOrder < $1.sortOrder }
     }
 
     var body: some View {
@@ -261,6 +267,7 @@ struct NodeDetailView: View {
             order += 1
             photo.node = node
             photo.person = node.person
+            photo.setTaggedNodes([node])
             context.insert(photo)
         }
         try? context.save()
