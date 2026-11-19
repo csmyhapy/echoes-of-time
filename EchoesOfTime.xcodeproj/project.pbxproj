@@ -134,6 +134,7 @@
 		72B5EF1DB8984BEEA932A24B /* demo_en_person.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = demo_en_person.m4a; sourceTree = "<group>"; };
 		72FCD8A290DE1202390BDCF8 /* demo_zh_c2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = demo_zh_c2.jpg; sourceTree = "<group>"; };
 		74AEAC68F1C5D550D25E4F66 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		C7F62D3308DE30E743E27AD4 /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		45C8531EF09D9464C3673817 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
 		F866A4581C746BD68724F4F5 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		76353776932D55C9DFAFD8B1 /* PhotoDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoDetailView.swift; sourceTree = "<group>"; };
@@ -431,6 +432,7 @@
 				es,
 				fr,
 				de,
+				"pt-BR",
 			);
 			mainGroup = B01A6209EC1E625FF0EE156A;
 			minimizedProjectReferenceProxies = 1;
@@ -554,6 +556,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				74AEAC68F1C5D550D25E4F66 /* en */,
+				C7F62D3308DE30E743E27AD4 /* pt-BR */,
 				45C8531EF09D9464C3673817 /* de */,
 				F866A4581C746BD68724F4F5 /* fr */,
 				23DA55641299A4F9DF0FC356 /* es */,

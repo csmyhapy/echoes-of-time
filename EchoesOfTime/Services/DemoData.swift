@@ -19,7 +19,7 @@ enum DemoData {
         switch language {
         case .zhHans:
             insertChinese(into: context)
-        case .en, .es, .fr, .de:
+        case .en, .es, .fr, .de, .ptBR:
             // 各语言 demo 尚未制作前，先回退英文档案，界面文案仍为本地语言
             insertEnglish(into: context)
         }
