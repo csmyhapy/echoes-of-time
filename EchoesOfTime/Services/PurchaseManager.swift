@@ -167,24 +167,24 @@ extension PurchaseManager {
     var isBasic: Bool { tier == .basic }
     var isUnpaid: Bool { tier == .unpaid }
 
-    /// 是否还能新增章节（pro 不限）
+    /// 是否还能新增章节（pro 不限；basic 限 5；unpaid 不能新建）
     func canAddNode(currentCount: Int) -> Bool {
-        isPro || currentCount < EntitlementLimit.basicMaxNodes
+        isPro || (isBasic && currentCount < EntitlementLimit.basicMaxNodes)
     }
 
-    /// 是否还能新增照片（pro 不限）
+    /// 是否还能新增照片（pro 不限；basic 限 80；unpaid 不能新建）
     func canAddPhoto(currentCount: Int) -> Bool {
-        isPro || currentCount < EntitlementLimit.basicMaxPhotos
+        isPro || (isBasic && currentCount < EntitlementLimit.basicMaxPhotos)
     }
 
-    /// 是否还能新增语音旁白（pro 不限）
+    /// 是否还能新增语音旁白（pro 不限；basic 限 3；unpaid 不能新建）
     func canAddVoice(currentCount: Int) -> Bool {
-        isPro || currentCount < EntitlementLimit.basicMaxVoiceNotes
+        isPro || (isBasic && currentCount < EntitlementLimit.basicMaxVoiceNotes)
     }
 
-    /// 是否还能新增留言（pro 不限）
+    /// 是否还能新增留言（pro 不限；basic 限 3；unpaid 不能新建）
     func canAddMessage(currentCount: Int) -> Bool {
-        isPro || currentCount < EntitlementLimit.basicMaxMessages
+        isPro || (isBasic && currentCount < EntitlementLimit.basicMaxMessages)
     }
 
     /// 分享：仅 pro

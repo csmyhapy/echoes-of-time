@@ -19,6 +19,7 @@ struct LibraryView: View {
     @State private var showLimitAlert = false
     @State private var editingPerson: Person?
     @State private var addingChapterFor: Person?
+    @State private var showingPaywall = false
 
     /// 首页标语：每次进入首页随机换一句（冷启动/页面重建时取值一次）
     @State private var taglineIndex = Int.random(in: 0..<LibraryView.taglineKeys.count)
@@ -142,6 +143,9 @@ struct LibraryView: View {
         .sheet(item: $addingChapterFor) { person in
             NodeEditView(person: person, node: nil)
         }
+        .sheet(isPresented: $showingPaywall) {
+            PaywallView()
+        }
         .alert("one.archive.limit.title", isPresented: $showLimitAlert) {
             Button("common.save", role: .cancel) {}
         } message: {
@@ -241,11 +245,16 @@ struct LibraryView: View {
 
     private var actionButtons: some View {
         VStack(spacing: 10) {
-            // 主操作：添加章节（最常用，实心棕）
+            // 主操作：添加章节（最常用，实心棕）；超限/未付费弹升级弹窗
             capsuleButton(title: "library.action.addChapter",
                           systemImage: "plus.rectangle.on.folder",
                           role: .primary) {
-                addingChapterFor = realPersons.first
+                if let person = realPersons.first,
+                   PurchaseManager.shared.canAddNode(currentCount: person.nodes.count) {
+                    addingChapterFor = person
+                } else if realPersons.first != nil {
+                    showingPaywall = true
+                }
             }
 
             // 次操作：编辑档案（浅棕描边）

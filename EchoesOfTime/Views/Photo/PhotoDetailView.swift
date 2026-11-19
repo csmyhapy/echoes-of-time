@@ -21,6 +21,7 @@ struct PhotoLightboxView: View {
     @State private var showMessages = false
     @State private var showEdit = false
     @State private var showShare = false
+    @State private var showingPaywall = false
     @State private var storyExpanded = false
     @State private var narrationTotal: Double = 0
     @Environment(\.dismiss) private var dismiss
@@ -95,6 +96,9 @@ struct PhotoLightboxView: View {
                 try? context.save()
             }
         }
+        .sheet(isPresented: $showingPaywall) {
+            PaywallView()
+        }
     }
 
     // MARK: - 顶栏（右上角三个内容按钮）
@@ -113,7 +117,14 @@ struct PhotoLightboxView: View {
                 }
                 .accessibilityLabel(Text("photo.edit.action"))
 
-                Button { showRecorder = true } label: {
+                Button {
+                    if photo?.audioFileName != nil
+                        || PurchaseManager.shared.canAddVoice(currentCount: person?.voiceNotes.count ?? 0) {
+                        showRecorder = true
+                    } else {
+                        showingPaywall = true
+                    }
+                } label: {
                     Image(systemName: (photo?.audioFileName == nil) ? "mic" : "mic.fill")
                 }
                 .accessibilityLabel(Text("photo.record"))
@@ -123,7 +134,13 @@ struct PhotoLightboxView: View {
                 }
                 .accessibilityLabel(Text("photo.messages"))
 
-                Button { showShare = true } label: {
+                Button {
+                    if PurchaseManager.shared.canShare {
+                        showShare = true
+                    } else {
+                        showingPaywall = true
+                    }
+                } label: {
                     Image(systemName: "square.and.arrow.up")
                 }
                 .accessibilityLabel(Text("share.title"))
@@ -308,6 +325,7 @@ struct PhotoMessageBoard: View {
     @Environment(\.modelContext) private var context
     @State private var draft = ""
     @State private var expanded = false
+    @State private var showingPaywall = false
     @FocusState private var editing: Bool
 
     private var messages: [Message] {
@@ -363,6 +381,9 @@ struct PhotoMessageBoard: View {
                 Button("common.close") { dismiss() }
             }
         }
+        .sheet(isPresented: $showingPaywall) {
+            PaywallView()
+        }
     }
 
     private var inputBar: some View {
@@ -409,6 +430,11 @@ struct PhotoMessageBoard: View {
     private func send() {
         let text = draft.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty else { return }
+        let total = person.messages.filter { !$0.isDeleted }.count
+        guard PurchaseManager.shared.canAddMessage(currentCount: total) else {
+            showingPaywall = true
+            return
+        }
         let author = UserDefaults.standard.string(forKey: "familyName") ?? "Family"
         let msg = Message(userName: author.isEmpty ? "Family" : author, content: text, role: "family")
         msg.person = person

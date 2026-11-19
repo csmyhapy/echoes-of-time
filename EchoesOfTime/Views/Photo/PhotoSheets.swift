@@ -298,6 +298,7 @@ struct PhotoShareSheet: View {
     @State private var working = false
     @State private var errorMessage: String?
     @State private var copied = false
+    @State private var showingPaywall = false
 
     var body: some View {
         NavigationStack {
@@ -382,10 +383,14 @@ struct PhotoShareSheet: View {
             .sheet(isPresented: $showImport) {
                 PhotoReplyImportSheet(photo: photo, person: person)
             }
+            .sheet(isPresented: $showingPaywall) {
+                PaywallView()
+            }
         }
     }
 
     private func makePage() {
+        guard PurchaseManager.shared.canShare else { showingPaywall = true; return }
         working = true
         errorMessage = nil
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
@@ -399,6 +404,7 @@ struct PhotoShareSheet: View {
     }
 
     private func makePDF() {
+        guard PurchaseManager.shared.canShare else { showingPaywall = true; return }
         working = true
         errorMessage = nil
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
@@ -412,6 +418,7 @@ struct PhotoShareSheet: View {
     }
 
     private func copyNote() {
+        guard PurchaseManager.shared.canShare else { showingPaywall = true; return }
         let note = [
             String(localized: "share.head.title"),
             String(format: String(localized: "share.head.p1"), person.name),
@@ -423,6 +430,7 @@ struct PhotoShareSheet: View {
     }
 
     private func makeCard() {
+        guard PurchaseManager.shared.canShare else { showingPaywall = true; return }
         working = true
         errorMessage = nil
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {

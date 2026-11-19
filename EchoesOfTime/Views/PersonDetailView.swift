@@ -23,6 +23,7 @@ struct PersonDetailView: View {
     @State private var showExportError = false
     @State private var storyExpanded = false
     @State private var timelineExpanded = false
+    @State private var showingPaywall = false
     @AppStorage("bgmEnabled") private var bgmEnabled = true
 
     // MARK: - 背景音乐开关（仅人物页有音乐；开关位于底部栏）
@@ -109,6 +110,9 @@ struct PersonDetailView: View {
         .sheet(item: $exportItem) { item in
             ActivityView(url: item.url)
         }
+        .sheet(isPresented: $showingPaywall) {
+            PaywallView()
+        }
         .alert("export.failed", isPresented: $showExportError) {
             Button("common.save", role: .cancel) {}
         }
@@ -136,7 +140,11 @@ struct PersonDetailView: View {
                 Spacer()
                 if !isReader {
                     Button {
-                        showingNewNode = true
+                        if PurchaseManager.shared.canAddNode(currentCount: person.nodes.count) {
+                            showingNewNode = true
+                        } else {
+                            showingPaywall = true
+                        }
                     } label: {
                         Image(systemName: "plus.circle.fill")
                             .font(.title3)
@@ -260,7 +268,14 @@ struct PersonDetailView: View {
                     .font(.system(size: isReader ? 26 : 18, weight: .semibold))
                 Spacer()
                 if !isReader {
-                    Button { showVoiceRecorder = true } label: {
+                    Button {
+                        if personVoiceNote != nil
+                            || PurchaseManager.shared.canAddVoice(currentCount: person.voiceNotes.count) {
+                            showVoiceRecorder = true
+                        } else {
+                            showingPaywall = true
+                        }
+                    } label: {
                         Label("voice.record", systemImage: "mic.circle.fill")
                             .font(.system(size: isReader ? 22 : 15))
                     }
@@ -294,6 +309,7 @@ struct PersonDetailView: View {
     // MARK: - 导出
 
     private func exportPDF() {
+        guard PurchaseManager.shared.canExport else { showingPaywall = true; return }
         if let url = PDFExporter.makePDF(for: person) {
             exportItem = ExportItem(url: url)
         } else {
@@ -302,6 +318,7 @@ struct PersonDetailView: View {
     }
 
     private func exportArchive() {
+        guard PurchaseManager.shared.canExport else { showingPaywall = true; return }
         if let url = ArchiveExporter.makeArchive(for: person) {
             exportItem = ExportItem(url: url)
         } else {

@@ -27,6 +27,7 @@ struct NodeDetailView: View {
     @State private var photoToEdit: Photo?
     @State private var photoExpanded = false
     @State private var storyExpanded = false
+    @State private var showingPaywall = false
 
     private var personID: UUID? { node.person?.id }
     private var photos: [Photo] {
@@ -108,11 +109,25 @@ struct NodeDetailView: View {
             if !isReader {
                 ToolbarItem(placement: .topBarTrailing) {
                     Menu {
-                        Button { showPicker = true } label: {
+                        Button {
+                            if let person = node.person,
+                               PurchaseManager.shared.canAddPhoto(currentCount: person.photos.count) {
+                                showPicker = true
+                            } else {
+                                showingPaywall = true
+                            }
+                        } label: {
                             Label("node.action.add.photos", systemImage: "photo.badge.plus")
                         }
                         if node.person != nil {
-                            Button { showAssignFromLibrary = true } label: {
+                            Button {
+                                if let person = node.person,
+                                   PurchaseManager.shared.canAddPhoto(currentCount: person.photos.count) {
+                                    showAssignFromLibrary = true
+                                } else {
+                                    showingPaywall = true
+                                }
+                            } label: {
                                 Label("node.action.from.library", systemImage: "square.grid.2x2")
                             }
                             if photos.count > 1 {
@@ -121,7 +136,14 @@ struct NodeDetailView: View {
                                 }
                             }
                         }
-                        Button { showVoiceRecorder = true } label: {
+                        Button {
+                            if let person = node.person,
+                               PurchaseManager.shared.canAddVoice(currentCount: person.voiceNotes.count) {
+                                showVoiceRecorder = true
+                            } else {
+                                showingPaywall = true
+                            }
+                        } label: {
                             Label("node.action.voice", systemImage: "mic")
                         }
                         Divider()
@@ -138,6 +160,9 @@ struct NodeDetailView: View {
             RecorderSheet(personID: personID ?? UUID(), titleKey: "recorder.node.title") { name, duration in
                 saveVoice(fileName: name, duration: duration)
             }
+        }
+        .sheet(isPresented: $showingPaywall) {
+            PaywallView()
         }
         .sheet(item: $photoToEdit) { photo in
             if let person = node.person {
@@ -250,7 +275,12 @@ struct NodeDetailView: View {
                     Spacer()
                     if !isReader, personID != nil {
                         Button {
-                            showVoiceRecorder = true
+                            if let person = node.person,
+                               PurchaseManager.shared.canAddVoice(currentCount: person.voiceNotes.count) {
+                                showVoiceRecorder = true
+                            } else {
+                                showingPaywall = true
+                            }
                         } label: {
                             Text("voice.record")
                                 .font(.system(size: 13, weight: .medium))

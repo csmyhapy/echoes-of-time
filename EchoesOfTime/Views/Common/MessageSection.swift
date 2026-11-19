@@ -20,6 +20,7 @@ struct MessageSection: View {
     @Environment(AppState.self) private var appState
     @State private var expanded = false
     @State private var draft = ""
+    @State private var showingPaywall = false
     @State private var author = UserDefaults.standard.string(forKey: "familyName") ?? "Family"
 
     init(person: Person, node: Node? = nil, photo: Photo? = nil, isReader: Bool = false, showsInput: Bool = true) {
@@ -98,6 +99,9 @@ struct MessageSection: View {
                 }
             }
         }
+        .sheet(isPresented: $showingPaywall) {
+            PaywallView()
+        }
     }
 
     /// 默认只显示最新 2 条
@@ -142,6 +146,12 @@ struct MessageSection: View {
     private func send() {
         let text = draft.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty else { return }
+
+        let total = person.messages.filter { !$0.isDeleted }.count
+        guard PurchaseManager.shared.canAddMessage(currentCount: total) else {
+            showingPaywall = true
+            return
+        }
 
         let msg = Message(
             userName: author.isEmpty ? "Family" : author,
