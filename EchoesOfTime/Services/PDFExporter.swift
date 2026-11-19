@@ -311,7 +311,6 @@ enum ShareExporter {
             <h2>\(esc(String(localized: "share.head.title")))</h2>
             <p>\(esc(String(format: String(localized: "share.head.p1"), person.name)))</p>
             <p>\(esc(String(localized: "share.head.p2")))</p>
-            <p>\(esc(String(localized: "share.head.p3")))</p>
           </div>
           <img class="photo" alt="\(esc(displayName))" src="data:image/jpeg;base64,\(jpeg.base64EncodedString())">
           <h1>\(esc(displayName))</h1>
@@ -369,8 +368,7 @@ enum ShareExporter {
         let storyTrim = storyText.count > 220 ? String(storyText.prefix(220)) + "…" : storyText
         let headText = [
             String(format: String(localized: "share.head.p1"), person.name),
-            String(localized: "share.head.p2"),
-            String(localized: "share.head.p3")
+            String(localized: "share.head.p2")
         ].joined(separator: "\n")
         let sloganText = String(localized: "share.brand.slogan")
 
@@ -579,8 +577,7 @@ enum ShareExporter {
             headStyle.alignment = .justified
             let headBody = [
                 String(format: String(localized: "share.head.p1"), person.name),
-                String(localized: "share.head.p2"),
-                String(localized: "share.head.p3")
+                String(localized: "share.head.p2")
             ].joined(separator: "\n")
             let headAttr = NSAttributedString(string: headBody, attributes: [
                 .font: UIFont.systemFont(ofSize: 10), .foregroundColor: muted, .paragraphStyle: headStyle
