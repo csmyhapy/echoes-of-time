@@ -362,7 +362,7 @@ struct PhotoShareSheet: View {
                 }
             }
             .sheet(item: $payload) { item in
-                ActivityView(url: item.url)
+                ActivityView(items: item.items)
             }
             .sheet(isPresented: $showImport) {
                 PhotoReplyImportSheet(photo: photo, person: person)
@@ -400,9 +400,16 @@ struct PhotoShareSheet: View {
         working = true
         errorMessage = nil
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
-            if let img = ShareExporter.makeCard(photo: photo, person: person, personID: personID),
-               let url = ShareExporter.writeCard(img, person: person, caption: photo.caption) {
-                payload = SharePayload(url: url)
+            if let img = ShareExporter.makeCard(photo: photo, person: person, personID: personID) {
+                // 图片本身不再烧进“为你留下的一张照片”这段说明，
+                // 而是把说明作为文本一起发出去 —— 收信人一眼就知道这是什么。
+                let note = [
+                    String(localized: "share.head.title"),
+                    String(format: String(localized: "share.head.p1"), person.name),
+                    String(localized: "share.head.p2")
+                ].joined(separator: "\n\n")
+                _ = ShareExporter.writeCard(img, person: person, caption: photo.caption)
+                payload = SharePayload(items: [note, img])
             } else {
                 errorMessage = String(localized: "share.error.card")
             }
@@ -414,7 +421,10 @@ struct PhotoShareSheet: View {
 /// 系统分享用的载荷
 struct SharePayload: Identifiable {
     let id = UUID()
-    let url: URL
+    let items: [Any]
+
+    init(url: URL) { items = [url] }
+    init(items: [Any]) { self.items = items }
 }
 
 /// 粘贴亲友回信 → 存成这张照片的留言
