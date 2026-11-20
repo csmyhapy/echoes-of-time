@@ -144,6 +144,12 @@ struct SettingsView: View {
 
             Section {
                 NavigationLink {
+                    FaqView()
+                } label: {
+                    Label("faq.entry", systemImage: "questionmark.circle")
+                }
+
+                NavigationLink {
                     PrivacyPolicyView()
                 } label: {
                     Label("privacy.title", systemImage: "hand.raised")

@@ -145,6 +145,32 @@
 "person.story.expand" = "Lire la suite";
 "person.story.collapse" = "Réduire";
 "unit.messages" = "messages";
+"progress.title" = "Progrès";
+"progress.item.summary" = "Écrire une courte présentation";
+"progress.item.story" = "Écrire son histoire de vie";
+"progress.item.chapter" = "Ajouter au moins un chapitre";
+"progress.item.photo" = "Ajouter au moins une photo";
+"progress.item.voice" = "Enregistrer une narration vocale";
+"stats.chars" = "Caractères au total";
+"stats.audio" = "Durée audio";
+"faq.title" = "Questions fréquentes";
+"faq.entry" = "Questions fréquentes";
+"faq.q1" = "Comment ajouter des photos et les associer aux chapitres ?";
+"faq.a1" = "Ajoutez des photos dans la photothèque, sélectionnez-les et associez-les à un chapitre. Une photo peut appartenir à plusieurs chapitres ; les non attribuées sont listées à part.";
+"faq.q2" = "Comment exporter l'album en PDF ?";
+"faq.a2" = "Choisissez « Exporter le PDF » dans le menu de partage de la page de la personne pour prévisualiser, enregistrer ou partager. On vous demandera de confirmer l'ordre des chapitres s'il semble erroné.";
+"faq.q3" = "Où sont mes données ? Est-ce sécurisé ?";
+"faq.a3" = "Tout reste sur cet appareil et n'est jamais envoyé à un serveur. Vous pouvez activer le verrouillage FaceID dans Réglages.";
+"faq.q4" = "Comment sauvegarder ou passer à un nouveau téléphone ?";
+"faq.a4" = "Utilisez « Exporter l'archive » pour créer un zip à enregistrer ou transférer, puis « Importer l'archive » sur le nouvel appareil pour tout restaurer.";
+"faq.q5" = "Comment enregistrer la narration vocale ?";
+"faq.a5" = "Touchez le micro sous « Narration de vie » sur la page de la personne, ou sur un chapitre ou une photo, pour enregistrer et écouter.";
+"faq.q6" = "Comment mettre la musique de fond ?";
+"faq.a6" = "Choisissez un morceau local comme musique de fond lors de l'édition de la personne ; elle joue en continu à l'ouverture de la page.";
+"faq.q7" = "Comment mettre deux photos côte à côte sur une page ?";
+"faq.a7" = "Activez « Associer à la photo suivante » dans l'éditeur de photos ; ces deux partageront une page dans le PDF. Sinon, chaque photo a sa propre page.";
+"faq.q8" = "Quelle différence entre gratuit et Pro ?";
+"faq.a8" = "La version gratuite enregistre le contenu de base ; Pro débloque l'export PDF et plus de chapitres/photos. Voir la page d'abonnement.";
 
 /* Galerie de photos */
 "library.photos.title" = "Galerie de photos";

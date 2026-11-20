@@ -64,11 +64,14 @@ struct PersonDetailView: View {
     }
 
     var body: some View {
+        ZStack(alignment: .bottomTrailing) {
         ScrollView {
             VStack(alignment: .leading, spacing: 22) {
                 coverBlock
                 infoBlock
                 summaryBlock
+
+                overviewCard
 
                 if !person.story.isEmpty {
                     storySection
@@ -81,6 +84,22 @@ struct PersonDetailView: View {
                 MessageSection(person: person, isReader: isReader)
             }
             .padding(20)
+        }
+
+        if !isReader {
+            NavigationLink {
+                PhotoLibraryView(person: person)
+            } label: {
+                Image(systemName: "photo.on.rectangle.angled")
+                    .font(.system(size: 21, weight: .medium))
+                    .foregroundStyle(.white)
+                    .frame(width: 52, height: 52)
+                    .background(Color.brown, in: Circle())
+                    .shadow(color: .black.opacity(0.2), radius: 8, y: 3)
+            }
+            .padding(.trailing, 18)
+            .padding(.bottom, 150)
+        }
         }
         .navigationTitle(person.name)
         .navigationBarTitleDisplayMode(.inline)
@@ -453,6 +472,104 @@ struct PersonDetailView: View {
                     .padding(.leading, isReader ? 44 : 30)
             }
         }
+    }
+
+    // MARK: - 创作进度与统计概览卡
+
+    private var overviewCard: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            HStack {
+                Text("progress.title")
+                    .font(.system(size: isReader ? 22 : 17, weight: .semibold))
+                Spacer()
+                Text("\(progressPercent)%")
+                    .font(.system(size: isReader ? 24 : 20, weight: .bold))
+                    .foregroundStyle(.brown)
+            }
+
+            GeometryReader { geo in
+                ZStack(alignment: .leading) {
+                    Capsule().fill(Color.brown.opacity(0.15))
+                    Capsule().fill(Color.brown)
+                        .frame(width: max(0, geo.size.width * CGFloat(progressPercent) / 100))
+                }
+            }
+            .frame(height: 8)
+
+            ForEach(Array(progressItems.enumerated()), id: \.offset) { _, item in
+                HStack(spacing: 8) {
+                    Image(systemName: item.done ? "checkmark.circle.fill" : "circle")
+                        .foregroundStyle(item.done ? Color.brown : Color.secondary.opacity(0.5))
+                        .font(.system(size: 15))
+                    Text(item.title)
+                        .font(.system(size: isReader ? 18 : 14))
+                        .foregroundStyle(item.done ? .primary : .secondary)
+                }
+            }
+
+            HStack(spacing: 28) {
+                statBlock("\(totalChars)", "stats.chars")
+                statBlock(audioDurationText, "stats.audio")
+            }
+            .padding(.top, 2)
+        }
+        .padding(16)
+        .background(Color(.secondarySystemGroupedBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+    }
+
+    private func statBlock(_ value: String, _ key: LocalizedStringKey) -> some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(value)
+                .font(.system(size: isReader ? 22 : 19, weight: .bold))
+                .foregroundStyle(.brown)
+            Text(key)
+                .font(.system(size: isReader ? 15 : 12))
+                .foregroundStyle(.secondary)
+        }
+    }
+
+    // MARK: - 统计与创作进度
+
+    /// 全册总字数：人生故事 + 各章节故事/简介 + 各照片说明/故事
+    private var totalChars: Int {
+        var n = person.story.count
+        for node in person.nodes {
+            n += node.story.count + node.summary.count
+        }
+        for photo in person.photos {
+            n += photo.caption.count + photo.story.count
+        }
+        return n
+    }
+
+    /// 全部语音旁白总时长（秒）
+    private var totalAudioSeconds: Int {
+        person.voiceNotes.reduce(0) { $0 + $1.duration }
+    }
+
+    /// 音频时长 mm:ss / 超过1小时用 h:mm
+    private var audioDurationText: String {
+        let s = totalAudioSeconds
+        if s <= 0 { return "0:00" }
+        let h = s / 3600, m = (s % 3600) / 60, sec = s % 60
+        if h > 0 { return String(format: "%d:%02d:%02d", h, m, sec) }
+        return String(format: "%d:%02d", m, sec)
+    }
+
+    /// 创作进度：简介 / 人生故事 / 至少一章 / 至少一张照片 / 人生旁白，各占 20%
+    private var progressItems: [(done: Bool, title: LocalizedStringKey)] {
+        [
+            (!person.summary.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty, "progress.item.summary"),
+            (!person.story.isEmpty, "progress.item.story"),
+            (!sortedNodes.isEmpty, "progress.item.chapter"),
+            (!person.photos.isEmpty, "progress.item.photo"),
+            (personVoiceNote != nil, "progress.item.voice")
+        ]
+    }
+
+    private var progressPercent: Int {
+        progressItems.filter(\.done).count * 20
     }
 
     private var statsRow: some View {

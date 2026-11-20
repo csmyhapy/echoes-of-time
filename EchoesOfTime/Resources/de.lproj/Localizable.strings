@@ -145,6 +145,32 @@
 "person.story.expand" = "Mehr lesen";
 "person.story.collapse" = "Weniger anzeigen";
 "unit.messages" = "Nachrichten";
+"progress.title" = "Fortschritt";
+"progress.item.summary" = "Kurze Zusammenfassung schreiben";
+"progress.item.story" = "Die Lebensgeschichte aufschreiben";
+"progress.item.chapter" = "Mindestens ein Kapitel hinzufügen";
+"progress.item.photo" = "Mindestens ein Foto hinzufügen";
+"progress.item.voice" = "Eine Sprachaufnahme aufnehmen";
+"stats.chars" = "Zeichen insgesamt";
+"stats.audio" = "Audiodauer";
+"faq.title" = "Häufige Fragen";
+"faq.entry" = "Häufige Fragen";
+"faq.q1" = "Wie füge ich Fotos hinzu und weise sie Kapiteln zu?";
+"faq.a1" = "Fügen Sie Fotos in der Fotothek hinzu, wählen Sie sie aus und weisen Sie sie einem Kapitel zu. Ein Foto kann zu mehreren Kapiteln gehören; nicht zugewiesene Fotos werden separat aufgeführt.";
+"faq.q2" = "Wie exportiere ich das Album als PDF?";
+"faq.a2" = "Wählen Sie „PDF exportieren“ im Freigabemenü auf der Personenseite zur Vorschau, zum Speichern oder Teilen. Bei unklarer Kapitelreihenfolge werden Sie zur Bestätigung gebeten.";
+"faq.q3" = "Wo werden meine Daten gespeichert? Ist es sicher?";
+"faq.a3" = "Alles bleibt auf diesem Gerät und wird nie auf einen Server hochgeladen. Sie können die FaceID-Sperre in den Einstellungen aktivieren.";
+"faq.q4" = "Wie sichere ich Daten oder wechsle zu einem neuen Telefon?";
+"faq.a4" = "Nutzen Sie „Archiv exportieren“, um ein Zip zu speichern oder weiterzuleiten, und auf dem neuen Gerät „Archiv importieren“ zur Wiederherstellung.";
+"faq.q5" = "Wie nehme ich die Sprachaufnahme auf?";
+"faq.a5" = "Tippen Sie auf das Mikrofon bei der Lebensnarration auf der Personenseite oder bei einem Kapitel/Foto, um aufzunehmen und wiederzugeben.";
+"faq.q6" = "Wie lege ich Hintergrundmusik fest?";
+"faq.a6" = "Wählen Sie beim Bearbeiten der Person einen lokalen Titel als Hintergrundmusik; sie spielt durchgehend beim Öffnen der Seite.";
+"faq.q7" = "Wie bringe ich zwei Fotos nebeneinander auf eine Seite?";
+"faq.a7" = "Aktivieren Sie „Mit nächstem Foto paaren“ im Foto-Editor; diese beiden teilen sich eine Seite im PDF. Sonst hat jedes Foto seine eigene Seite.";
+"faq.q8" = "Was ist der Unterschied zwischen kostenlos und Pro?";
+"faq.a8" = "Die Gratisversion speichert Grundlegendes; Pro schaltet den PDF-Export und mehr Kapitel/Fotos frei. Siehe Abo-Seite.";
 
 /* Fotobibliothek */
 "library.photos.title" = "Fotobibliothek";

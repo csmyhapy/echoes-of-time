@@ -145,6 +145,32 @@
 "person.story.expand" = "Meer lezen";
 "person.story.collapse" = "Minder weergeven";
 "unit.messages" = "berichten";
+"progress.title" = "Voortgang";
+"progress.item.summary" = "Schrijf een korte samenvatting";
+"progress.item.story" = "Schrijf hun levensverhaal";
+"progress.item.chapter" = "Voeg minstens één hoofdstuk toe";
+"progress.item.photo" = "Voeg minstens één foto toe";
+"progress.item.voice" = "Neem een voice-opname op";
+"stats.chars" = "Totaal aantal tekens";
+"stats.audio" = "Audioduur";
+"faq.title" = "Veelgestelde vragen";
+"faq.entry" = "Veelgestelde vragen";
+"faq.q1" = "Hoe voeg ik foto's toe en wijs ze toe aan hoofdstukken?";
+"faq.a1" = "Voeg foto's toe in de Fototheek, selecteer ze en wijs ze toe aan een hoofdstuk. Eén foto kan bij meerdere hoofdstukken horen; niet-toegewezen foto's staan apart.";
+"faq.q2" = "Hoe exporteer ik het album naar PDF?";
+"faq.a2" = "Kies «PDF exporteren» in het deelmenu op de persoonspagina om te bekijken, opslaan of delen. Bij een twijfelachtige hoofdstukvolgorde word je om bevestiging gevraagd.";
+"faq.q3" = "Waar worden mijn gegevens bewaard? Is het veilig?";
+"faq.a3" = "Alles blijft op dit apparaat en wordt nooit naar een server geüpload. Je kunt FaceID-vergrendeling inschakelen in Instellingen.";
+"faq.q4" = "Hoe maak ik een back-up of ga ik naar een nieuwe telefoon?";
+"faq.a4" = "Gebruik «Archief exporteren» om een zip te maken die je bewaart of doorstuurt, en op het nieuwe apparaat «Archief importeren» om alles te herstellen.";
+"faq.q5" = "Hoe neem ik de voice-opname op?";
+"faq.a5" = "Tik op de microfoon bij de levensnarratie op de persoonspagina, of bij een hoofdstuk of foto, om op te nemen en af te spelen.";
+"faq.q6" = "Hoe stel ik achtergrondmuziek in?";
+"faq.a6" = "Kies een lokaal nummer als achtergrondmuziek bij het bewerken van de persoon; het speelt door bij het openen van de pagina.";
+"faq.q7" = "Hoe zet ik twee foto's naast elkaar op één pagina?";
+"faq.a7" = "Zet «Passen bij volgende foto» aan in de foto-editor; die twee delen een pagina in de PDF. Anders heeft elke foto zijn eigen pagina.";
+"faq.q8" = "Wat is het verschil tussen gratis en Pro?";
+"faq.a8" = "De gratis versie slaat basisinhoud op; Pro ontgrendelt PDF-export en meer hoofdstukken/foto's. Zie de abonnementpagina.";
 
 /* Fotogalerij */
 "library.photos.title" = "Fotogalerij";

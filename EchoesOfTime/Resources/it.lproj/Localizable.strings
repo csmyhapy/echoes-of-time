@@ -145,6 +145,32 @@
 "person.story.expand" = "Leggi di più";
 "person.story.collapse" = "Mostra meno";
 "unit.messages" = "messaggi";
+"progress.title" = "Avanzamento";
+"progress.item.summary" = "Scrivi una breve presentazione";
+"progress.item.story" = "Scrivi la storia della loro vita";
+"progress.item.chapter" = "Aggiungi almeno un capitolo";
+"progress.item.photo" = "Aggiungi almeno una foto";
+"progress.item.voice" = "Registra una narrazione vocale";
+"stats.chars" = "Caratteri totali";
+"stats.audio" = "Durata audio";
+"faq.title" = "Domande frequenti";
+"faq.entry" = "Domande frequenti";
+"faq.q1" = "Come aggiungo le foto e le assegno ai capitoli?";
+"faq.a1" = "Aggiungi le foto nella Libreria foto, selezionale e assegnale a un capitolo. Una foto può appartenere a più capitoli; quelle non assegnate sono elencate a parte.";
+"faq.q2" = "Come esporto l'album in PDF?";
+"faq.a2" = "Scegli «Esporta PDF» dal menu di condivisione nella pagina della persona per anteprima, salvataggio o condivisione. Se l'ordine dei capitoli sembra errato, ti verrà chiesto di confermarlo.";
+"faq.q3" = "Dove sono i miei dati? È sicuro?";
+"faq.a3" = "Tutto rimane su questo dispositivo e non viene mai caricato su un server. Puoi attivare il blocco FaceID nelle Impostazioni.";
+"faq.q4" = "Come faccio il backup o passo a un nuovo telefono?";
+"faq.a4" = "Usa «Esporta archivio» per creare uno zip da salvare o inoltrare, poi «Importa archivio» sul nuovo dispositivo per ripristinare tutto.";
+"faq.q5" = "Come registro la narrazione vocale?";
+"faq.a5" = "Tocca il microfono sotto «Narrazione di vita» nella pagina della persona, oppure su un capitolo o una foto, per registrare e riascoltare.";
+"faq.q6" = "Come imposto la musica di sottofondo?";
+"faq.a6" = "Scegli un brano locale come musica di sottofondo durante la modifica della persona; viene riprodotta in continuo all'apertura della pagina.";
+"faq.q7" = "Come metto due foto affiancate su una pagina?";
+"faq.a7" = "Attiva «Abbina alla foto successiva» nell'editor foto; quelle due condivideranno una pagina nel PDF. Altrimenti ogni foto ha la sua pagina.";
+"faq.q8" = "Qual è la differenza tra gratuito e Pro?";
+"faq.a8" = "La versione gratuita registra i contenuti di base; Pro sblocca l'esportazione PDF e più capitoli/foto. Vedi la pagina abbonamenti.";
 
 /* Galleria foto */
 "library.photos.title" = "Galleria foto";
