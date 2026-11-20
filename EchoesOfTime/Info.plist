@@ -24,6 +24,14 @@
 	<array>
 		<string>en</string>
 		<string>zh-Hans</string>
+		<string>es</string>
+		<string>fr</string>
+		<string>de</string>
+		<string>it</string>
+		<string>nl</string>
+		<string>pt-BR</string>
+		<string>ja</string>
+		<string>ko</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
