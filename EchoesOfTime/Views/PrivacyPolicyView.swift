@@ -61,8 +61,8 @@ struct PrivacyPolicyView: View {
 
     private var summary: String {
         isZh
-        ? "岁月回声是一款完全在本地运行的 App。你录入的照片、录音、文字和留言，都只保存在这台设备上，我们不上传、不收集、也不分析任何内容。"
-        : "Echoes of Time runs entirely on your device. The photos, recordings, text and messages you add stay on this device. We do not upload, collect or analyse any of it."
+        ? "岁月回声把你的内容完全保存在这台设备上。你录入的照片、录音、文字和留言不会被上传、收集或分析；购买由 Apple 通过 App Store 单独处理。"
+        : "Echoes of Time keeps your content entirely on this device. The photos, recordings, text and messages you add are never uploaded, collected or analysed. Purchases are handled separately by Apple through the App Store."
     }
 
     private var sections: [(heading: String, body: String)] {
@@ -71,7 +71,7 @@ struct PrivacyPolicyView: View {
 
     private let enSections: [(heading: String, body: String)] = [
         ("What we collect",
-         "Nothing. There is no account, no sign-in, no server and no analytics SDK. The app does not contain any third-party tracking, advertising or crash-reporting frameworks."),
+         "Nothing. There is no account, no sign-in, no server and no analytics SDK. The app does not contain any third-party tracking, advertising or crash-reporting frameworks. It never sees your payment details, which are handled by Apple."),
 
         ("Where your content is stored",
          "All archives, images, audio recordings and messages are written to the app's private storage area on this device. The app's data folder is not shared with other apps unless you explicitly export something."),
@@ -84,6 +84,9 @@ struct PrivacyPolicyView: View {
 
         ("Sharing and export",
          "Exporting a PDF or an archive package is always started by you. When you use the share sheet, the exported file leaves the app and is handled by the destination you choose (Files, Mail, AirDrop, etc)."),
+
+        ("In-app purchases",
+         "Purchases (Starter, the upgrade pack, or the lifetime Full Version) are processed by Apple through the App Store. The app never receives your card number or payment details. Purchase receipts are held by Apple; the app only checks your current entitlements on-device and uses \"Restore Purchases\" to verify them with Apple. We do not store transaction records and do not handle refunds — refunds are requested through Apple."),
 
         ("No advertising, no profiling",
          "We do not build profiles, do not track you across apps or websites, and do not sell or share data with anyone."),
@@ -100,7 +103,7 @@ struct PrivacyPolicyView: View {
 
     private let zhSections: [(heading: String, body: String)] = [
         ("我们收集什么",
-         "什么都不收集。App 没有账号、没有登录、没有服务器，也没有任何统计 SDK。App 内不含第三方追踪、广告或崩溃上报框架。"),
+         "什么都不收集。App 没有账号、没有登录、没有服务器，也没有任何统计 SDK。App 内不含第三方追踪、广告或崩溃上报框架；支付信息由 Apple 处理，App 不接触。"),
 
         ("内容存在哪里",
          "所有档案、图片、录音和留言，都写入这台设备上 App 自己的私有存储空间。除非你主动导出，否则这些文件不会与其他 App 共享。"),
@@ -113,6 +116,9 @@ struct PrivacyPolicyView: View {
 
         ("分享与导出",
          "导出 PDF 或档案包始终由你主动发起。使用系统分享面板时，导出文件会离开 App，交由你选择的目标（文件、邮件、隔空投送等）处理。"),
+
+        ("内购与支付",
+         "购买（入门版、升级包或完整版买断）由 Apple 通过 App Store 完成，App 不会获取你的卡号或支付信息。购买收据由 Apple 托管，App 只在本机查询当前权益，并通过“恢复购买”向 Apple 校验。我们不存储交易记录，也不处理退款，退款请通过 Apple 申请。"),
 
         ("无广告、无画像",
          "我们不做用户画像，不跨 App 或网站追踪你，也不向任何人出售或共享数据。"),
