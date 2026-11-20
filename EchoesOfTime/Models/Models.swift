@@ -109,6 +109,26 @@ final class Node {
     }
 }
 
+// MARK: - 章节展示排序（App 列表与 PDF 目录共用，保证两处顺序一致）
+
+extension Node {
+    /// 从年代串取起始年（"1973-1980" / "1973年至今"），取不到给 9999
+    var displayStartYear: Int {
+        let numbers = yearRange.split(whereSeparator: { !$0.isNumber }).compactMap { Int($0.prefix(4)) }
+        return numbers.first ?? 9999
+    }
+
+    /// 展示先后：sortOrder → webOrder（0 视为最末）→ 起始年 → 创建时间
+    static func displaysBefore(_ a: Node, _ b: Node) -> Bool {
+        if a.sortOrder != b.sortOrder { return a.sortOrder < b.sortOrder }
+        let wa = a.webOrder == 0 ? Int.max : a.webOrder
+        let wb = b.webOrder == 0 ? Int.max : b.webOrder
+        if wa != wb { return wa < wb }
+        if a.displayStartYear != b.displayStartYear { return a.displayStartYear < b.displayStartYear }
+        return a.createdAt < b.createdAt
+    }
+}
+
 // MARK: - 照片（对应 photos 表）
 
 @Model

@@ -29,24 +29,8 @@ struct PersonDetailView: View {
     // MARK: - 背景音乐开关（仅人物页有音乐；开关位于底部栏）
 
     private var sortedNodes: [Node] {
-        // sortOrder 相同时按年代起始年排序（网站导入的 sortOrder 全是 0，需要兜底）
-        person.nodes.sorted { a, b in
-            if a.sortOrder != b.sortOrder { return a.sortOrder < b.sortOrder }
-            if a.webOrder != b.webOrder {
-                // webOrder 为 0 表示新建章节，排在网站导入章节之后
-                let wa = a.webOrder == 0 ? Int.max : a.webOrder
-                let wb = b.webOrder == 0 ? Int.max : b.webOrder
-                return wa < wb
-            }
-            let ya = startYear(a.yearRange), yb = startYear(b.yearRange)
-            if ya != yb { return ya < yb }
-            return a.createdAt < b.createdAt
-        }
-    }
-
-    private func startYear(_ range: String) -> Int {
-        let numbers = range.split(whereSeparator: { !$0.isNumber }).compactMap { Int($0.prefix(4)) }
-        return numbers.first ?? 9999
+        // 与 PDF 目录共用同一套排序（Node.displaysBefore），保证 App 显示顺序 = PDF 目录顺序
+        person.nodes.filter { $0.isVisible }.sorted { Node.displaysBefore($0, $1) }
     }
 
     var body: some View {

@@ -699,22 +699,9 @@ private enum AlbumLayout {
 
 private enum AlbumBookRenderer {
 
-    /// 章节排序：webOrder（网站顺序，缺失则全0）→ 年代起始年 → sortOrder → 创建时间
+    /// 章节排序：与 App 列表共用 Node.displaysBefore，保证 PDF 目录顺序 = App 显示顺序
     private static func nodeLess(_ a: Node, _ b: Node) -> Bool {
-        let wa = a.webOrder == 0 ? Int.max : a.webOrder
-        let wb = b.webOrder == 0 ? Int.max : b.webOrder
-        if wa != wb { return wa < wb }
-        let ya = startYear(a.yearRange), yb = startYear(b.yearRange)
-        if ya != yb { return ya < yb }
-        if a.sortOrder != b.sortOrder { return a.sortOrder < b.sortOrder }
-        return a.createdAt < b.createdAt
-    }
-
-    /// 从年代串（"1973-1980" / "2008年至今"）取开头四位年份，取不到给 9999
-    private static func startYear(_ s: String) -> Int {
-        let digits = s.filter { $0.isNumber }
-        let four = String(digits.prefix(4))
-        return Int(four) ?? 9999
+        Node.displaysBefore(a, b)
     }
 
     @MainActor
