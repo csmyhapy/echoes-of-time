@@ -237,6 +237,7 @@
 "paywall.heading" = "Eén aankoop, een heel leven bewaard";
 "paywall.subtitle" = "De volledige versie heeft onbeperkt hoofdstukken, foto's, spraakberichten en berichten, met delen en exporteren.";
 "paywall.plan.pro.title" = "Volledige versie (levenslang)";
+"paywall.plan.pro.badge" = "Aanrader";
 "paywall.plan.pro.f1" = "Onbeperkt hoofdstukken en foto's";
 "paywall.plan.pro.f2" = "Onbeperkt spraakberichten en familieberichten";
 "paywall.plan.pro.f3" = "Deel vrij en exporteer PDF / archief";

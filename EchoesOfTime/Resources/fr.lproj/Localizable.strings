@@ -237,6 +237,7 @@
 "paywall.heading" = "Un seul achat, toute une vie conservée";
 "paywall.subtitle" = "La version complète offre chapitres, photos, messages vocaux et messages illimités, avec partage et exportation.";
 "paywall.plan.pro.title" = "Version complète (à vie)";
+"paywall.plan.pro.badge" = "Recommandé";
 "paywall.plan.pro.f1" = "Chapitres et photos illimités";
 "paywall.plan.pro.f2" = "Messages vocaux et messages familiaux illimités";
 "paywall.plan.pro.f3" = "Partage libre et exportation PDF / archive";

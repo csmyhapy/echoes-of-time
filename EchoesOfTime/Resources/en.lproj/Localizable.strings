@@ -236,6 +236,7 @@
 "paywall.heading" = "One purchase, a lifetime preserved";
 "paywall.subtitle" = "The full version has unlimited chapters, photos, voice notes and messages, with sharing and export.";
 "paywall.plan.pro.title" = "Full Version (Lifetime)";
+"paywall.plan.pro.badge" = "Most popular";
 "paywall.plan.pro.f1" = "Unlimited chapters and photos";
 "paywall.plan.pro.f2" = "Unlimited voice notes and family messages";
 "paywall.plan.pro.f3" = "Share freely and export PDF / archive";

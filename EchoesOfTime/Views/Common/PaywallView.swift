@@ -2,7 +2,7 @@
 //  PaywallView.swift
 //  EchoesOfTime
 //
-//  升级 / 购买弹窗骨架：展示入门版与完整版，调用 PurchaseManager 购买与恢复购买。
+//  升级 / 购买弹窗：展示入门版与完整版，调用 PurchaseManager 购买与恢复购买。
 //  商品价格由 StoreKit 按地区本地化显示；未在 App Store Connect 配置时按钮安全禁用。
 //
 
@@ -14,6 +14,8 @@ struct PaywallView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var busy = false
     @State private var message: String?
+
+    private let brown = Color(red: 0.42, green: 0.29, blue: 0.16)
 
     var body: some View {
         NavigationStack {
@@ -44,15 +46,18 @@ struct PaywallView: View {
     // MARK: 头部
 
     private var header: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: 12) {
             Image(systemName: "crown.fill")
-                .font(.system(size: 36))
-                .foregroundStyle(.brown)
+                .font(.system(size: 26))
+                .foregroundStyle(.white)
+                .frame(width: 56, height: 56)
+                .background(brown, in: Circle())
             Text("paywall.heading")
                 .font(.title2.bold())
             Text("paywall.subtitle")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
         }
     }
 
@@ -62,6 +67,7 @@ struct PaywallView: View {
         VStack(spacing: 14) {
             planCard(
                 title: "paywall.plan.pro.title",
+                badge: "paywall.plan.pro.badge",
                 features: [
                     "paywall.plan.pro.f1",
                     "paywall.plan.pro.f2",
@@ -71,6 +77,7 @@ struct PaywallView: View {
             )
             planCard(
                 title: "paywall.plan.basic.title",
+                badge: nil,
                 features: [
                     "paywall.plan.basic.f1",
                     "paywall.plan.basic.f2",
@@ -81,15 +88,29 @@ struct PaywallView: View {
         }
     }
 
-    private func planCard(title: LocalizedStringKey, features: [String], highlighted: Bool) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text(title)
-                .font(.headline)
+    private func planCard(title: LocalizedStringKey, badge: LocalizedStringKey?,
+                          features: [String], highlighted: Bool) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(alignment: .center) {
+                Text(title)
+                    .font(.headline)
+                if let badge {
+                    Text(badge)
+                        .font(.system(size: 11, weight: .semibold))
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 3)
+                        .background(brown, in: Capsule())
+                }
+                Spacer()
+            }
             ForEach(Array(features.enumerated()), id: \.offset) { _, f in
                 Label {
                     Text(LocalizedStringKey(f))
+                        .fixedSize(horizontal: false, vertical: true)
                 } icon: {
-                    Image(systemName: "checkmark")
+                    Image(systemName: "checkmark.circle.fill")
+                        .foregroundStyle(highlighted ? brown : .secondary)
                 }
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
@@ -97,10 +118,11 @@ struct PaywallView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(16)
-        .background(highlighted ? Color.brown.opacity(0.08) : Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 14))
+        .background(highlighted ? brown.opacity(0.08) : Color(.secondarySystemBackground),
+                    in: RoundedRectangle(cornerRadius: 14))
         .overlay(
             RoundedRectangle(cornerRadius: 14)
-                .strokeBorder(highlighted ? Color.brown : Color.clear, lineWidth: 1.5)
+                .strokeBorder(highlighted ? brown : Color.clear, lineWidth: 1.5)
         )
     }
 
@@ -110,16 +132,21 @@ struct PaywallView: View {
     private var actions: some View {
         switch pm.tier {
         case .pro:
-            Label("paywall.pro.unlocked", systemImage: "checkmark.seal.fill")
-                .font(.headline)
-                .foregroundStyle(.brown)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 14)
+            HStack(spacing: 10) {
+                Image(systemName: "checkmark.seal.fill")
+                    .foregroundStyle(brown)
+                Text("paywall.pro.unlocked")
+                    .font(.headline)
+                    .foregroundStyle(brown)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 16)
+            .background(brown.opacity(0.08), in: RoundedRectangle(cornerRadius: 14))
 
         case .basic:
             // 已购入门版：补差价升级到完整版
             if let p = pm.product(ProductID.upgradeFull) {
-                buyButton(title: "paywall.buy.upgrade", price: p.displayPrice) { await buy(p) }
+                buyButton(title: "paywall.buy.upgrade", price: p.displayPrice, primary: true) { await buy(p) }
             } else {
                 unavailableNote
             }
@@ -137,25 +164,35 @@ struct PaywallView: View {
         }
     }
 
-    private func buyButton(title: LocalizedStringKey, price: String, primary: Bool = true, action: @escaping () async -> Void) -> some View {
+    private func buyButton(title: LocalizedStringKey, price: String, primary: Bool,
+                           action: @escaping () async -> Void) -> some View {
         Button {
             Task { await action() }
         } label: {
             HStack {
-                Text(title)
+                if busy {
+                    ProgressView()
+                        .tint(primary ? .white : brown)
+                } else {
+                    Text(title)
+                }
                 Spacer()
                 Text(price)
+                    .font(.system(size: 17, weight: .bold))
             }
             .font(.system(size: 17, weight: .semibold))
             .frame(maxWidth: .infinity)
             .padding(.vertical, 15)
             .padding(.horizontal, 18)
-            .background(primary ? Color.brown : Color(.secondarySystemBackground), in: Capsule())
+            .background(primary ? brown : Color(.secondarySystemBackground), in: Capsule())
             .foregroundStyle(primary ? Color.white : Color.primary)
+            .overlay(
+                Capsule().strokeBorder(primary ? Color.clear : brown.opacity(0.4), lineWidth: 1)
+            )
         }
         .buttonStyle(.plain)
         .disabled(busy)
-        .opacity(busy ? 0.6 : 1)
+        .opacity(busy ? 0.7 : 1)
     }
 
     private var unavailableNote: some View {

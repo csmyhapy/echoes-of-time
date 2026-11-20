@@ -236,6 +236,7 @@
 "paywall.heading" = "一次买断，留住完整一生";
 "paywall.subtitle" = "完整版不限章节、照片、语音与留言，可自由分享与导出。";
 "paywall.plan.pro.title" = "完整版（买断）";
+"paywall.plan.pro.badge" = "推荐";
 "paywall.plan.pro.f1" = "不限章节数与照片数";
 "paywall.plan.pro.f2" = "语音旁白、家人留言不限量";
 "paywall.plan.pro.f3" = "自由分享与导出 PDF / 档案包";

@@ -237,6 +237,7 @@
 "paywall.heading" = "一度の購入で、一生分を残せます";
 "paywall.subtitle" = "フルバージョンでは章・写真・音声メッセージ・メッセージが無制限で、共有と書き出しも可能です。";
 "paywall.plan.pro.title" = "フルバージョン（買い切り）";
+"paywall.plan.pro.badge" = "おすすめ";
 "paywall.plan.pro.f1" = "章と写真が無制限";
 "paywall.plan.pro.f2" = "音声メッセージ・家族のメッセージが無制限";
 "paywall.plan.pro.f3" = "自由に共有、PDF／アーカイブを書き出し";

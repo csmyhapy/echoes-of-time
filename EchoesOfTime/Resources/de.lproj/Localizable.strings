@@ -237,6 +237,7 @@
 "paywall.heading" = "Ein Kauf, ein ganzes Leben";
 "paywall.subtitle" = "Die Vollversion bietet unbegrenzt Kapitel, Fotos, Sprachnachrichten und Nachrichten sowie Teilen und Export.";
 "paywall.plan.pro.title" = "Vollversion (lebenslang)";
+"paywall.plan.pro.badge" = "Empfohlen";
 "paywall.plan.pro.f1" = "Unbegrenzt Kapitel und Fotos";
 "paywall.plan.pro.f2" = "Unbegrenzt Sprachnachrichten und Familiennachrichten";
 "paywall.plan.pro.f3" = "Frei teilen und PDF / Archiv exportieren";

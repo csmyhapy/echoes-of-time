@@ -237,6 +237,7 @@
 "paywall.heading" = "Una compra, una vida completa";
 "paywall.subtitle" = "La versión completa tiene capítulos, fotos, notas de voz y mensajes ilimitados, con uso compartido y exportación.";
 "paywall.plan.pro.title" = "Versión completa (de por vida)";
+"paywall.plan.pro.badge" = "Recomendado";
 "paywall.plan.pro.f1" = "Capítulos y fotos ilimitados";
 "paywall.plan.pro.f2" = "Notas de voz y mensajes familiares ilimitados";
 "paywall.plan.pro.f3" = "Comparte libremente y exporta PDF / archivo";

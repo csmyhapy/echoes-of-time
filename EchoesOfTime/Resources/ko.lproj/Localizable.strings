@@ -237,6 +237,7 @@
 "paywall.heading" = "한 번의 구매로, 온전한 삶을 보존";
 "paywall.subtitle" = "풀 버전은 챕터, 사진, 음성 메시지, 메시지가 무제한이며 공유와 내보내기를 지원합니다.";
 "paywall.plan.pro.title" = "풀 버전 (평생 이용)";
+"paywall.plan.pro.badge" = "추천";
 "paywall.plan.pro.f1" = "챕터와 사진 무제한";
 "paywall.plan.pro.f2" = "음성 메시지와 가족 메시지 무제한";
 "paywall.plan.pro.f3" = "자유롭게 공유하고 PDF / 아카이브 내보내기";
