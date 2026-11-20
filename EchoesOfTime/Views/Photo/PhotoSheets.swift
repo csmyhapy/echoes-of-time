@@ -304,14 +304,6 @@ struct PhotoShareSheet: View {
         NavigationStack {
             List {
                 Section {
-                    if false { // 本期未重做单张照片PDF，继续隐藏；整册画册走人物详情页导出
-                        Button {
-                            makePDF()
-                        } label: {
-                            Label("share.option.pdf", systemImage: "doc.text")
-                        }
-                    }
-
                     Button {
                         makePage()
                     } label: {
@@ -400,20 +392,6 @@ struct PhotoShareSheet: View {
                 payload = SharePayload(url: url)
             } else {
                 errorMessage = String(localized: "share.error.page")
-            }
-            working = false
-        }
-    }
-
-    private func makePDF() {
-        guard PurchaseManager.shared.canShare else { showingPaywall = true; return }
-        working = true
-        errorMessage = nil
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
-            if let url = ShareExporter.makePhotoPDF(photo: photo, person: person, personID: personID) {
-                payload = SharePayload(url: url)
-            } else {
-                errorMessage = String(localized: "share.error.pdf")
             }
             working = false
         }
