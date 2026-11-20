@@ -86,6 +86,13 @@
 "messages.placeholder" = "Laat een bericht achter…";
 "photo.messages" = "Berichten van de familie";
 "settings.section.privacy" = "Privacy";
+"settings.section.premium" = "Premium";
+"settings.premium.status" = "Huidige versie";
+"settings.premium.tier.unpaid" = "Gratis (alleen demo)";
+"settings.premium.tier.basic" = "Startversie";
+"settings.premium.tier.pro" = "Volledige versie (ontgrendeld)";
+"settings.premium.upgrade" = "Upgraden naar volledige versie";
+"settings.premium.restore" = "Aankopen herstellen";
 "settings.requireFaceID" = "Face ID vereisen";
 "settings.familyName" = "Jouw naam (voor berichten)";
 "lock.title" = "Echoes of Time is vergrendeld";

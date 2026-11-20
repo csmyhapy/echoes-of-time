@@ -86,6 +86,13 @@
 "messages.placeholder" = "写一句留言…";
 "photo.messages" = "家人留言";
 "settings.section.privacy" = "隐私";
+"settings.section.premium" = "版本与购买";
+"settings.premium.status" = "当前版本";
+"settings.premium.tier.unpaid" = "免费版（仅示例）";
+"settings.premium.tier.basic" = "入门版";
+"settings.premium.tier.pro" = "完整版（已解锁）";
+"settings.premium.upgrade" = "升级到完整版";
+"settings.premium.restore" = "恢复购买";
 "settings.requireFaceID" = "开启面容 ID 解锁";
 "settings.familyName" = "你的名字（用于留言）";
 "lock.title" = "岁月回声已锁定";

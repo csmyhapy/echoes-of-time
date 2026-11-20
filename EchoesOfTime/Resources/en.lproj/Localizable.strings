@@ -86,6 +86,13 @@
 "messages.placeholder" = "Leave a message…";
 "photo.messages" = "Family Messages";
 "settings.section.privacy" = "Privacy";
+"settings.section.premium" = "Premium";
+"settings.premium.status" = "Current version";
+"settings.premium.tier.unpaid" = "Free (demo only)";
+"settings.premium.tier.basic" = "Starter";
+"settings.premium.tier.pro" = "Full version (unlocked)";
+"settings.premium.upgrade" = "Upgrade to Full Version";
+"settings.premium.restore" = "Restore Purchases";
 "settings.requireFaceID" = "Require Face ID";
 "settings.familyName" = "Your Name (for messages)";
 "lock.title" = "Echoes of Time is locked";

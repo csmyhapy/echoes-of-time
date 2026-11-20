@@ -86,6 +86,13 @@
 "messages.placeholder" = "メッセージを残す…";
 "photo.messages" = "家族のメッセージ";
 "settings.section.privacy" = "プライバシー";
+"settings.section.premium" = "バージョンと購入";
+"settings.premium.status" = "現在のバージョン";
+"settings.premium.tier.unpaid" = "無料（デモのみ）";
+"settings.premium.tier.basic" = "入門版";
+"settings.premium.tier.pro" = "フルバージョン（解除済）";
+"settings.premium.upgrade" = "フルバージョンへアップグレード";
+"settings.premium.restore" = "購入を復元";
 "settings.requireFaceID" = "Face IDを要求";
 "settings.familyName" = "あなたの名前（メッセージ用）";
 "lock.title" = "Echoes of Timeはロックされています";

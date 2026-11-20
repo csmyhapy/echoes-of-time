@@ -23,6 +23,8 @@ struct SettingsView: View {
     @State private var importReport: String?
     @State private var showImportReport = false
     @State private var isImporting = false
+    @State private var pm = PurchaseManager.shared
+    @State private var showingPaywall = false
 
     var body: some View {
         @Bindable var state = appState
@@ -65,6 +67,30 @@ struct SettingsView: View {
             Section("settings.section.privacy") {
                 Toggle("settings.requireFaceID", isOn: $requireFaceID)
                 TextField("settings.familyName", text: $familyName)
+            }
+
+            Section("settings.section.premium") {
+                HStack {
+                    Label("settings.premium.status",
+                          systemImage: pm.isPro ? "crown.fill" : "star")
+                    Spacer()
+                    Text(tierLabel)
+                        .foregroundStyle(.secondary)
+                }
+
+                if !pm.isPro {
+                    Button {
+                        showingPaywall = true
+                    } label: {
+                        Label("settings.premium.upgrade", systemImage: "sparkles")
+                    }
+                }
+
+                Button {
+                    Task { await pm.restore() }
+                } label: {
+                    Label("settings.premium.restore", systemImage: "arrow.clockwise")
+                }
             }
 
             Section("settings.section.display") {
@@ -158,6 +184,18 @@ struct SettingsView: View {
             Button("common.save", role: .cancel) {}
         } message: {
             Text(importReport ?? "")
+        }
+        .sheet(isPresented: $showingPaywall) {
+            PaywallView()
+        }
+    }
+
+    /// 当前付费档位的本地化名称
+    private var tierLabel: String {
+        switch pm.tier {
+        case .pro: return String(localized: "settings.premium.tier.pro")
+        case .basic: return String(localized: "settings.premium.tier.basic")
+        case .unpaid: return String(localized: "settings.premium.tier.unpaid")
         }
     }
 

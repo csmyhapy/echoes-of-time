@@ -86,6 +86,13 @@
 "messages.placeholder" = "Deja un mensaje…";
 "photo.messages" = "Mensajes de la familia";
 "settings.section.privacy" = "Privacidad";
+"settings.section.premium" = "Premium";
+"settings.premium.status" = "Versión actual";
+"settings.premium.tier.unpaid" = "Gratis (solo demo)";
+"settings.premium.tier.basic" = "Versión inicial";
+"settings.premium.tier.pro" = "Versión completa (desbloqueada)";
+"settings.premium.upgrade" = "Mejorar a la versión completa";
+"settings.premium.restore" = "Restaurar compras";
 "settings.requireFaceID" = "Pedir Face ID";
 "settings.familyName" = "Tu nombre (para los mensajes)";
 "lock.title" = "Echoes of Time está bloqueada";
