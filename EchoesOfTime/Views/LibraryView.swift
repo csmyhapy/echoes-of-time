@@ -36,20 +36,29 @@ struct LibraryView: View {
     @ViewBuilder
     var body: some View {
         #if DEBUG
-        // 调试：启动参数直达人物页/章节页（截图与排版核对用，Release 不编译）
-        if let target = debugTarget, let first = realPersons.first {
-            if target == "node" {
-                let nodes = first.nodes.sorted { $0.sortOrder < $1.sortOrder }
-                let node = debugNodeName.flatMap { name in nodes.first { $0.name == name } } ?? nodes.first
-                if let node {
-                    NodeDetailView(node: node, isReader: isReader)
-                } else {
+        // 调试：启动参数直达人物页/章节页/灯箱（截图与排版核对用，Release 不编译）
+        if let target = debugTarget {
+            let person = realPersons.first ?? demoPersons.first
+            if let person {
+                switch target {
+                case "node":
+                    let nodes = person.nodes.sorted { $0.sortOrder < $1.sortOrder }
+                    let node = debugNodeName.flatMap { name in nodes.first { $0.name == name } } ?? nodes.first
+                    if let node {
+                        NodeDetailView(node: node, isReader: isReader)
+                    } else {
+                        mainContent
+                    }
+                case "person":
+                    PersonDetailView(person: person, isReader: isReader)
+                case "photos":
+                    PhotoLibraryView(person: person)
+                case "lightbox":
+                    let photos = person.photos.sorted { $0.sortOrder < $1.sortOrder }
+                    PhotoLightboxView(photos: photos, personID: person.id, startIndex: 0, isReader: isReader, person: person)
+                default:
                     mainContent
                 }
-            } else if target == "person" {
-                PersonDetailView(person: first, isReader: isReader)
-            } else if target == "photos" {
-                PhotoLibraryView(person: first)
             } else {
                 mainContent
             }
@@ -67,6 +76,7 @@ struct LibraryView: View {
         if args.contains("debug-node") { return "node" }
         if args.contains("debug-person") { return "person" }
         if args.contains("debug-photos") { return "photos" }
+        if args.contains("debug-lightbox") { return "lightbox" }
         return nil
     }
 
