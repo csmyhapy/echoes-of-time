@@ -5,12 +5,12 @@ import { PersonBundle } from '../models/Models';
 /**
  * 预览器专用的数据通道。
  *
- * 背景：ArkUI 预览器把 relationalStore 做了 mock，真正查库拿不到任何行，
- * 首页因此只剩一个空列表，无法用来截图验收。
- * 做法：当工程根目录存在标记文件 .preview-mode 时（只在本机开发目录里有，
- * 真机/发布的包里没有这个路径），页面跳过数据库，直接用 DemoSeeder 在内存里
- * 构建出与首启 demo 完全一致的 PersonBundle。资源图片仍走 MediaStore 真实落盘，
- * 所以界面上看到的封面、照片、文字、留言都是真实内容。
+ * 背景：ArkUI 预览器把 relationalStore 做成了 mock（写入不落库、查询返回空），
+ * 首页只剩一个空列表，没法用来截图验收；沙箱文件也是虚拟的，图片读不到。
+ * 做法：用 context.filesDir 是否包含 ".idea/previewer" 判断"这是 IDE 预览器"
+ * （真机沙箱是 /data/storage/... 路径，恒不命中）。命中时页面跳过数据库，
+ * 直接用 DemoSeeder 在内存里构建出与首启 demo 完全一致的 PersonBundle；
+ * 图片改读 rawfile。真机行为不变。
  */
 export class PreviewMock {
   /** 预览器里固定使用这个档案 id（首启 demo 在真机上是随机 UUID） */
