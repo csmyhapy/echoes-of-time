@@ -102,6 +102,8 @@
 "export.pdf" = "导出 PDF 回忆册";
 "export.archive" = "导出档案包（ZIP）";
 "export.failed" = "导出失败，请重试。";
+"chapter.order.reminder" = "章节顺序提醒";
+"chapter.order.proceed" = "仍要导出";
 "library.empty.demo" = "载入示例档案";
 "settings.bgm" = "背景音乐";
 "one.archive.limit.title" = "仅支持一个档案";

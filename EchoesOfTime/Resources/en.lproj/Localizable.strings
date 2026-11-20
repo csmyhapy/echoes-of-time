@@ -102,6 +102,8 @@
 "export.pdf" = "Export PDF Book";
 "export.archive" = "Export Archive (ZIP)";
 "export.failed" = "Export failed. Please try again.";
+"chapter.order.reminder" = "Chapter Order Notice";
+"chapter.order.proceed" = "Export Anyway";
 "library.empty.demo" = "Load a Sample Archive";
 "settings.bgm" = "Background Music";
 "one.archive.limit.title" = "One Archive Only";

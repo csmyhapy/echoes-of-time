@@ -21,6 +21,7 @@ struct PersonDetailView: View {
     @State private var showVoiceRecorder = false
     @State private var exportItem: ExportItem?
     @State private var showExportError = false
+    @State private var orderWarning: String?
     @State private var storyExpanded = false
     @State private var timelineExpanded = false
     @State private var showingPaywall = false
@@ -31,6 +32,35 @@ struct PersonDetailView: View {
     private var sortedNodes: [Node] {
         // 与 PDF 目录共用同一套排序（Node.displaysBefore），保证 App 显示顺序 = PDF 目录顺序
         person.nodes.filter { $0.isVisible }.sorted { Node.displaysBefore($0, $1) }
+    }
+
+    /// 导出前章节顺序检查：返回需提醒的问题文本，无问题返回 nil
+    /// 检测：起始年相同的并列章节；纯年代兜底模式下的年代倒退
+    private var chapterOrderIssue: String? {
+        let nodes = sortedNodes
+        guard nodes.count >= 2 else { return nil }
+
+        // 同年并列：起始年相同的章节成组
+        var sameYear = [String]()
+        let groups = Dictionary(grouping: nodes, by: { $0.displayStartYear })
+        for (year, group) in groups where group.count >= 2 {
+            let names = group.map { $0.name }.joined(separator: "、")
+            sameYear.append("\(year)年：\(names)")
+        }
+
+        // 仅当没有手动顺序（sortOrder/webOrder 全0，纯按年代排）时检查年代倒退
+        var regress = [String]()
+        if nodes.allSatisfy({ $0.sortOrder == 0 && $0.webOrder == 0 }) {
+            for i in 1..<nodes.count where nodes[i].displayStartYear < nodes[i - 1].displayStartYear {
+                regress.append("\(nodes[i - 1].name) → \(nodes[i].name)")
+            }
+        }
+
+        if sameYear.isEmpty && regress.isEmpty { return nil }
+        var parts = [String]()
+        if !sameYear.isEmpty { parts.append("起始年相同（按创建先后排列）：" + sameYear.joined(separator: "；")) }
+        if !regress.isEmpty { parts.append("年代排列倒退：" + regress.joined(separator: "；")) }
+        return parts.joined(separator: "\n")
     }
 
     var body: some View {
@@ -101,6 +131,12 @@ struct PersonDetailView: View {
         }
         .alert("export.failed", isPresented: $showExportError) {
             Button("common.save", role: .cancel) {}
+        }
+        .alert("chapter.order.reminder", isPresented: Binding(get: { orderWarning != nil }, set: { if !$0 { orderWarning = nil } })) {
+            Button("chapter.order.proceed") { orderWarning = nil; performExportPDF() }
+            Button("common.cancel", role: .cancel) { orderWarning = nil }
+        } message: {
+            Text(orderWarning ?? "")
         }
         .onAppear {
             if bgmEnabled {
@@ -296,6 +332,14 @@ struct PersonDetailView: View {
 
     private func exportPDF() {
         guard PurchaseManager.shared.canExport else { showingPaywall = true; return }
+        if let issue = chapterOrderIssue {
+            orderWarning = issue   // 顺序存疑，先提醒，确认后再导出
+            return
+        }
+        performExportPDF()
+    }
+
+    private func performExportPDF() {
         if let url = PDFExporter.makePDF(for: person) {
             exportItem = ExportItem(url: url)
         } else {
