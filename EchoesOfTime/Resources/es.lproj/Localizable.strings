@@ -102,6 +102,8 @@
 "export.pdf" = "Exportar libro PDF";
 "export.archive" = "Exportar archivo (ZIP)";
 "export.failed" = "No se pudo exportar. Inténtalo de nuevo.";
+"chapter.order.reminder" = "Aviso sobre el orden de los capítulos";
+"chapter.order.proceed" = "Exportar de todas formas";
 "library.empty.demo" = "Cargar archivo de muestra";
 "settings.bgm" = "Música de fondo";
 "one.archive.limit.title" = "Un solo archivo";

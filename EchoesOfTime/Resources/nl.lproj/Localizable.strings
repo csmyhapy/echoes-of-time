@@ -102,6 +102,8 @@
 "export.pdf" = "Boek als PDF exporteren";
 "export.archive" = "Archief exporteren (ZIP)";
 "export.failed" = "Exporteren mislukt. Probeer het opnieuw.";
+"chapter.order.reminder" = "Melding over hoofdstukvolgorde";
+"chapter.order.proceed" = "Toch exporteren";
 "library.empty.demo" = "Voorbeeldarchief laden";
 "settings.bgm" = "Achtergrondmuziek";
 "one.archive.limit.title" = "Slechts één archief";

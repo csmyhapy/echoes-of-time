@@ -102,6 +102,8 @@
 "export.pdf" = "Exporter le livre PDF";
 "export.archive" = "Exporter l'archive (ZIP)";
 "export.failed" = "Échec de l'exportation. Réessayez.";
+"chapter.order.reminder" = "Avis sur l'ordre des chapitres";
+"chapter.order.proceed" = "Exporter quand même";
 "library.empty.demo" = "Charger une archive d'exemple";
 "settings.bgm" = "Musique de fond";
 "one.archive.limit.title" = "Une seule archive";

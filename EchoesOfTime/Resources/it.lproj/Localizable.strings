@@ -102,6 +102,8 @@
 "export.pdf" = "Esporta libro PDF";
 "export.archive" = "Esporta archivio (ZIP)";
 "export.failed" = "Esportazione non riuscita. Riprova.";
+"chapter.order.reminder" = "Avviso sull'ordine dei capitoli";
+"chapter.order.proceed" = "Esporta comunque";
 "library.empty.demo" = "Carica archivio di esempio";
 "settings.bgm" = "Musica di sottofondo";
 "one.archive.limit.title" = "Un solo archivio";
