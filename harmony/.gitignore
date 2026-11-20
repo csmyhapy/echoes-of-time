@@ -1,0 +1,12 @@
+/build
+/.hvigor
+/.cxx
+/oh_modules
+/.preview
+local.properties
+*.hap
+*.hsp
+.DS_Store
+
+# IDE
+/.idea

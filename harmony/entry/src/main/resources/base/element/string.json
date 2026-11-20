@@ -1,0 +1,32 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "岁月回声主模块"
+    },
+    {
+      "name": "EntryAbility_desc",
+      "value": "岁月回声"
+    },
+    {
+      "name": "EntryAbility_label",
+      "value": "岁月回声"
+    },
+    {
+      "name": "reason_microphone",
+      "value": "用于为家人录制语音旁白"
+    },
+    {
+      "name": "reason_background",
+      "value": "用于跨页连续播放背景音乐"
+    },
+    {
+      "name": "reason_internet",
+      "value": "用于连接华为应用市场完成购买与恢复购买"
+    },
+    {
+      "name": "reason_biometric",
+      "value": "用于设备锁验证，保护家庭记忆"
+    }
+  ]
+}

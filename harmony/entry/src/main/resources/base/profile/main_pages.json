@@ -1,0 +1,10 @@
+{
+  "src": [
+    "pages/Index",
+    "pages/person/PersonPage",
+    "pages/node/NodePage",
+    "pages/photo/PhotoPage",
+    "pages/settings/SettingsPage",
+    "pages/paywall/PaywallPage"
+  ]
+}
