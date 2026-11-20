@@ -104,6 +104,7 @@
 "export.failed" = "Exporteren mislukt. Probeer het opnieuw.";
 "chapter.order.reminder" = "Melding over hoofdstukvolgorde";
 "chapter.order.proceed" = "Toch exporteren";
+"chapter.drag.hint" = "Houd een hoofdstuk vast om te slepen; de PDF-inhoudsopgave volgt.";
 "library.empty.demo" = "Voorbeeldarchief laden";
 "settings.bgm" = "Achtergrondmuziek";
 "one.archive.limit.title" = "Slechts één archief";

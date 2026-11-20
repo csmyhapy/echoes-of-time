@@ -104,6 +104,7 @@
 "export.failed" = "내보내기에 실패했습니다. 다시 시도해 주세요.";
 "chapter.order.reminder" = "챕터 순서 안내";
 "chapter.order.proceed" = "그래도 내보내기";
+"chapter.drag.hint" = "챕터를 길게 눌러 드래그하여 순서를 바꾸세요. PDF 목차도 따라 바뀝니다.";
 "library.empty.demo" = "샘플 보관함 불러오기";
 "settings.bgm" = "배경 음악";
 "one.archive.limit.title" = "보관함은 하나만";

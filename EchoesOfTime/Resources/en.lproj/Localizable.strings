@@ -104,6 +104,7 @@
 "export.failed" = "Export failed. Please try again.";
 "chapter.order.reminder" = "Chapter Order Notice";
 "chapter.order.proceed" = "Export Anyway";
+"chapter.drag.hint" = "Long-press a chapter to drag and reorder; the PDF table of contents follows.";
 "library.empty.demo" = "Load a Sample Archive";
 "settings.bgm" = "Background Music";
 "one.archive.limit.title" = "One Archive Only";

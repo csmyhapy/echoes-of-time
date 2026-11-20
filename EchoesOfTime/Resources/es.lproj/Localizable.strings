@@ -104,6 +104,7 @@
 "export.failed" = "No se pudo exportar. Inténtalo de nuevo.";
 "chapter.order.reminder" = "Aviso sobre el orden de los capítulos";
 "chapter.order.proceed" = "Exportar de todas formas";
+"chapter.drag.hint" = "Mantén pulsado un capítulo para arrastrarlo; el índice del PDF se actualiza.";
 "library.empty.demo" = "Cargar archivo de muestra";
 "settings.bgm" = "Música de fondo";
 "one.archive.limit.title" = "Un solo archivo";

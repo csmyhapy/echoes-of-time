@@ -176,6 +176,12 @@ struct PersonDetailView: View {
                 }
             }
 
+            if !isReader && !sortedNodes.isEmpty {
+                Text("chapter.drag.hint")
+                    .font(.system(size: 12))
+                    .foregroundStyle(.secondary)
+            }
+
             if sortedNodes.isEmpty {
                 Text("person.empty.nodes")
                     .font(.system(size: isReader ? 22 : 15))
@@ -188,6 +194,21 @@ struct PersonDetailView: View {
                         NodeCard(node: node, personID: person.id, large: isReader)
                     }
                     .buttonStyle(.plain)
+                    .onDrag {
+                        guard !isReader else { return NSItemProvider() }
+                        return NSItemProvider(object: node.id.uuidString as NSString)
+                    }
+                    .onDrop(of: [.text], isTargeted: nil) { providers in
+                        guard !isReader, let item = providers.first else { return false }
+                        item.loadObject(ofClass: NSString.self) { value, _ in
+                            DispatchQueue.main.async {
+                                guard let s = value as? String,
+                                      let fromID = UUID(uuidString: s), fromID != node.id else { return }
+                                reorderNode(from: fromID, to: node.id)
+                            }
+                        }
+                        return true
+                    }
                     .contextMenu {
                         if !isReader {
                             Button("common.edit") { editingNode = node }
@@ -358,6 +379,17 @@ struct PersonDetailView: View {
 
     private func delete(_ node: Node) {
         context.delete(node)
+        try? context.save()
+    }
+
+    /// 拖拽重排可见章节，写回连续 sortOrder；App列表与PDF目录都按 sortOrder 优先
+    private func reorderNode(from fromID: UUID, to toID: UUID) {
+        var arr = person.nodes.filter { $0.isVisible }
+        guard let fromIdx = arr.firstIndex(where: { $0.id == fromID }),
+              let toIdx = arr.firstIndex(where: { $0.id == toID }) else { return }
+        let moved = arr.remove(at: fromIdx)
+        arr.insert(moved, at: toIdx)
+        for (i, n) in arr.enumerated() { n.sortOrder = i }
         try? context.save()
     }
 

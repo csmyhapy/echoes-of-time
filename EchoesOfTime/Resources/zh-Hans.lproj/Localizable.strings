@@ -104,6 +104,7 @@
 "export.failed" = "导出失败，请重试。";
 "chapter.order.reminder" = "章节顺序提醒";
 "chapter.order.proceed" = "仍要导出";
+"chapter.drag.hint" = "长按章节可拖拽调整顺序，PDF 目录随之更新";
 "library.empty.demo" = "载入示例档案";
 "settings.bgm" = "背景音乐";
 "one.archive.limit.title" = "仅支持一个档案";

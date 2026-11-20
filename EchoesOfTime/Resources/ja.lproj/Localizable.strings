@@ -104,6 +104,7 @@
 "export.failed" = "書き出しに失敗しました。もう一度お試しください。";
 "chapter.order.reminder" = "章の順序に関する注意";
 "chapter.order.proceed" = "それでも書き出す";
+"chapter.drag.hint" = "章を長押ししてドラッグで並べ替え。PDFの目次も連動します。";
 "library.empty.demo" = "サンプルアーカイブを読み込む";
 "settings.bgm" = "BGM";
 "one.archive.limit.title" = "アーカイブはひとつだけ";
