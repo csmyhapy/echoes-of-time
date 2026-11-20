@@ -304,7 +304,7 @@ struct PhotoShareSheet: View {
         NavigationStack {
             List {
                 Section {
-                    if PDFExporter.featureEnabled {
+                    if false { // 本期未重做单张照片PDF，继续隐藏；整册画册走人物详情页导出
                         Button {
                             makePDF()
                         } label: {

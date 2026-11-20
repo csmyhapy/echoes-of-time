@@ -10,8 +10,9 @@ import UIKit
 
 enum PDFExporter {
 
-    /// PDF 导出总开关：效果打磨完成前置 false（隐藏所有 PDF 入口），做好后改 true 恢复。
-    static let featureEnabled = false
+    /// PDF 导出总开关：整册画报已完成并验收，置 true 放开整册入口。
+    /// 照片页「单张照片PDF」旧手绘本期未重做，由 PhotoSheets 单独隐藏。
+    static let featureEnabled = true
 
     @MainActor
     static func makePDF(for person: Person) -> URL? {
