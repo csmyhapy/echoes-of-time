@@ -715,7 +715,7 @@ private enum AlbumBookRenderer {
             case lifeStory([String], String)
             case divider(Node)
             case chapterStory(Node, [String], String)
-            case photo(Node, Photo)
+            case photoGrid(Node, [Photo])
             case closing
         }
 
@@ -744,8 +744,12 @@ private enum AlbumBookRenderer {
             }
             let photos = person.photos.filter { $0.belongs(to: node) }
                 .sorted { $0.sortOrder < $1.sortOrder }
-            for photo in photos {
-                pages.append(.photo(node, photo))
+            // 两张一组并排成网格页，余 1 张单独成页
+            var i = 0
+            while i < photos.count {
+                let end = min(i + 2, photos.count)
+                pages.append(.photoGrid(node, Array(photos[i..<end])))
+                i = end
             }
         }
         pages.append(.closing)
@@ -770,8 +774,8 @@ private enum AlbumBookRenderer {
                 images.append(shot(PageFrame(page: pageNo) { DividerView(node: node) }))
             case .chapterStory(let node, let paras, let sig):
                 images.append(shot(PageFrame(page: pageNo) { StoryPageView(eyebrow: node.yearRange, title: node.name, paragraphs: paras, signature: sig) }))
-            case .photo(let node, let photo):
-                images.append(shot(PageFrame(page: pageNo) { PhotoBlockView(node: node, photo: photo, person: person) }))
+            case .photoGrid(_, let group):
+                images.append(shot(PageFrame(page: pageNo) { PhotoGridView(photos: group, person: person) }))
             case .closing:
                 images.append(shot(PageFrame(page: nil) { ClosingView(person: person) }))
             }
@@ -940,26 +944,37 @@ private struct DividerView: View {
     }
 }
 
-/// 照片块：图居中（宽 50%~100% 自适应）+ 标题 + 旁白，整块同页不隔页
-private struct PhotoBlockView: View {
-    let node: Node
-    let photo: Photo
+/// 照片网格：两张并排（2列等宽），各带小标题与短句，整块同页不隔页
+private struct PhotoGridView: View {
+    let photos: [Photo]
     let person: Person
+
     var body: some View {
-        VStack(spacing: 16) {
+        HStack(alignment: .top, spacing: 18) {
+            ForEach(photos, id: \.id) { photo in
+                cell(photo)
+            }
+            if photos.count == 1 { Spacer() }
+        }
+        .padding(.horizontal, AlbumLayout.margin)
+        .padding(.top, 64)
+        .frame(width: AlbumLayout.w, height: AlbumLayout.h)
+    }
+
+    @ViewBuilder
+    private func cell(_ photo: Photo) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
             if let img = MediaStore.loadImage(fileName: photo.imageFileName, personID: person.id) {
-                let ratio = img.size.width / max(img.size.height, 1)
-                // 横图近满宽，竖图收窄，限制在 50%~95%
-                let widthRatio: CGFloat = ratio >= 1.0 ? 0.95 : (ratio >= 0.8 ? 0.74 : 0.58)
                 Image(uiImage: img)
                     .resizable().scaledToFit()
-                    .frame(width: AlbumLayout.w * widthRatio)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 220)
                     .clipShape(RoundedRectangle(cornerRadius: 12))
                     .shadow(radius: 4)
             }
             if !photo.caption.isEmpty {
                 Text(photo.caption)
-                    .font(.system(size: 18, weight: .semibold))
+                    .font(.system(size: 16, weight: .semibold))
             }
             let story = ArchiveText.clean(photo.story)
             if !story.isEmpty {
@@ -968,14 +983,9 @@ private struct PhotoBlockView: View {
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.leading)
                     .lineSpacing(6)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.horizontal, AlbumLayout.margin)
             }
-            Spacer()
         }
-        .padding(.horizontal, AlbumLayout.margin)
-        .padding(.top, 64)
-        .frame(width: AlbumLayout.w, height: AlbumLayout.h)
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
