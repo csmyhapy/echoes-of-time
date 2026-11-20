@@ -13,206 +13,9 @@ enum PDFExporter {
     /// PDF 导出总开关：效果打磨完成前置 false（隐藏所有 PDF 入口），做好后改 true 恢复。
     static let featureEnabled = false
 
+    @MainActor
     static func makePDF(for person: Person) -> URL? {
-        let pageRect = CGRect(x: 0, y: 0, width: 595, height: 842)   // A4
-        let margin: CGFloat = 40
-        let contentWidth = pageRect.width - margin * 2
-        let renderer = UIGraphicsPDFRenderer(bounds: pageRect)
-
-        let url = FileManager.default.temporaryDirectory
-            .appendingPathComponent("\(safeFileName(person.name)).pdf")
-
-        do {
-            try renderer.writePDF(to: url) { context in
-                var pageNumber = 0
-
-                func beginPage() {
-                    pageNumber += 1
-                    context.beginPage()
-                    let attrs: [NSAttributedString.Key: Any] = [
-                        .font: UIFont.systemFont(ofSize: 9),
-                        .foregroundColor: UIColor.gray
-                    ]
-                    let footer = NSAttributedString(
-                        string: "Echoes of Time  ·  \(person.name)  ·  \(pageNumber)",
-                        attributes: attrs
-                    )
-                    footer.draw(at: CGPoint(x: margin, y: pageRect.height - 26))
-                }
-
-                // 1. 封面
-                beginPage()
-                drawCover(person, pageRect: pageRect, margin: margin, context: context)
-
-                // 2. 简介与人生故事
-                if !person.summary.isEmpty || !ArchiveText.paragraphs(person.story).isEmpty {
-                    beginPage()
-                    var y = margin
-                    y = drawText("A Life Remembered",
-                                 font: .boldSystemFont(ofSize: 24),
-                                 color: .black, x: margin, y: y,
-                                 width: contentWidth, lineSpacing: 0) + 16
-                    if !person.summary.isEmpty {
-                        y = drawText(person.summary,
-                                     font: .italicSystemFont(ofSize: 15),
-                                     color: .darkGray, x: margin, y: y,
-                                     width: contentWidth, lineSpacing: 4) + 16
-                    }
-                    if !ArchiveText.paragraphs(person.story).isEmpty {
-                        _ = drawText(ArchiveText.paragraphs(person.story),
-                                     font: .systemFont(ofSize: 13),
-                                     color: .black, x: margin, y: y,
-                                     width: contentWidth, lineSpacing: 6)
-                    }
-                }
-
-                // 3. 章节与照片
-                let nodes = person.nodes.sorted { $0.sortOrder < $1.sortOrder }
-                for node in nodes {
-                    beginPage()
-                    var y = margin
-                    y = drawText(node.name,
-                                 font: .boldSystemFont(ofSize: 22),
-                                 color: .brown, x: margin, y: y,
-                                 width: contentWidth, lineSpacing: 0) + 4
-                    if !node.yearRange.isEmpty {
-                        y = drawText(node.yearRange,
-                                     font: .systemFont(ofSize: 12),
-                                     color: .gray, x: margin, y: y,
-                                     width: contentWidth, lineSpacing: 0) + 10
-                    }
-                    if !node.summary.isEmpty {
-                        y = drawText(node.summary,
-                                     font: .italicSystemFont(ofSize: 13),
-                                     color: .darkGray, x: margin, y: y,
-                                     width: contentWidth, lineSpacing: 4) + 10
-                    }
-                    if !ArchiveText.paragraphs(node.story).isEmpty {
-                        _ = drawText(ArchiveText.paragraphs(node.story),
-                                     font: .systemFont(ofSize: 12),
-                                     color: .black, x: margin, y: y,
-                                     width: contentWidth, lineSpacing: 5)
-                    }
-
-                    for photo in node.photos.sorted(by: { $0.sortOrder < $1.sortOrder }) {
-                        beginPage()
-                        drawPhotoPage(photo, person: person, pageRect: pageRect,
-                                      margin: margin, contentWidth: contentWidth)
-                    }
-                }
-            }
-        } catch {
-            return nil
-        }
-
-        return url
-    }
-
-    // MARK: - 绘制
-
-    private static func drawCover(_ person: Person, pageRect: CGRect, margin: CGFloat, context: UIGraphicsPDFRendererContext) {
-        let cg = context.cgContext
-
-        // 顶部标题
-        drawText("Echoes of Time",
-                 font: .systemFont(ofSize: 12),
-                 color: .gray, x: margin, y: margin,
-                 width: pageRect.width - margin * 2, lineSpacing: 0)
-
-        // 封面图
-        if let img = MediaStore.loadImage(fileName: person.coverImageFileName, personID: person.id) {
-            let maxW = pageRect.width - margin * 2
-            let maxH: CGFloat = 380
-            let scale = min(maxW / img.size.width, maxH / img.size.height)
-            let size = CGSize(width: img.size.width * scale, height: img.size.height * scale)
-            let rect = CGRect(x: (pageRect.width - size.width) / 2,
-                              y: margin + 60, width: size.width, height: size.height)
-            cg.saveGState()
-            let path = UIBezierPath(roundedRect: rect, cornerRadius: 10)
-            path.addClip()
-            img.draw(in: rect)
-            cg.restoreGState()
-        }
-
-        // 姓名
-        let nameY = margin + 60 + 400
-        let nameStyle = NSMutableParagraphStyle()
-        nameStyle.alignment = .center
-        let nameAttrs: [NSAttributedString.Key: Any] = [
-            .font: UIFont.boldSystemFont(ofSize: 30),
-            .foregroundColor: UIColor.black,
-            .paragraphStyle: nameStyle
-        ]
-        let nameStr = NSAttributedString(string: person.name, attributes: nameAttrs)
-        nameStr.draw(with: CGRect(x: margin, y: nameY, width: pageRect.width - margin * 2, height: 40),
-                     options: [.usesLineFragmentOrigin], context: nil)
-
-        if !person.birthYear.isEmpty {
-            let yearAttrs: [NSAttributedString.Key: Any] = [
-                .font: UIFont.systemFont(ofSize: 15),
-                .foregroundColor: UIColor.darkGray,
-                .paragraphStyle: nameStyle
-            ]
-            let yearStr = NSAttributedString(string: person.birthYear, attributes: yearAttrs)
-            yearStr.draw(with: CGRect(x: margin, y: nameY + 42, width: pageRect.width - margin * 2, height: 24),
-                         options: [.usesLineFragmentOrigin], context: nil)
-        }
-    }
-
-    private static func drawPhotoPage(_ photo: Photo, person: Person, pageRect: CGRect,
-                                      margin: CGFloat, contentWidth: CGFloat) {
-        var y = margin
-
-        if let img = MediaStore.loadImage(fileName: photo.imageFileName, personID: person.id) {
-            let maxH: CGFloat = 480
-            let scale = min(contentWidth / img.size.width, maxH / img.size.height)
-            let size = CGSize(width: img.size.width * scale, height: img.size.height * scale)
-            let rect = CGRect(x: (pageRect.width - size.width) / 2, y: y,
-                              width: size.width, height: size.height)
-            UIGraphicsGetCurrentContext()?.saveGState()
-            UIBezierPath(roundedRect: rect, cornerRadius: 10).addClip()
-            img.draw(in: rect)
-            UIGraphicsGetCurrentContext()?.restoreGState()
-            y = rect.maxY + 14
-        } else {
-            y += 10
-        }
-
-        if !photo.caption.isEmpty {
-            y = drawText(photo.caption,
-                         font: .systemFont(ofSize: 16, weight: .semibold),
-                         color: .black, x: margin, y: y,
-                         width: contentWidth, lineSpacing: 2) + 6
-        }
-        if !ArchiveText.clean(photo.story).isEmpty {
-            _ = drawText(ArchiveText.clean(photo.story),
-                         font: .systemFont(ofSize: 12),
-                         color: .darkGray, x: margin, y: y,
-                         width: contentWidth, lineSpacing: 5)
-        }
-    }
-
-    @discardableResult
-    private static func drawText(_ text: String, font: UIFont, color: UIColor,
-                                 x: CGFloat, y: CGFloat, width: CGFloat,
-                                 lineSpacing: CGFloat) -> CGFloat {
-        let style = NSMutableParagraphStyle()
-        style.lineSpacing = lineSpacing
-        let attrs: [NSAttributedString.Key: Any] = [
-            .font: font,
-            .foregroundColor: color,
-            .paragraphStyle: style
-        ]
-        let attributed = NSAttributedString(string: text, attributes: attrs)
-        let height = attributed.boundingRect(
-            with: CGSize(width: width, height: .greatestFiniteMagnitude),
-            options: [.usesLineFragmentOrigin, .usesFontLeading],
-            context: nil
-        ).height
-        attributed.draw(with: CGRect(x: x, y: y, width: width, height: height),
-                        options: [.usesLineFragmentOrigin, .usesFontLeading],
-                        context: nil)
-        return height
+        AlbumBookRenderer.render(person: person)
     }
 
     /// 去掉文件名非法字符
@@ -879,3 +682,384 @@ enum ShareExporter {
             .replacingOccurrences(of: "\n", with: "\\n")
     }
 }
+
+import SwiftUI
+
+// MARK: - 画册式 PDF 渲染（路线 A：SwiftUI 版面 + ImageRenderer 逐页拼 PDF）
+
+/// 页面尺寸：A4 竖版（pt）
+private enum AlbumLayout {
+    static let w: CGFloat = 595
+    static let h: CGFloat = 842
+    static let margin: CGFloat = 56
+    static let brown = UIColor(red: 0.42, green: 0.29, blue: 0.16, alpha: 1)
+    static let paper = UIColor(red: 0.986, green: 0.978, blue: 0.96, alpha: 1)
+}
+
+private enum AlbumBookRenderer {
+
+    /// 章节排序：webOrder（网站顺序，缺失则全0）→ 年代起始年 → sortOrder → 创建时间
+    private static func nodeLess(_ a: Node, _ b: Node) -> Bool {
+        let wa = a.webOrder == 0 ? Int.max : a.webOrder
+        let wb = b.webOrder == 0 ? Int.max : b.webOrder
+        if wa != wb { return wa < wb }
+        let ya = startYear(a.yearRange), yb = startYear(b.yearRange)
+        if ya != yb { return ya < yb }
+        if a.sortOrder != b.sortOrder { return a.sortOrder < b.sortOrder }
+        return a.createdAt < b.createdAt
+    }
+
+    /// 从年代串（"1973-1980" / "2008年至今"）取开头四位年份，取不到给 9999
+    private static func startYear(_ s: String) -> Int {
+        let digits = s.filter { $0.isNumber }
+        let four = String(digits.prefix(4))
+        return Int(four) ?? 9999
+    }
+
+    @MainActor
+    static func render(person: Person) -> URL? {
+        let nodes = person.nodes.filter { $0.isVisible }
+            .sorted { nodeLess($0, $1) }
+
+        // 通用页单元
+        enum Page {
+            case cover, toc
+            case lifeStory([String], String)
+            case divider(Node)
+            case chapterStory(Node, [String], String)
+            case photo(Node, Photo)
+            case closing
+        }
+
+        let contentWidth = AlbumLayout.w - AlbumLayout.margin * 2
+        let bodyFont = UIFont.systemFont(ofSize: 15)
+        let bodyLine: CGFloat = 8
+        let storyMaxHeight: CGFloat = 620
+
+        var pages: [Page] = [.cover, .toc]
+
+        // 人生总述（流动分页，落款只放最后一页）
+        let lifeBody = ArchiveText.parse(person.story)
+        let lifeChunks = Self.paginate(lifeBody.paragraphs, width: contentWidth, font: bodyFont, lineSpacing: bodyLine, maxHeight: storyMaxHeight)
+        for (idx, chunk) in lifeChunks.enumerated() {
+            let sig = idx == lifeChunks.count - 1 ? lifeBody.signature : ""
+            pages.append(.lifeStory(chunk, sig))
+        }
+
+        for node in nodes {
+            pages.append(.divider(node))
+            let chBody = ArchiveText.parse(node.story)
+            let chChunks = Self.paginate(chBody.paragraphs, width: contentWidth, font: bodyFont, lineSpacing: bodyLine, maxHeight: storyMaxHeight)
+            for (idx, chunk) in chChunks.enumerated() {
+                let sig = idx == chChunks.count - 1 ? chBody.signature : ""
+                pages.append(.chapterStory(node, chunk, sig))
+            }
+            let photos = person.photos.filter { $0.belongs(to: node) }
+                .sorted { $0.sortOrder < $1.sortOrder }
+            for photo in photos {
+                pages.append(.photo(node, photo))
+            }
+        }
+        pages.append(.closing)
+
+        // 两遍法：统计每个章节分隔页的全局页码（从 1 计）
+        var dividerPage: [UUID: Int] = [:]
+        for (idx, p) in pages.enumerated() {
+            if case .divider(let n) = p { dividerPage[n.id] = idx + 1 }
+        }
+
+        var images: [UIImage] = []
+        for (i, p) in pages.enumerated() {
+            let pageNo = i + 1
+            switch p {
+            case .cover:
+                images.append(shot(PageFrame(page: nil) { CoverView(person: person) }))
+            case .toc:
+                images.append(shot(PageFrame(page: nil) { TableOfContentsView(nodes: nodes, dividerPage: dividerPage) }))
+            case .lifeStory(let paras, let sig):
+                images.append(shot(PageFrame(page: pageNo) { StoryPageView(eyebrow: "LIFE STORY", title: "人生故事", paragraphs: paras, signature: sig) }))
+            case .divider(let node):
+                images.append(shot(PageFrame(page: pageNo) { DividerView(node: node) }))
+            case .chapterStory(let node, let paras, let sig):
+                images.append(shot(PageFrame(page: pageNo) { StoryPageView(eyebrow: node.yearRange, title: node.name, paragraphs: paras, signature: sig) }))
+            case .photo(let node, let photo):
+                images.append(shot(PageFrame(page: pageNo) { PhotoBlockView(node: node, photo: photo, person: person) }))
+            case .closing:
+                images.append(shot(PageFrame(page: nil) { ClosingView(person: person) }))
+            }
+        }
+
+        let renderer = UIGraphicsPDFRenderer(bounds: CGRect(x: 0, y: 0, width: AlbumLayout.w, height: AlbumLayout.h))
+        let url = FileManager.default.temporaryDirectory
+            .appendingPathComponent("\(PDFExporter.safeFileName(person.name)).pdf")
+        do {
+            let data = renderer.pdfData { ctx in
+                for img in images {
+                    ctx.beginPage()
+                    // JPEG 压缩每页位图，控制整体体积
+                    let compressed = img.jpegData(compressionQuality: 0.8)
+                        .flatMap { UIImage(data: $0) } ?? img
+                    compressed.draw(in: CGRect(x: 0, y: 0, width: AlbumLayout.w, height: AlbumLayout.h))
+                }
+            }
+            try data.write(to: url, options: .atomic)
+            return url
+        } catch {
+            return nil
+        }
+    }
+
+    /// 测量一段文字在给定宽度下的排版高度
+    private static func blockHeight(_ text: String, font: UIFont, width: CGFloat, lineSpacing: CGFloat) -> CGFloat {
+        let style = NSMutableParagraphStyle()
+        style.lineSpacing = lineSpacing
+        let attrs: [NSAttributedString.Key: Any] = [.font: font, .paragraphStyle: style]
+        return NSAttributedString(string: text, attributes: attrs).boundingRect(
+            with: CGSize(width: width, height: .greatestFiniteMagnitude),
+            options: [.usesLineFragmentOrigin, .usesFontLeading], context: nil
+        ).height
+    }
+
+    /// 把段落流按页高切块：整块段落不拆，排满一页再开新页
+    private static func paginate(_ paragraphs: [String], width: CGFloat, font: UIFont,
+                                 lineSpacing: CGFloat, maxHeight: CGFloat) -> [[String]] {
+        var pages: [[String]] = []
+        var current: [String] = []
+        var used: CGFloat = 0
+        for p in paragraphs {
+            let h = blockHeight(p, font: font, width: width, lineSpacing: lineSpacing)
+            if !current.isEmpty, used + h + 14 > maxHeight {
+                pages.append(current)
+                current = [p]
+                used = h
+            } else {
+                current.append(p)
+                used += h + 14
+            }
+        }
+        if !current.isEmpty { pages.append(current) }
+        return pages
+    }
+
+    @MainActor
+    private static func shot<V: View>(_ view: V) -> UIImage {
+        let renderer = ImageRenderer(
+            content: view.frame(width: AlbumLayout.w, height: AlbumLayout.h)
+                .background(Color(uiColor: AlbumLayout.paper))
+        )
+        renderer.scale = 1.5
+        return renderer.uiImage ?? UIImage()
+    }
+}
+
+// MARK: 版面视图
+
+/// 封面：居中方图 + 姓名 + 生卒年 + 定位语
+private struct CoverView: View {
+    let person: Person
+    var body: some View {
+        VStack(spacing: 26) {
+            Spacer().frame(height: 110)
+            if let img = MediaStore.loadImage(fileName: person.resolvedCoverFileName, personID: person.id) {
+                Image(uiImage: img)
+                    .resizable().scaledToFill()
+                    .frame(width: 300, height: 300)
+                    .clipShape(RoundedRectangle(cornerRadius: 16))
+                    .shadow(radius: 6)
+            }
+            Text(person.name)
+                .font(.system(size: 38, weight: .bold))
+            if !person.birthYear.isEmpty {
+                Text(person.birthYear)
+                    .font(.system(size: 16))
+                    .foregroundColor(.secondary)
+            }
+            if !person.summary.isEmpty {
+                Text(person.summary)
+                    .font(.system(size: 14))
+                    .foregroundColor(.secondary)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 56)
+                    .lineSpacing(6)
+            }
+            Spacer()
+            Text("Echoes of Time · 回忆画册")
+                .font(.system(size: 11))
+                .foregroundColor(.gray)
+                .padding(.bottom, 40)
+        }
+        .frame(width: AlbumLayout.w, height: AlbumLayout.h)
+    }
+}
+
+/// 目录：章节名 + 年份 + 页码
+private struct TableOfContentsView: View {
+    let nodes: [Node]
+    let dividerPage: [UUID: Int]
+    var body: some View {
+        VStack(alignment: .leading, spacing: 18) {
+            Text("目录")
+                .font(.system(size: 30, weight: .bold))
+                .padding(.bottom, 8)
+            ForEach(nodes, id: \.id) { n in
+                HStack(alignment: .firstTextBaseline) {
+                    Text(n.name).font(.system(size: 17))
+                    if !n.yearRange.isEmpty {
+                        Text(n.yearRange)
+                            .font(.system(size: 13))
+                            .foregroundColor(.secondary)
+                    }
+                    Spacer()
+                    Text("\(dividerPage[n.id] ?? 0)")
+                        .font(.system(size: 15))
+                        .foregroundColor(.secondary)
+                }
+                Divider()
+            }
+            Spacer()
+        }
+        .padding(AlbumLayout.margin)
+        .frame(width: AlbumLayout.w, height: AlbumLayout.h)
+    }
+}
+
+/// 章节分隔页：居中大标题 + 年份 + 引言
+private struct DividerView: View {
+    let node: Node
+    var body: some View {
+        VStack(spacing: 14) {
+            Spacer()
+            Text(node.name)
+                .font(.system(size: 34, weight: .bold))
+                .foregroundColor(Color(uiColor: AlbumLayout.brown))
+            if !node.yearRange.isEmpty {
+                Text(node.yearRange)
+                    .font(.system(size: 15))
+                    .foregroundColor(.secondary)
+            }
+            if !node.summary.isEmpty {
+                Text(node.summary)
+                    .font(.system(size: 14))
+                    .foregroundColor(.secondary)
+                    .multilineTextAlignment(.center)
+                    .lineSpacing(6)
+                    .padding(.horizontal, 56)
+                    .padding(.top, 8)
+            }
+            Spacer()
+        }
+        .frame(width: AlbumLayout.w, height: AlbumLayout.h)
+    }
+}
+
+/// 照片块：图居中（宽 50%~100% 自适应）+ 标题 + 旁白，整块同页不隔页
+private struct PhotoBlockView: View {
+    let node: Node
+    let photo: Photo
+    let person: Person
+    var body: some View {
+        VStack(spacing: 16) {
+            if let img = MediaStore.loadImage(fileName: photo.imageFileName, personID: person.id) {
+                let ratio = img.size.width / max(img.size.height, 1)
+                // 横图近满宽，竖图收窄，限制在 50%~95%
+                let widthRatio: CGFloat = ratio >= 1.0 ? 0.95 : (ratio >= 0.8 ? 0.74 : 0.58)
+                Image(uiImage: img)
+                    .resizable().scaledToFit()
+                    .frame(width: AlbumLayout.w * widthRatio)
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                    .shadow(radius: 4)
+            }
+            if !photo.caption.isEmpty {
+                Text(photo.caption)
+                    .font(.system(size: 18, weight: .semibold))
+            }
+            let story = ArchiveText.clean(photo.story)
+            if !story.isEmpty {
+                Text(story)
+                    .font(.system(size: 13))
+                    .foregroundColor(.secondary)
+                    .multilineTextAlignment(.leading)
+                    .lineSpacing(6)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, AlbumLayout.margin)
+            }
+            Spacer()
+        }
+        .padding(.horizontal, AlbumLayout.margin)
+        .padding(.top, 64)
+        .frame(width: AlbumLayout.w, height: AlbumLayout.h)
+    }
+}
+
+private struct ClosingView: View {
+    let person: Person
+    var body: some View {
+        VStack {
+            Spacer()
+            Text("— 完 —")
+                .font(.system(size: 16))
+                .foregroundColor(.secondary)
+            Spacer()
+        }
+        .frame(width: AlbumLayout.w, height: AlbumLayout.h)
+    }
+}
+
+/// 长文故事页：眉标 + 标题 + 流动段落（已按页切块）+ 页尾落款
+private struct StoryPageView: View {
+    let eyebrow: String
+    let title: String
+    let paragraphs: [String]
+    var signature: String = ""
+    var body: some View {
+        VStack(alignment: .leading, spacing: 18) {
+            if !eyebrow.isEmpty {
+                Text(eyebrow)
+                    .font(.system(size: 12, weight: .medium))
+                    .foregroundColor(Color(uiColor: AlbumLayout.brown))
+            }
+            Text(title)
+                .font(.system(size: 28, weight: .bold))
+                .foregroundColor(.black)
+            VStack(alignment: .leading, spacing: 14) {
+                ForEach(paragraphs, id: \.self) { p in
+                    Text(p)
+                        .font(.system(size: 15))
+                        .lineSpacing(8)
+                        .foregroundColor(.black.opacity(0.85))
+                }
+            }
+            if !signature.isEmpty {
+                Spacer().frame(height: 20)
+                Text(signature)
+                    .font(.system(size: 14))
+                    .foregroundColor(.secondary)
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+            }
+            Spacer()
+        }
+        .padding(AlbumLayout.margin)
+        .padding(.top, 72)
+        .frame(width: AlbumLayout.w, height: AlbumLayout.h)
+    }
+}
+
+/// 页脚容器：可选居中页码（封面/目录/尾页不传页码）
+private struct PageFrame<Content: View>: View {
+    let page: Int?
+    @ViewBuilder let content: Content
+    var body: some View {
+        ZStack(alignment: .bottom) {
+            content
+            if let page {
+                Text("\(page)")
+                    .font(.system(size: 10))
+                    .foregroundColor(.gray)
+                    .padding(.bottom, 22)
+            }
+        }
+        .frame(width: AlbumLayout.w, height: AlbumLayout.h)
+    }
+}
+
+
