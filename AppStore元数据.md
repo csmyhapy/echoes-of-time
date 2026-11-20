@@ -1,7 +1,7 @@
 # App Store Connect 元数据（美区英文首发）
 
 > 用途：在 App Store Connect 新建 App / 版本信息时逐项粘贴。首发仅美区英文，其余 9 语在 App 内可用，商店页暂不本地化。
-> 占位 `PRIVACY_URL` 待 GitHub Pages 启用后替换（见《上架操作流程.md》）。
+> 隐私政策 URL 已通过 GitHub Pages 上线：https://csmyhapy.github.io/echoes-of-time/privacy.html 。
 > 字符限制：名称 ≤30，副标题 ≤30，关键词 ≤100（逗号分隔），描述 ≤4000。
 
 ## 一、基本信息
@@ -14,7 +14,7 @@
 | **次要分类（Secondary）** | Books（可选，留空亦可） |
 | **价格** | 免费下载；内购三档（见内购清单） |
 | **分级（Age Rating）** | 4+（问卷答案见第四节） |
-| **隐私政策 URL（Privacy Policy）** | `PRIVACY_URL`（GitHub Pages，启用后填） |
+| **隐私政策 URL（Privacy Policy）** | https://csmyhapy.github.io/echoes-of-time/privacy.html（GitHub Pages，已上线） |
 | **营销 URL** | 留空（无官网） |
 | **支持 URL** | 留空，或填 `mailto:support@lifememory.life` |
 | **iOS 最低版本** | 17.0（工程已设） |
