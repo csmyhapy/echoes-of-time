@@ -1,0 +1,13 @@
+# 构建产物
+build/
+**/build/
+
+# 本地缓存
+.gradle/
+.kotlin/
+local.properties
+
+# IDE
+.idea/
+*.iml
+captures/
