@@ -71,6 +71,9 @@ final class PurchaseManager {
     private var transactionListener: Task<Void, Never>?
 
     private init() {
+        #if DEBUG
+        tier = .pro
+        #endif
         transactionListener = listenForTransactions()
         Task { await loadProducts() }
     }
@@ -89,6 +92,11 @@ final class PurchaseManager {
 
     /// 根据已购商品重新判定档位
     func recomputeTier() {
+        #if DEBUG
+        // 本地开发/自用：Debug 包直接解锁 pro，便于完整功能试用；Release 不编译此段。
+        tier = .pro
+        return
+        #endif
         if purchasedIDs.contains(ProductID.full)
             || (purchasedIDs.contains(ProductID.basic)
                 && purchasedIDs.contains(ProductID.upgradeFull)) {
