@@ -27,6 +27,7 @@ struct PaywallView: View {
                     restoreRow
                 }
                 .padding(20)
+                .readableCentered()
             }
             .navigationTitle("paywall.title")
             .toolbar {

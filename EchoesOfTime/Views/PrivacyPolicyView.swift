@@ -52,6 +52,7 @@ struct PrivacyPolicyView: View {
             }
             .padding(.horizontal, 22)
             .padding(.vertical, 20)
+            .readableCentered()
         }
         .navigationTitle(isZh ? "隐私政策" : "Privacy")
         .navigationBarTitleDisplayMode(.inline)

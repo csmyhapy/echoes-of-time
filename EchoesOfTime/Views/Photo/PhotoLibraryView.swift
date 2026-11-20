@@ -88,6 +88,7 @@ struct PhotoLibraryView: View {
                 }
             }
             .padding(16)
+            .readableCentered()
             .padding(.bottom, selecting ? 110 : 100)
         }
         .navigationTitle("library.photos.title")

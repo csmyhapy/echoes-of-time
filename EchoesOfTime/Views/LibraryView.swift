@@ -136,6 +136,7 @@ struct LibraryView: View {
             .padding(.horizontal, 20)
             .padding(.top, 6)
             .padding(.bottom, 28)
+            .readableCentered()
         }
         .background(Color(.systemGroupedBackground))
         .navigationTitle("")

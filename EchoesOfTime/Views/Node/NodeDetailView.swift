@@ -102,6 +102,7 @@ struct NodeDetailView: View {
                 }
             }
             .padding(20)
+            .readableCentered()
         }
         .navigationTitle(node.name)
         .navigationBarTitleDisplayMode(.inline)

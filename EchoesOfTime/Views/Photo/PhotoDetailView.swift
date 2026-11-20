@@ -233,6 +233,7 @@ struct PhotoLightboxView: View {
         }
         .background(Color(.systemBackground))
         .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .readableCentered(maxWidth: 640)
         .padding(.top, 6)
     }
 

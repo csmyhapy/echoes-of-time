@@ -199,6 +199,7 @@ struct AddFromLibrarySheet: View {
                     }
                 }
                 .padding(16)
+                .readableCentered()
             }
             .navigationTitle("photo.library.add.title")
             .navigationBarTitleDisplayMode(.inline)

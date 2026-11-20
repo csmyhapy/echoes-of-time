@@ -84,6 +84,7 @@ struct PersonDetailView: View {
                 MessageSection(person: person, isReader: isReader)
             }
             .padding(20)
+            .readableCentered()
         }
 
         if !isReader {
