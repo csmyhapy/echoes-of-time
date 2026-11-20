@@ -8,6 +8,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct PhotoLightboxView: View {
     let photos: [Photo]
