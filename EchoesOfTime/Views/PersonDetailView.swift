@@ -77,10 +77,12 @@ struct PersonDetailView: View {
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Menu {
-                        Button {
-                            exportPDF()
-                        } label: {
-                            Label("export.pdf", systemImage: "doc.richtext")
+                        if PDFExporter.featureEnabled {
+                            Button {
+                                exportPDF()
+                            } label: {
+                                Label("export.pdf", systemImage: "doc.richtext")
+                            }
                         }
                         Button {
                             exportArchive()

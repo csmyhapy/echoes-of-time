@@ -304,10 +304,12 @@ struct PhotoShareSheet: View {
         NavigationStack {
             List {
                 Section {
-                    Button {
-                        makePDF()
-                    } label: {
-                        Label("share.option.pdf", systemImage: "doc.text")
+                    if PDFExporter.featureEnabled {
+                        Button {
+                            makePDF()
+                        } label: {
+                            Label("share.option.pdf", systemImage: "doc.text")
+                        }
                     }
 
                     Button {

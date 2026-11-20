@@ -10,6 +10,9 @@ import UIKit
 
 enum PDFExporter {
 
+    /// PDF 导出总开关：效果打磨完成前置 false（隐藏所有 PDF 入口），做好后改 true 恢复。
+    static let featureEnabled = false
+
     static func makePDF(for person: Person) -> URL? {
         let pageRect = CGRect(x: 0, y: 0, width: 595, height: 842)   // A4
         let margin: CGFloat = 40
