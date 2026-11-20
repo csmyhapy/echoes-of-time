@@ -137,7 +137,14 @@ fun LibraryScreen(
                         person = realPersons.first(),
                         isReader = isReader,
                         purchase = purchase,
-                        onAddChapter = { addingChapterFor = realPersons.first() },
+                        onAddChapter = {
+                            scope.launch {
+                                val count = repo.nodesOf(realPersons.first().id).size
+                                if (purchase.canAddNode(count)) {
+                                    addingChapterFor = realPersons.first()
+                                } else onShowPaywall()
+                            }
+                        },
                         onEditArchive = { editingPerson = realPersons.first() },
                         onCreatePerson = {
                             if (vm.state.value.isDeveloper) showingNewPerson = true
@@ -359,7 +366,7 @@ private fun ActionButtons(
             icon = Icons.Filled.Add,
             role = CapsuleRole.Primary,
         ) {
-            if (purchase.canAddNode(/* count */ 0)) onAddChapter() else onShowPaywall()
+            onAddChapter()
         }
         CapsuleButton(
             title = stringRes(R.string.library_action_editArchive),
