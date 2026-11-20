@@ -170,6 +170,8 @@
 "photo.edit.caption.placeholder" = "この写真で何が起きていますか？";
 "photo.edit.story" = "物語";
 "photo.edit.story.placeholder" = "その背後にある物語を語りましょう…";
+"photo.edit.pairWithNext" = "次の写真と並べる";
+"photo.edit.pairWithNext.hint" = "アルバムPDF出力時、この写真を次の写真と同じページに並べて配置します。オフの場合は各写真が1ページずつになります。";
 "photo.edit.chapters" = "章";
 "photo.edit.no.chapter" = "まだ章がありません";
 "photo.library.add.title" = "ライブラリから追加";

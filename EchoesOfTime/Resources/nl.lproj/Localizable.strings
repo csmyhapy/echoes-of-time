@@ -170,6 +170,8 @@
 "photo.edit.caption.placeholder" = "Wat gebeurt er op deze foto?";
 "photo.edit.story" = "Verhaal";
 "photo.edit.story.placeholder" = "Vertel het verhaal erachter…";
+"photo.edit.pairWithNext" = "Naast de volgende foto zetten";
+"photo.edit.pairWithNext.hint" = "Bij het exporteren van het album-PDF deelt deze foto een pagina naast de volgende; anders krijgt elke foto een eigen pagina.";
 "photo.edit.chapters" = "Hoofdstukken";
 "photo.edit.no.chapter" = "Nog geen hoofdstuk";
 "photo.library.add.title" = "Uit galerij toevoegen";

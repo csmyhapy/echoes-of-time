@@ -63,7 +63,8 @@ enum ArchiveExporter {
                                 caption: photo.caption,
                                 story: photo.story,
                                 tags: photo.tags,
-                                sortOrder: photo.sortOrder
+                                sortOrder: photo.sortOrder,
+                                pairWithNext: photo.pairWithNext
                             )
                         }
                 )
@@ -149,6 +150,8 @@ struct PhotoArchiveDTO: Codable {
     var story: String
     var tags: String
     var sortOrder: Int
+    /// 导出画册时与下一张并排（旧档案缺省为 false）
+    var pairWithNext: Bool? = nil
     /// 来源网站的 tags 字段（可属于多个章节），导入时映射为 App 内的节点 UUID 列表
     var webNodeIDs: [Int]? = nil
 }

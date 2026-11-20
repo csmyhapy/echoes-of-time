@@ -140,6 +140,8 @@ final class Photo {
     var story: String
     var tags: String
     var sortOrder: Int
+    /// 导出画册 PDF 时与下一张并排放在同一页（默认 false：一图一页）
+    var pairWithNext: Bool = false
     var createdAt: Date
 
     var person: Person?
@@ -156,6 +158,7 @@ final class Photo {
         story: String = "",
         tags: String = "",
         sortOrder: Int = 0,
+        pairWithNext: Bool = false,
         createdAt: Date = .now
     ) {
         self.id = id
@@ -165,6 +168,7 @@ final class Photo {
         self.story = story
         self.tags = tags
         self.sortOrder = sortOrder
+        self.pairWithNext = pairWithNext
         self.createdAt = createdAt
     }
 }

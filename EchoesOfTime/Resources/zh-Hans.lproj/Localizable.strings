@@ -169,6 +169,8 @@
 "photo.edit.caption.placeholder" = "这张照片里是什么？";
 "photo.edit.story" = "照片故事";
 "photo.edit.story.placeholder" = "写下它背后的故事…";
+"photo.edit.pairWithNext" = "与下一张并排";
+"photo.edit.pairWithNext.hint" = "开启后，导出画册 PDF 时这张照片会和下一张并排放在同一页；不开启则每张照片单独一页。";
 "photo.edit.chapters" = "所属章节";
 "photo.edit.no.chapter" = "未分配章节";
 "photo.library.add.title" = "从照片库加入";

@@ -19,6 +19,7 @@ struct PhotoEditSheet: View {
 
     @State private var caption: String
     @State private var story: String
+    @State private var pairWithNext: Bool
     @State private var chosenNodes: Set<UUID>
     @State private var showNodePicker = false
 
@@ -27,6 +28,7 @@ struct PhotoEditSheet: View {
         self.person = person
         _caption = State(initialValue: photo.caption)
         _story = State(initialValue: photo.story)
+        _pairWithNext = State(initialValue: photo.pairWithNext)
         _chosenNodes = State(initialValue: Set(photo.taggedNodeIDs))
     }
 
@@ -48,6 +50,12 @@ struct PhotoEditSheet: View {
                 Section("photo.edit.story") {
                     TextField("photo.edit.story.placeholder", text: $story, axis: .vertical)
                         .lineLimit(4...12)
+                }
+
+                Section {
+                    Toggle("photo.edit.pairWithNext", isOn: $pairWithNext)
+                } footer: {
+                    Text("photo.edit.pairWithNext.hint")
                 }
 
                 Section("photo.edit.chapters") {
@@ -97,6 +105,7 @@ struct PhotoEditSheet: View {
     private func save() {
         photo.caption = ArchiveText.inline(caption)
         photo.story = ArchiveText.clean(story)
+        photo.pairWithNext = pairWithNext
         photo.setTaggedNodes(nodes.filter { chosenNodes.contains($0.id) })
         try? context.save()
         dismiss()

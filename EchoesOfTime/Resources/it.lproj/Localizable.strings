@@ -170,6 +170,8 @@
 "photo.edit.caption.placeholder" = "Cosa sta succedendo in questa foto?";
 "photo.edit.story" = "Storia";
 "photo.edit.story.placeholder" = "Racconta la storia dietro…";
+"photo.edit.pairWithNext" = "Abbina alla foto successiva";
+"photo.edit.pairWithNext.hint" = "Esportando il PDF dell'album, questa foto condivide una pagina affiancata alla successiva; altrimenti ogni foto ha la propria pagina.";
 "photo.edit.chapters" = "Capitoli";
 "photo.edit.no.chapter" = "Ancora nessun capitolo";
 "photo.library.add.title" = "Aggiungi dalla galleria";

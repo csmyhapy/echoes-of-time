@@ -170,6 +170,8 @@
 "photo.edit.caption.placeholder" = "이 사진에서 무슨 일이 일어나고 있나요?";
 "photo.edit.story" = "이야기";
 "photo.edit.story.placeholder" = "그 뒤에 숨은 이야기를 들려주세요…";
+"photo.edit.pairWithNext" = "다음 사진과 나란히";
+"photo.edit.pairWithNext.hint" = "앨범 PDF 내보내기 시 이 사진이 다음 사진과 같은 페이지에 나란히 배치됩니다. 끄면 사진마다 한 페이지씩 할당됩니다.";
 "photo.edit.chapters" = "장";
 "photo.edit.no.chapter" = "아직 장이 없습니다";
 "photo.library.add.title" = "보관함에서 추가";

@@ -187,7 +187,8 @@ enum ArchiveImporter {
                 caption: ArchiveText.inline(photoDTO.caption),
                 story: ArchiveText.clean(photoDTO.story),
                 tags: "",
-                sortOrder: photoDTO.sortOrder
+                sortOrder: photoDTO.sortOrder,
+                pairWithNext: photoDTO.pairWithNext ?? false
             )
             photo.person = person
             photo.node = primaryNode

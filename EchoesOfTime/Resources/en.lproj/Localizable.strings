@@ -169,6 +169,8 @@
 "photo.edit.caption.placeholder" = "What is happening in this photo?";
 "photo.edit.story" = "Story";
 "photo.edit.story.placeholder" = "Tell the story behind it…";
+"photo.edit.pairWithNext" = "Pair with next photo";
+"photo.edit.pairWithNext.hint" = "When exporting the album PDF, this photo shares a page side-by-side with the next photo; otherwise each photo gets its own page.";
 "photo.edit.chapters" = "Chapters";
 "photo.edit.no.chapter" = "No chapter yet";
 "photo.library.add.title" = "Add from library";
