@@ -102,7 +102,12 @@ final class AppState {
         self.language = lang
         self.mode = storedMode.flatMap(AppMode.init(rawValue:)) ?? .editor
         self.largeText = UserDefaults.standard.object(forKey: "largeText") as? Bool ?? true
+        #if DEBUG
+        // 本地开发/自用：Debug 包直接开启开发者模式，解锁「一人一档」，便于建多个档案测试；Release 不编译此段。
+        self.isDeveloper = true
+        #else
         self.isDeveloper = UserDefaults.standard.bool(forKey: "developerMode")
+        #endif
 
         Bundle.setLanguage(lang.rawValue)
     }
