@@ -29,6 +29,13 @@
 "common.cancel" = "취소";
 "common.save" = "저장";
 "common.delete" = "삭제";
+"ai.helper.title" = "막혔다면? AI에게 도움을 요청하세요";
+"ai.helper.copy" = "참고 프롬프트 복사";
+"ai.helper.copied" = "복사됨";
+"ai.helper.guide.summary" = "한 문장으로 줄이기 어렵다면 핵심을 AI에게 전해 짧은 소개글로 다듬게 하세요.";
+"ai.helper.guide.life" = "전부 쓸 필요는 없습니다. 기억나는 큰 사건, 시기, 사람, 느낌을 적어 AI에게 맡겨 자연스러운 인생 이야기로 정리한 뒤 직접 고치면 됩니다.";
+"ai.helper.guide.chapter" = "장 전체를 쓸 필요는 없습니다. 이 시기의 기억 몇 가지를 AI에게 들려주면 순서를 정하고 톤을 잡아 주고, 이후 다듬으면 됩니다.";
+"ai.helper.guide.photo" = "사진 설명이 어렵다면 찍은 때·장소·인물·상황을 AI에게 알려 짧은 글을 쓰게 하세요.";
 "common.edit" = "편집";
 "edit.person.new.title" = "새 보관함";
 "edit.person.edit.title" = "인물 편집";

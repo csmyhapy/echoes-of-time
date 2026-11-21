@@ -29,6 +29,13 @@
 "common.cancel" = "Cancelar";
 "common.save" = "Guardar";
 "common.delete" = "Eliminar";
+"ai.helper.title" = "¿Atascado? Deja que la IA te ayude";
+"ai.helper.copy" = "Copiar la consigna";
+"ai.helper.copied" = "Copiado";
+"ai.helper.guide.summary" = "¿No cabe en una línea? Cuéntale a la IA los puntos clave y deja que los resuma en una breve presentación.";
+"ai.helper.guide.life" = "No tienes que escribirlo todo. Anota los hechos importantes, fechas, personas y sentimientos que recuerdas; la IA lo organizará en una historia fluida y tú la revisas.";
+"ai.helper.guide.chapter" = "No hace falta escribir un capítulo completo. Cuéntale a la IA algunas cosas que recuerdas de esta etapa; las ordenará y dará el tono, y tú lo modificas.";
+"ai.helper.guide.photo" = "¿Sin frase para la foto? Dile a la IA cuándo, dónde, quién y qué pasó, y escribirá un texto breve.";
 "common.edit" = "Editar";
 "edit.person.new.title" = "Nuevo archivo";
 "edit.person.edit.title" = "Editar persona";

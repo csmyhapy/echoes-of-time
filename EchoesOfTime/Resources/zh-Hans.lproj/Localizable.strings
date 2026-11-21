@@ -29,6 +29,13 @@
 "common.cancel" = "取消";
 "common.save" = "保存";
 "common.delete" = "删除";
+"ai.helper.title" = "写不出来？让 AI 帮你";
+"ai.helper.copy" = "复制参考提示词";
+"ai.helper.copied" = "已复制";
+"ai.helper.guide.summary" = "一句话写不好？把要点说给 AI，让它帮你浓缩成一句简介。";
+"ai.helper.guide.life" = "不用从头写完整。把记得的大事、时间、人物和感受零散列出来，交给 AI 整理成通顺的人生故事，再由你增删修改。";
+"ai.helper.guide.chapter" = "不用写成章。把这一阶段记得的几件事零散说给 AI，让它帮你按顺序整理成文、调好语气，你再修改。";
+"ai.helper.guide.photo" = "照片配文不用发愁。把拍摄时间、地点、人物和当时的情境说给 AI，让它帮你写成一小段。";
 "common.edit" = "编辑";
 "edit.person.new.title" = "新建档案";
 "edit.person.edit.title" = "编辑人物";

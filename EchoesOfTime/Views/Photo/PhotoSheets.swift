@@ -42,14 +42,22 @@ struct PhotoEditSheet: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section("photo.edit.caption") {
+                Section {
                     TextField("photo.edit.caption.placeholder", text: $caption, axis: .vertical)
                         .lineLimit(2...4)
+                } header: {
+                    Text("photo.edit.caption")
+                } footer: {
+                    AIWriteHelper(kind: .summary)
                 }
 
-                Section("photo.edit.story") {
+                Section {
                     TextField("photo.edit.story.placeholder", text: $story, axis: .vertical)
                         .lineLimit(4...12)
+                } header: {
+                    Text("photo.edit.story")
+                } footer: {
+                    AIWriteHelper(kind: .photoStory)
                 }
 
                 Section {

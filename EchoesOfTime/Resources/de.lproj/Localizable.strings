@@ -29,6 +29,13 @@
 "common.cancel" = "Abbrechen";
 "common.save" = "Speichern";
 "common.delete" = "Löschen";
+"ai.helper.title" = "Festgefahren? Lass KI helfen";
+"ai.helper.copy" = "Vorlage kopieren";
+"ai.helper.copied" = "Kopiert";
+"ai.helper.guide.summary" = "Kurztext schwer gefallen? Gib KI die Stichpunkte, sie fasst sie zu einer kurzen Einführung zusammen.";
+"ai.helper.guide.life" = "Du musst nicht alles schreiben. Notiere wichtige Ereignisse, Zeiten, Personen und Gefühle; KI ordnet sie zu einer flüssigen Lebensgeschichte, die du danach überarbeitest.";
+"ai.helper.guide.chapter" = "Kein ganzes Kapitel nötig. Erzähl KI ein paar Erinnerungen an diese Zeit; sie ordnet sie und setzt den Ton, danach überarbeitest du.";
+"ai.helper.guide.photo" = "Fehlt die Bildunterschrift? Sag KI, wann, wo, wer und was passierte; sie schreibt einen kurzen Text.";
 "common.edit" = "Bearbeiten";
 "edit.person.new.title" = "Neues Archiv";
 "edit.person.edit.title" = "Person bearbeiten";

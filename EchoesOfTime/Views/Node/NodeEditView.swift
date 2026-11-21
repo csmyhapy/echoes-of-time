@@ -49,14 +49,22 @@ struct NodeEditView: View {
                     Toggle("edit.node.visible", isOn: $isVisible)
                 }
 
-                Section("edit.node.section.summary") {
+                Section {
                     TextField("edit.node.summary", text: $summary, axis: .vertical)
                         .lineLimit(3...6)
+                } header: {
+                    Text("edit.node.section.summary")
+                } footer: {
+                    AIWriteHelper(kind: .summary)
                 }
 
-                Section("edit.node.section.story") {
+                Section {
                     TextField("edit.node.story", text: $story, axis: .vertical)
                         .lineLimit(6...14)
+                } header: {
+                    Text("edit.node.section.story")
+                } footer: {
+                    AIWriteHelper(kind: .chapterStory)
                 }
 
                 Section("edit.node.section.cover") {

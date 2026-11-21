@@ -29,6 +29,13 @@
 "common.cancel" = "キャンセル";
 "common.save" = "保存";
 "common.delete" = "削除";
+"ai.helper.title" = "書けない？AIに手伝ってもらおう";
+"ai.helper.copy" = "参考プロンプトをコピー";
+"ai.helper.copied" = "コピーしました";
+"ai.helper.guide.summary" = "一言でまとまらないときは、要点をAIに伝えて短い紹介文にまとめてもらいましょう。";
+"ai.helper.guide.life" = "全部書く必要はありません。覚えている大きな出来事・時期・人物・感想を箇条書きにし、AIに流れの良い物語に整理してもらい、あとで自分で加筆・修正します。";
+"ai.helper.guide.chapter" = "章を丸ごと書かなくても大丈夫。この時期の思い出をいくつかAIに話し、順序を整え雰囲気を整えてもらい、あとで直します。";
+"ai.helper.guide.photo" = "写真の説明に困ったら、撮った時・場所・人物・出来事をAIに伝えて短い文章を書いてもらいましょう。";
 "common.edit" = "編集";
 "edit.person.new.title" = "新規アーカイブ";
 "edit.person.edit.title" = "人物を編集";

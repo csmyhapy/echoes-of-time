@@ -29,6 +29,13 @@
 "common.cancel" = "Cancel";
 "common.save" = "Save";
 "common.delete" = "Delete";
+"ai.helper.title" = "Stuck? Let AI help you";
+"ai.helper.copy" = "Copy the prompt";
+"ai.helper.copied" = "Copied";
+"ai.helper.guide.summary" = "Can't fit it in one line? Tell AI the key points and let it condense them into a short intro.";
+"ai.helper.guide.life" = "You don't have to write the whole thing. Jot down the major events, times, people, and feelings you remember, hand them to AI to organize into a flowing life story, then edit it yourself.";
+"ai.helper.guide.chapter" = "No need to write a full chapter. Tell AI a few things you remember from this period; it will arrange them in order and set the tone, and you can revise afterward.";
+"ai.helper.guide.photo" = "Struggling for a caption? Tell AI when, where, who, and what was happening, and it will write a short passage for you.";
 "common.edit" = "Edit";
 "edit.person.new.title" = "New Archive";
 "edit.person.edit.title" = "Edit Person";

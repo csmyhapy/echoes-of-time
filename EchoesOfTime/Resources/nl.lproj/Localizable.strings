@@ -29,6 +29,13 @@
 "common.cancel" = "Annuleren";
 "common.save" = "Opslaan";
 "common.delete" = "Verwijderen";
+"ai.helper.title" = "Vastgelopen? Laat AI helpen";
+"ai.helper.copy" = "Prompt kopiëren";
+"ai.helper.copied" = "Gekopieerd";
+"ai.helper.guide.summary" = "Lukt het niet in één zin? Geef AI de kernpunten; het vat ze samen tot een korte inleiding.";
+"ai.helper.guide.life" = "Je hoeft niet alles te schrijven. Noteer belangrijke gebeurtenissen, tijden, personen en gevoelens; AI maakt er een vloeiend levensverhaal van, dat jij daarna bijstelt.";
+"ai.helper.guide.chapter" = "Geen heel hoofdstuk nodig. Vertel AI een paar herinneringen uit deze periode; het brengt ze op volgorde en zet de toon, daarna pas jij aan.";
+"ai.helper.guide.photo" = "Geen bijschrift? Vertel AI wanneer, waar, wie en wat er gebeurde; het schrijft een korte tekst.";
 "common.edit" = "Bewerken";
 "edit.person.new.title" = "Nieuw archief";
 "edit.person.edit.title" = "Persoon bewerken";

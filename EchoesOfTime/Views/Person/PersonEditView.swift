@@ -40,14 +40,22 @@ struct PersonEditView: View {
                     TextField("edit.person.birthYear", text: $birthYear)
                 }
 
-                Section("edit.person.section.summary") {
+                Section {
                     TextField("edit.person.summary", text: $summary, axis: .vertical)
                         .lineLimit(3...6)
+                } header: {
+                    Text("edit.person.section.summary")
+                } footer: {
+                    AIWriteHelper(kind: .summary)
                 }
 
-                Section("edit.person.section.story") {
+                Section {
                     TextField("edit.person.story", text: $story, axis: .vertical)
                         .lineLimit(6...14)
+                } header: {
+                    Text("edit.person.section.story")
+                } footer: {
+                    AIWriteHelper(kind: .lifeStory)
                 }
 
                 Section("edit.person.section.cover") {
