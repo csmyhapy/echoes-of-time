@@ -158,7 +158,7 @@ struct LibraryView: View {
             PaywallView()
         }
         .alert("one.archive.limit.title", isPresented: $showLimitAlert) {
-            Button("common.save", role: .cancel) {}
+            Button("common.got.it", role: .cancel) {}
         } message: {
             Text("one.archive.limit.message")
         }

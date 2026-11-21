@@ -29,6 +29,7 @@
 "common.cancel" = "취소";
 "common.save" = "저장";
 "common.delete" = "삭제";
+"common.got.it" = "알겠습니다";
 "ai.helper.title" = "막혔다면? AI에게 도움을 요청하세요";
 "ai.helper.copy" = "참고 프롬프트 복사";
 "ai.helper.copied" = "복사됨";
@@ -117,8 +118,8 @@
 "chapter.menu.hint" = "챕터 오른쪽 점 세 개를 눌러 편집·위아래 이동·삭제하세요. PDF 목차도 따라 바뀝니다.";
 "library.empty.demo" = "샘플 보관함 불러오기";
 "settings.bgm" = "배경 음악";
-"one.archive.limit.title" = "보관함은 하나만";
-"one.archive.limit.message" = "이 앱은 기기당 삶의 보관함을 하나만 저장합니다. 샘플은 세지 않습니다. 처음부터 다시 시작하려면 먼저 현재 보관함을 삭제하세요.";
+"one.archive.limit.title" = "당분간 보관함 하나만";
+"one.archive.limit.message" = "삶의 회고는 수년에 걸쳐 천천히 쌓입니다. 집필 경험을 보호하기 위해 현재는 기기당 보관함 하나만 제공합니다. 이 하나를 완성하는 데 집중해 주세요. 이후 버전에서 선택지가 늘어날 수 있습니다.";
 "library.subtitle" = "한 인생을, 장마다 간직하세요.";
     "library.tagline.1" = "목소리를 듣고 이야기를 보며 한 평생을 간직하세요.";
     "library.tagline.2" = "시간의 메아리는 사진이 아니라 삶 그 자체를 지킵니다.";

@@ -29,6 +29,7 @@
 "common.cancel" = "Cancelar";
 "common.save" = "Guardar";
 "common.delete" = "Eliminar";
+"common.got.it" = "Entendido";
 "ai.helper.title" = "¿Atascado? Deja que la IA te ayude";
 "ai.helper.copy" = "Copiar la consigna";
 "ai.helper.copied" = "Copiado";
@@ -117,8 +118,8 @@
 "chapter.menu.hint" = "Toca los tres puntos de un capítulo para editarlo, subirlo, bajarlo o eliminarlo; el índice del PDF se actualiza.";
 "library.empty.demo" = "Cargar archivo de muestra";
 "settings.bgm" = "Música de fondo";
-"one.archive.limit.title" = "Un solo archivo";
-"one.archive.limit.message" = "Esta app guarda un archivo de vida por dispositivo. Las muestras no cuentan. Para empezar de nuevo, primero borra tu archivo actual.";
+"one.archive.limit.title" = "De momento, un solo archivo";
+"one.archive.limit.message" = "Una memoria de vida se construye poco a poco durante años. Para cuidar tu experiencia de escritura, por ahora admitimos un archivo por dispositivo. Concéntrate en completar este; más opciones podrían llegar en futuras versiones.";
 "library.subtitle" = "Conserva una vida, capítulo a capítulo.";
     "library.tagline.1" = "Escucha la voz, mira la historia, conserva toda una vida.";
     "library.tagline.2" = "Ecos del tiempo: guardan una vida, no solo fotos.";

@@ -29,6 +29,7 @@
 "common.cancel" = "Cancel";
 "common.save" = "Save";
 "common.delete" = "Delete";
+"common.got.it" = "Got it";
 "ai.helper.title" = "Stuck? Let AI help you";
 "ai.helper.copy" = "Copy the prompt";
 "ai.helper.copied" = "Copied";
@@ -117,8 +118,8 @@
 "chapter.menu.hint" = "Tap the three dots on a chapter to edit, move up/down, or delete; the PDF table of contents follows.";
 "library.empty.demo" = "Load a Sample Archive";
 "settings.bgm" = "Background Music";
-"one.archive.limit.title" = "One Archive Only";
-"one.archive.limit.message" = "This app keeps one life archive per device. Sample archives don't count. To start over, delete your existing archive first.";
+"one.archive.limit.title" = "One archive for now";
+"one.archive.limit.message" = "A life memoir takes years to build slowly. To protect your writing experience, we currently support one archive per device. Please focus on making this one complete; more options may come in future updates.";
 "library.subtitle" = "Keep a life, chapter by chapter.";
 "library.tagline.1" = "Hear the voice, see the story, keep a lifetime.";
 "library.tagline.2" = "Echoes of Time hold a whole life, not just photos.";

@@ -29,6 +29,7 @@
 "common.cancel" = "キャンセル";
 "common.save" = "保存";
 "common.delete" = "削除";
+"common.got.it" = "わかりました";
 "ai.helper.title" = "書けない？AIに手伝ってもらおう";
 "ai.helper.copy" = "参考プロンプトをコピー";
 "ai.helper.copied" = "コピーしました";
@@ -117,8 +118,8 @@
 "chapter.menu.hint" = "章の右側の三点をタップで編集・上下移動・削除。PDFの目次も連動します。";
 "library.empty.demo" = "サンプルアーカイブを読み込む";
 "settings.bgm" = "BGM";
-"one.archive.limit.title" = "アーカイブはひとつだけ";
-"one.archive.limit.message" = "このアプリは端末ひとつにつき生涯アーカイブをひとつ保存します。サンプルは数えません。最初からやり直すには、まず現在のアーカイブを削除してください。";
+"one.archive.limit.title" = "当面は1つのアーカイブのみ";
+"one.archive.limit.message" = "人生の回想は何年もかけてゆっくり育つものです。執筆体験を大切にするため、現時点では端末1台につき1アーカイブのみとしています。まずはこの1つを完成させることに集中してください。今後のバージョンで選択肢が増える可能性があります。";
 "library.subtitle" = "人生を、章ごとに受け継ぐ。";
     "library.tagline.1" = "声を聞き、物語を見つめ、一生を受け継ぐ。";
     "library.tagline.2" = "時の残響は、写真ではなく人生そのものを保つ。";

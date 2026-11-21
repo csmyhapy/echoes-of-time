@@ -29,6 +29,7 @@
 "common.cancel" = "Annuleren";
 "common.save" = "Opslaan";
 "common.delete" = "Verwijderen";
+"common.got.it" = "Begrepen";
 "ai.helper.title" = "Vastgelopen? Laat AI helpen";
 "ai.helper.copy" = "Prompt kopiëren";
 "ai.helper.copied" = "Gekopieerd";
@@ -117,8 +118,8 @@
 "chapter.menu.hint" = "Tik op de drie puntjes van een hoofdstuk om het te bewerken, omhoog of omlaag te verplaatsen of te verwijderen; de PDF-inhoudsopgave volgt.";
 "library.empty.demo" = "Voorbeeldarchief laden";
 "settings.bgm" = "Achtergrondmuziek";
-"one.archive.limit.title" = "Slechts één archief";
-"one.archive.limit.message" = "Deze app bewaart één levensarchief per apparaat. Voorbeelden tellen niet. Om opnieuw te beginnen, verwijder eerst je huidige archief.";
+"one.archive.limit.title" = "Voorlopig één archief";
+"one.archive.limit.message" = "Een levensmemoire groeit langzaam, over vele jaren. Om je schrijfervaring te beschermen, ondersteunen we momenteel één archief per apparaat. Richt je erop dit compleet te maken; meer opties komen mogelijk in latere versies.";
 "library.subtitle" = "Bewaar een leven, hoofdstuk voor hoofdstuk.";
     "library.tagline.1" = "Hoor de stem, zie het verhaal, bewaar een heel leven.";
     "library.tagline.2" = "Echo's van de tijd bewaren een leven, niet alleen foto's.";

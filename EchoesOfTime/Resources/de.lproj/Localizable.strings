@@ -29,6 +29,7 @@
 "common.cancel" = "Abbrechen";
 "common.save" = "Speichern";
 "common.delete" = "Löschen";
+"common.got.it" = "Verstanden";
 "ai.helper.title" = "Festgefahren? Lass KI helfen";
 "ai.helper.copy" = "Vorlage kopieren";
 "ai.helper.copied" = "Kopiert";
@@ -117,8 +118,8 @@
 "chapter.menu.hint" = "Tippen Sie auf die drei Punkte eines Kapitels, um es zu bearbeiten, zu verschieben oder zu löschen; das PDF-Inhaltsverzeichnis folgt.";
 "library.empty.demo" = "Beispielarchiv laden";
 "settings.bgm" = "Hintergrundmusik";
-"one.archive.limit.title" = "Nur ein Archiv";
-"one.archive.limit.message" = "Diese App speichert ein Lebensarchiv pro Gerät. Beispiele zählen nicht. Um neu zu beginnen, löschen Sie zuerst Ihr bestehendes Archiv.";
+"one.archive.limit.title" = "Vorläufig nur ein Archiv";
+"one.archive.limit.message" = "Ein Lebensmemoir entsteht über viele Jahre. Um Ihre Schreiberfahrung zu schützen, unterstützen wir derzeit ein Archiv pro Gerät. Konzentrieren Sie sich darauf, dieses vollständig zu machen; mehr Möglichkeiten folgen vielleicht in späteren Versionen.";
 "library.subtitle" = "Ein Leben bewahren, Kapitel für Kapitel.";
     "library.tagline.1" = "Höre die Stimme, sieh die Geschichte, bewahre ein ganzes Leben.";
     "library.tagline.2" = "Echos der Zeit bewahren ein Leben, nicht nur Fotos.";
