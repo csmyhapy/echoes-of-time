@@ -104,6 +104,7 @@ fun PhotoEditSheet(
                 maxLines = 4,
                 modifier = Modifier.fillMaxWidth(),
             )
+            life.lifememory.echosoftime.ui.components.AiAssistShortHint()
             Spacer(Modifier.height(12.dp))
 
             SectionLabel(stringRes(R.string.photo_edit_story))
@@ -114,6 +115,10 @@ fun PhotoEditSheet(
                 minLines = 4,
                 maxLines = 12,
                 modifier = Modifier.fillMaxWidth(),
+            )
+            life.lifememory.echosoftime.ui.components.AiAssistLong(
+                guideRes = R.string.ai_assist_guide_photo,
+                promptRes = R.string.ai_assist_prompt_photo,
             )
             Spacer(Modifier.height(12.dp))
 

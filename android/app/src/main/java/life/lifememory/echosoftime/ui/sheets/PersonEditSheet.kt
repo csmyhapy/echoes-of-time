@@ -186,6 +186,7 @@ fun PersonEditSheet(
                 minLines = 3,
                 modifier = Modifier.fillMaxWidth(),
             )
+            life.lifememory.echosoftime.ui.components.AiAssistShortHint()
 
             SectionLabel(stringRes(R.string.edit_person_section_story))
             OutlinedTextField(
@@ -194,6 +195,10 @@ fun PersonEditSheet(
                 label = { Text(stringRes(R.string.edit_person_story)) },
                 minLines = 6,
                 modifier = Modifier.fillMaxWidth(),
+            )
+            life.lifememory.echosoftime.ui.components.AiAssistLong(
+                guideRes = R.string.ai_assist_guide_person,
+                promptRes = R.string.ai_assist_prompt_person,
             )
 
             SectionLabel(stringRes(R.string.edit_person_section_cover))

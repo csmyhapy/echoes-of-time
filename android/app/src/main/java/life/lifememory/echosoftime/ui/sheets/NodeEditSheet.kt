@@ -212,6 +212,7 @@ fun NodeEditSheet(
                 minLines = 3,
                 modifier = Modifier.fillMaxWidth(),
             )
+            life.lifememory.echosoftime.ui.components.AiAssistShortHint()
 
             SectionLabel(stringRes(R.string.edit_node_section_story))
             OutlinedTextField(
@@ -220,6 +221,10 @@ fun NodeEditSheet(
                 label = { Text(stringRes(R.string.edit_node_story)) },
                 minLines = 6,
                 modifier = Modifier.fillMaxWidth(),
+            )
+            life.lifememory.echosoftime.ui.components.AiAssistLong(
+                guideRes = R.string.ai_assist_guide_chapter,
+                promptRes = R.string.ai_assist_prompt_chapter,
             )
 
             SectionLabel(stringRes(R.string.edit_node_section_cover))

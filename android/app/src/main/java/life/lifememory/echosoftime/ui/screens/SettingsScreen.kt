@@ -92,9 +92,14 @@ fun SettingsScreen(
             }
             importResult = when (result) {
                 null -> context.getString(R.string.export_failed)
-                else -> "${context.getString(R.string.settings_import_result)}: " +
-                    "${result.personName} · ${result.nodeCount} ${context.getString(R.string.settings_section_mode)} · " +
-                    "${result.photoCount}"
+                else -> {
+                    val base = context.getString(R.string.settings_import_result) + ": " +
+                        "${result.personName} · ${result.nodeCount} ${context.getString(R.string.settings_section_mode)} · " +
+                        "${result.photoCount}"
+                    if (result.skippedPhotos > 0) {
+                        base + "\n" + context.getString(R.string.settings_import_missing, result.skippedPhotos)
+                    } else base
+                }
             }
         }
     }

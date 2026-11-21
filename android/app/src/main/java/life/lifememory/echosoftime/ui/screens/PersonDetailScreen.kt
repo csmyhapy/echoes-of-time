@@ -230,8 +230,6 @@ fun PersonDetailScreen(
                     )
                 }
 
-                OverviewCard(progressItems, progressPercent, totalChars, totalAudio, isReader)
-
                 if (b.person.story.isNotEmpty()) {
                     StorySection(b.person.story, expanded = isReader || storyExpanded, isReader,
                         onToggle = { storyExpanded = !storyExpanded })
@@ -280,6 +278,8 @@ fun PersonDetailScreen(
                     purchase = purchase,
                     onShowPaywall = onShowPaywall,
                 )
+
+                OverviewCard(progressItems, progressPercent, totalChars, totalAudio, isReader)
             }
         }
 
@@ -509,7 +509,7 @@ private fun TimelineSection(
             }
         }
         if (!isReader && all.isNotEmpty()) {
-            Text(stringRes(R.string.chapter_drag_hint), fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(stringRes(R.string.chapter_list_hint), fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
         if (all.isEmpty()) {
             Text(stringRes(R.string.person_empty_nodes), fontSize = (if (isReader) 22 else 15).sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -585,18 +585,28 @@ private fun NodeCard(
                                 text = { Text(stringRes(R.string.common_edit)) },
                                 onClick = { menuOpen = false; onEdit() },
                             )
-                            if (canMoveUp) {
-                                DropdownMenuItem(
-                                    text = { Text(stringRes(R.string.photo_moveLeft)) },
-                                    onClick = { menuOpen = false; onMove(-1) },
-                                )
-                            }
-                            if (canMoveDown) {
-                                DropdownMenuItem(
-                                    text = { Text(stringRes(R.string.photo_moveRight)) },
-                                    onClick = { menuOpen = false; onMove(1) },
-                                )
-                            }
+                            DropdownMenuItem(
+                                text = {
+                                    Text(
+                                        stringRes(R.string.chapter_move_up),
+                                        color = if (canMoveUp) MaterialTheme.colorScheme.onSurface
+                                        else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f),
+                                    )
+                                },
+                                enabled = canMoveUp,
+                                onClick = { menuOpen = false; onMove(-1) },
+                            )
+                            DropdownMenuItem(
+                                text = {
+                                    Text(
+                                        stringRes(R.string.chapter_move_down),
+                                        color = if (canMoveDown) MaterialTheme.colorScheme.onSurface
+                                        else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f),
+                                    )
+                                },
+                                enabled = canMoveDown,
+                                onClick = { menuOpen = false; onMove(1) },
+                            )
                             DropdownMenuItem(
                                 text = { Text(stringRes(R.string.common_delete), color = MaterialTheme.colorScheme.error) },
                                 onClick = { menuOpen = false; onDelete() },

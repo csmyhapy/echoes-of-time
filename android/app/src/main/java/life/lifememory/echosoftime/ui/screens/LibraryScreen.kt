@@ -200,9 +200,9 @@ fun LibraryScreen(
     if (showLimitAlert) {
         AlertDialog(
             onDismissRequest = { showLimitAlert = false },
-            title = { Text(stringRes(R.string.one_archive_limit_title)) },
-            text = { Text(stringRes(R.string.one_archive_limit_message)) },
-            confirmButton = { TextButton(onClick = { showLimitAlert = false }) { Text(stringRes(R.string.common_save)) } },
+            title = { Text(stringRes(R.string.one_archive_soft_title)) },
+            text = { Text(stringRes(R.string.one_archive_soft_message)) },
+            confirmButton = { TextButton(onClick = { showLimitAlert = false }) { Text(stringRes(R.string.one_archive_soft_button)) } },
         )
     }
     deletingPerson?.let { p ->
