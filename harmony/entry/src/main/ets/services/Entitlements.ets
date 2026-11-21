@@ -64,7 +64,7 @@ export class Entitlements {
   /** 超额时的提示语 */
   static limitHint(kind: string, max: number): string {
     if (max === 0) {
-      return '新建档案需要先解锁完整版';
+      return `新增${kind}需要先解锁，点「解锁全部功能」查看版本`;
     }
     return `当前版本最多 ${max} ${kind}，升级完整版后不限量`;
   }

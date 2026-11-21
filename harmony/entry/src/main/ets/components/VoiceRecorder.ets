@@ -59,6 +59,11 @@ export struct VoiceRecorder {
     if (this.busy || this.recording) {
       return;
     }
+    // 免费态（tier=none）任何录音写入都拦掉，含"重录已有旁白"（否则可绕过配额）
+    if (!Entitlements.isPaid()) {
+      promptAction.showToast({ message: '录旁白需要先解锁入门版' });
+      return;
+    }
     const max: number = Entitlements.maxVoices();
     if (this.voiceId.length === 0 && this.existingCount >= max) {
       promptAction.showToast({ message: Entitlements.limitHint('段旁白', max) });

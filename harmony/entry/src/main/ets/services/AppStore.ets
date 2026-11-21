@@ -37,6 +37,8 @@ export class AppStore {
     AppStorage.setOrCreate<boolean>('basicOwned', basicOwned);
     AppStorage.setOrCreate<boolean>('upgradeOwned', upgradeOwned);
     AppStorage.setOrCreate<boolean>('fullOwned', fullOwned);
+    // 标记设置已加载完成：首页据此重新判定设备锁（冷启动时序问题）
+    AppStorage.setOrCreate<boolean>('prefsReady', true);
   }
 
   static async set(key: string, value: preferences.ValueType): Promise<void> {

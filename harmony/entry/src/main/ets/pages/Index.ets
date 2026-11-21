@@ -20,8 +20,9 @@ import { PreviewMock } from '../preview/PreviewMock';
 @Component
 struct Index {
   @StorageProp('mode') mode: string = 'editor';
-  @StorageProp('lockEnabled') lockEnabled: boolean = false;
-  @StorageProp('pin') pin: string = '';
+  @StorageProp('prefsReady') @Watch('refreshLock') prefsReady: boolean = false;
+  @StorageProp('lockEnabled') @Watch('refreshLock') lockEnabled: boolean = false;
+  @StorageProp('pin') @Watch('refreshLock') pin: string = '';
   @StorageProp('fgTick') @Watch('onForegroundChanged') fgTick: number = 0;
 
   @State persons: Person[] = [];
@@ -38,12 +39,23 @@ struct Index {
   private context: common.UIAbilityContext = getContext(this) as common.UIAbilityContext;
 
   aboutToAppear(): void {
-    this.locked = this.lockEnabled && this.pin.length > 0;
+    this.refreshLock();
     this.load();
   }
 
   onForegroundChanged(): void {
+    // 回到前台一律重新上锁（对齐 iOS scenePhase 行为）
+    this.refreshLock();
     this.load();
+  }
+
+  /**
+   * 冷启动时设置项是异步加载的：页面可能先建好，AppStorage 里还是默认值，
+   * 于是 locked 算成 false 就再也不重算（实测设备锁因此完全失效）。
+   * 这里挂 @Watch('prefsReady'/'lockEnabled'/'pin') 三重触发，保证加载完成后重新判定。
+   */
+  refreshLock(): void {
+    this.locked = this.lockEnabled && this.pin.length > 0;
   }
 
   async load(): Promise<void> {
@@ -83,6 +95,11 @@ struct Index {
   }
 
   private startNewPerson(): void {
+    if (!Entitlements.canCreatePerson()) {
+      promptAction.showToast({ message: '新建档案需要先解锁' });
+      router.pushUrl({ url: 'pages/paywall/PaywallPage' });
+      return;
+    }
     this.formName = '';
     this.formBirth = '';
     this.formSummary = '';
@@ -90,6 +107,11 @@ struct Index {
   }
 
   private async createPerson(): Promise<void> {
+    // 入口之外再兜一次，防止有人绕过 UI 直接调用
+    if (!Entitlements.canCreatePerson()) {
+      promptAction.showToast({ message: '新建档案需要先解锁' });
+      return;
+    }
     const name: string = this.formName.trim();
     if (name.length === 0) {
       promptAction.showToast({ message: '先填个名字' });
