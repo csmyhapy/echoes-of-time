@@ -7,7 +7,7 @@ import { MediaStore } from '../../data/MediaStore';
 import { PersonBundle } from '../../models/Models';
 import { AppStore } from '../../services/AppStore';
 import { Bgm } from '../../services/Bgm';
-import { ArchiveService } from '../../services/ArchiveService';
+import { ArchiveService, ImportSummary } from '../../services/ArchiveService';
 import { IapService } from '../../services/IapService';
 import { AudioService } from '../../services/AudioService';
 import { PreviewMock } from '../../preview/PreviewMock';
@@ -35,6 +35,7 @@ struct SettingsPage {
   @State pinDraft: string = '';
   @State pinAgain: string = '';
   @State working: boolean = false;
+  @State importInfo: string = '';
 
   private personId: string = '';
   private ctx: common.UIAbilityContext = getContext(this) as common.UIAbilityContext;
@@ -145,9 +146,13 @@ struct SettingsPage {
     }
     this.working = true;
     try {
-      const id: string = await ArchiveService.importArchive(this.ctx);
-      if (id.length > 0) {
+      const summary: ImportSummary | null = await ArchiveService.importArchive(this.ctx);
+      if (summary !== null) {
+        const missing: string = summary.missing > 0 ? ` · ${summary.missing} 张缺图` : '';
+        this.importInfo = `「${summary.name}」· ${summary.nodes} 个章节 · ${summary.photos} 张照片${missing}`;
         promptAction.showToast({ message: '档案已导入' });
+      } else {
+        this.importInfo = '';
       }
     } catch (err) {
       promptAction.showToast({ message: '导入失败，请确认文件是 .echosarchive.zip' });
@@ -363,6 +368,13 @@ struct SettingsPage {
               .onClick(() => {
                 this.importArchive();
               })
+            if (this.importInfo.length > 0) {
+              Text(this.importInfo)
+                .fontSize(13)
+                .fontColor('#6B4A29')
+                .lineHeight(20)
+                .width('100%')
+            }
             Text('档案包是 .echosarchive.zip，含全部照片、旁白与文字，可存到云盘或换机恢复。')
               .fontSize(12)
               .fontColor('#8A7E73')

@@ -6,7 +6,7 @@ import { Db } from '../../data/Db';
 import { Repository } from '../../data/Repository';
 import { MediaStore } from '../../data/MediaStore';
 import {
-  Person, PersonBundle, Node, VoiceNote, Message,
+  Person, PersonBundle, Node, VoiceNote, Message, Photo,
   sortedVisibleNodes, photosOfNode, resolvedPersonCover, resolvedNodeCover,
   personVoice, messagesForPerson
 } from '../../models/Models';
@@ -15,6 +15,7 @@ import { Entitlements } from '../../services/Entitlements';
 import { AudioService } from '../../services/AudioService';
 import { MessageSection } from '../../components/MessageSection';
 import { VoiceRecorder } from '../../components/VoiceRecorder';
+import { AiHint } from '../../components/AiHint';
 import { PDFExporter } from '../../services/PDFExporter';
 import { PreviewMock } from '../../preview/PreviewMock';
 
@@ -37,6 +38,14 @@ struct PersonPage {
   @State formBirth: string = '';
   @State formSummary: string = '';
   @State formStory: string = '';
+
+  // 章节三点菜单 / 重命名 / 删除确认
+  @State menuNodeId: string = '';
+  @State editNodeId: string = '';
+  @State pendingDeleteId: string = '';
+  @State enName: string = '';
+  @State enYear: string = '';
+  @State enSummary: string = '';
 
   private personId: string = '';
   private ctx: common.UIAbilityContext = getContext(this) as common.UIAbilityContext;
@@ -240,11 +249,119 @@ struct PersonPage {
     }
   }
 
-  async addChapter(): Promise<void> {
-    if (!Entitlements.isPaid()) {
-      promptAction.showToast({ message: Entitlements.limitHint('章节', 0) });
+  private nodeIndexOf(id: string): number {
+    const list: Node[] = this.nodeList();
+    let index: number = -1;
+    for (let i = 0; i < list.length; i++) {
+      if (list[i].id === id) {
+        index = i;
+      }
+    }
+    return index;
+  }
+
+  /** 整组重写连续 sortOrder：App 列表与导出 PDF 目录用同一份顺序 */
+  private async persistOrder(list: Node[]): Promise<void> {
+    const store: relationalStore.RdbStore = await Db.get(this.ctx);
+    for (let i = 0; i < list.length; i++) {
+      const n: Node = list[i];
+      n.sortOrder = i;
+      await Repository.updateNode(store, n);
+    }
+    await this.load();
+  }
+
+  private async moveNode(id: string, delta: number): Promise<void> {
+    const list: Node[] = this.nodeList().slice();
+    const index: number = this.nodeIndexOf(id);
+    const target: number = index + delta;
+    if (index < 0 || target < 0 || target >= list.length) {
       return;
     }
+    const tmp: Node = list[index];
+    list[index] = list[target];
+    list[target] = tmp;
+    this.menuNodeId = '';
+    await this.persistOrder(list);
+    promptAction.showToast({ message: delta < 0 ? '已上移，PDF 目录同步更新' : '已下移，PDF 目录同步更新' });
+  }
+
+  private openNodeEdit(id: string): void {
+    for (const n of this.nodeList()) {
+      if (n.id === id) {
+        this.enName = n.name;
+        this.enYear = n.yearRange;
+        this.enSummary = n.summary;
+      }
+    }
+    this.menuNodeId = '';
+    this.editNodeId = id;
+  }
+
+  private async saveNodeEdit(): Promise<void> {
+    const store: relationalStore.RdbStore = await Db.get(this.ctx);
+    console.info(`[EchoTest] saveNodeEdit id=${this.editNodeId} name=${this.enName} nodes=${this.nodeList().length}`);
+    for (const n of this.nodeList()) {
+      if (n.id === this.editNodeId) {
+        const name: string = this.enName.trim();
+        if (name.length > 0) {
+          n.name = name;
+        }
+        n.yearRange = this.enYear.trim();
+        n.summary = this.enSummary.trim();
+        console.info(`[EchoTest] updating ${n.id} name=${n.name}`);
+        await Repository.updateNode(store, n);
+      }
+    }
+    this.editNodeId = '';
+    await this.load();
+    promptAction.showToast({ message: '已保存' });
+  }
+
+  /** 删除章节：库内级联 + 媒体文件一并清掉，再重排剩余章节 */
+  private async confirmDeleteNode(): Promise<void> {
+    const id: string = this.pendingDeleteId;
+    const nodes: Node[] = this.nodeList();
+    let cover: string = '';
+    for (const n of nodes) {
+      if (n.id === id && n.coverImageFileName.length > 0) {
+        cover = n.coverImageFileName;
+      }
+    }
+    const store: relationalStore.RdbStore = await Db.get(this.ctx);
+    const photos: Photo[] = await Repository.queryPhotos(store, this.personId);
+    const voices: VoiceNote[] = await Repository.queryVoices(store, this.personId);
+    for (const p of photos) {
+      if (p.nodeId === id) {
+        if (p.imageFileName.length > 0) {
+          MediaStore.deleteFile(this.ctx, this.personId, p.imageFileName);
+        }
+        if (p.audioFileName.length > 0) {
+          MediaStore.deleteFile(this.ctx, this.personId, p.audioFileName);
+        }
+      }
+    }
+    for (const v of voices) {
+      if (v.scope === 'node' && v.targetID === id && v.audioFileName.length > 0) {
+        MediaStore.deleteFile(this.ctx, this.personId, v.audioFileName);
+      }
+    }
+    if (cover.length > 0) {
+      MediaStore.deleteFile(this.ctx, this.personId, cover);
+    }
+    await Repository.deleteNode(store, this.personId, id);
+    this.pendingDeleteId = '';
+    const rest: Node[] = [];
+    for (const n of nodes) {
+      if (n.id !== id) {
+        rest.push(n);
+      }
+    }
+    await this.persistOrder(rest);
+    promptAction.showToast({ message: '章节已删除' });
+  }
+
+  async addChapter(): Promise<void> {
     const nodes: Node[] = this.nodeList();
     const max: number = Entitlements.maxNodes();
     if (nodes.length >= max) {
@@ -357,8 +474,6 @@ struct PersonPage {
           Column({ space: 16 }) {
             this.Hero()
 
-            this.ProgressBoard()
-
             this.Actions()
 
             if (this.mode === 'editor') {
@@ -405,6 +520,15 @@ struct PersonPage {
             .width('100%')
             .padding({ left: 4, right: 4 })
 
+            if (this.mode === 'editor' && this.nodeList().length > 0) {
+              Text('点击章节右侧三点可编辑、上移、下移或删除，PDF 目录随之更新')
+                .fontSize(12)
+                .fontColor('#A2958A')
+                .lineHeight(18)
+                .width('100%')
+                .padding({ left: 4, right: 4 })
+            }
+
             ForEach(this.nodeList(), (node: Node) => {
               this.NodeCard(node)
             }, (node: Node) => node.id)
@@ -432,6 +556,9 @@ struct PersonPage {
               }
             })
 
+            // 进度看板按 iOS 版本要求移到最后
+            this.ProgressBoard()
+
             Text(this.createdAtText())
               .fontSize(12)
               .fontColor('#A2958A')
@@ -447,6 +574,18 @@ struct PersonPage {
 
         if (this.editing) {
           this.EditPanel()
+        }
+
+        if (this.menuNodeId.length > 0) {
+          this.NodeMenu()
+        }
+
+        if (this.editNodeId.length > 0) {
+          this.NodeEditPanel()
+        }
+
+        if (this.pendingDeleteId.length > 0) {
+          this.ConfirmDeleteNode()
         }
       }
     }
@@ -664,6 +803,202 @@ struct PersonPage {
   }
 
   @Builder
+  NodeMenu() {
+    Column() {
+      Column() {
+        Text('章节操作')
+          .fontSize(13)
+          .fontColor('#8A7E73')
+          .width('100%')
+          .textAlign(TextAlign.Center)
+          .margin({ bottom: 6 })
+
+        Row() {
+          Text('编辑').fontSize(17).fontColor('#2B2622')
+        }
+        .width('100%')
+        .height(50)
+        .justifyContent(FlexAlign.Center)
+        .onClick(() => {
+          this.openNodeEdit(this.menuNodeId);
+        })
+
+        Divider().color('#EFE6D8')
+
+        Row() {
+          Text('上移')
+            .fontSize(17)
+            .fontColor(this.nodeIndexOf(this.menuNodeId) > 0 ? '#2B2622' : '#C9C0B6')
+        }
+        .width('100%')
+        .height(50)
+        .justifyContent(FlexAlign.Center)
+        .onClick(() => {
+          if (this.nodeIndexOf(this.menuNodeId) > 0) {
+            this.moveNode(this.menuNodeId, -1);
+          }
+        })
+
+        Divider().color('#EFE6D8')
+
+        Row() {
+          Text('下移')
+            .fontSize(17)
+            .fontColor(this.nodeIndexOf(this.menuNodeId) < this.nodeList().length - 1 ? '#2B2622' : '#C9C0B6')
+        }
+        .width('100%')
+        .height(50)
+        .justifyContent(FlexAlign.Center)
+        .onClick(() => {
+          if (this.nodeIndexOf(this.menuNodeId) < this.nodeList().length - 1) {
+            this.moveNode(this.menuNodeId, 1);
+          }
+        })
+
+        Divider().color('#EFE6D8')
+
+        Row() {
+          Text('删除').fontSize(17).fontColor('#B5483A')
+        }
+        .width('100%')
+        .height(50)
+        .justifyContent(FlexAlign.Center)
+        .onClick(() => {
+          this.pendingDeleteId = this.menuNodeId;
+          this.menuNodeId = '';
+        })
+
+        Divider().color('#EFE6D8')
+
+        Row() {
+          Text('取消').fontSize(17).fontColor('#6B4A29')
+        }
+        .width('100%')
+        .height(50)
+        .justifyContent(FlexAlign.Center)
+        .onClick(() => {
+          this.menuNodeId = '';
+        })
+      }
+      .width('82%')
+      .padding({ top: 14, bottom: 6 })
+      .backgroundColor('#FFFDF9')
+      .borderRadius(16)
+    }
+    .width('100%')
+    .height('100%')
+    .justifyContent(FlexAlign.Center)
+    .backgroundColor('#66000000')
+  }
+
+  @Builder
+  NodeEditPanel() {
+    Column() {
+      Column({ space: 12 }) {
+        Text('编辑章节')
+          .fontSize(18)
+          .fontWeight(FontWeight.Medium)
+          .fontColor('#2B2622')
+          .width('100%')
+
+        TextInput({ text: this.enName, placeholder: '章节名称' })
+          .height(46)
+          .fontSize(16)
+          .onChange((value: string) => {
+            this.enName = value;
+          })
+
+        TextInput({ text: this.enYear, placeholder: '时间范围，如 1936–1949' })
+          .height(46)
+          .fontSize(16)
+          .onChange((value: string) => {
+            this.enYear = value;
+          })
+
+        TextInput({ text: this.enSummary, placeholder: '一句话简介' })
+          .height(46)
+          .fontSize(16)
+          .onChange((value: string) => {
+            this.enSummary = value;
+          })
+
+        Row({ space: 12 }) {
+          Button('取消')
+            .layoutWeight(1)
+            .height(44)
+            .backgroundColor('#F2E7D8')
+            .fontColor('#6B4A29')
+            .onClick(() => {
+              this.editNodeId = '';
+            })
+          Button('保存')
+            .layoutWeight(1)
+            .height(44)
+            .backgroundColor('#6B4A29')
+            .fontColor('#FFFFFF')
+            .onClick(() => {
+              this.saveNodeEdit();
+            })
+        }
+        .width('100%')
+      }
+      .width('86%')
+      .padding(20)
+      .backgroundColor('#FFFDF9')
+      .borderRadius(16)
+    }
+    .width('100%')
+    .height('100%')
+    .justifyContent(FlexAlign.Center)
+    .backgroundColor('#66000000')
+  }
+
+  @Builder
+  ConfirmDeleteNode() {
+    Column() {
+      Column({ space: 14 }) {
+        Text('删除这一章？')
+          .fontSize(18)
+          .fontWeight(FontWeight.Medium)
+          .fontColor('#2B2622')
+          .width('100%')
+        Text('这一章的照片、旁白和留言会一起删除，删掉后不能恢复。')
+          .fontSize(14)
+          .fontColor('#6F665D')
+          .lineHeight(21)
+          .width('100%')
+        Row({ space: 12 }) {
+          Button('取消')
+            .layoutWeight(1)
+            .height(44)
+            .backgroundColor('#F2E7D8')
+            .fontColor('#6B4A29')
+            .onClick(() => {
+              this.pendingDeleteId = '';
+            })
+          Button('删除')
+            .layoutWeight(1)
+            .height(44)
+            .backgroundColor('#B5483A')
+            .fontColor('#FFFFFF')
+            .onClick(() => {
+              this.confirmDeleteNode();
+            })
+        }
+        .width('100%')
+      }
+      .width('86%')
+      .padding(20)
+      .backgroundColor('#FFFDF9')
+      .borderRadius(16)
+    }
+    .width('100%')
+    .height('100%')
+    .justifyContent(FlexAlign.Center)
+    .backgroundColor('#66000000')
+  }
+
+  @Builder
   NodeCard(node: Node) {
     Row({ space: 14 }) {
       if (this.hasNodeCover(node)) {
@@ -702,9 +1037,14 @@ struct PersonPage {
       .alignItems(HorizontalAlign.Start)
       .layoutWeight(1)
 
-      Text('›')
+      // 竖排三点：编辑 / 上移 / 下移 / 删除（独立响应，不进章节详情）
+      Text('⋮')
         .fontSize(22)
-        .fontColor('#C0B2A2')
+        .fontColor('#A2958A')
+        .padding({ left: 12, right: 8, top: 6, bottom: 6 })
+        .onClick(() => {
+          this.menuNodeId = node.id;
+        })
     }
     .width('100%')
     .padding(14)
@@ -741,11 +1081,13 @@ struct PersonPage {
         })
         .height(72)
         .maxLength(120)
+      AiHint({ scene: 'person', long: false })
       TextArea({ text: this.formStory, placeholder: '人生故事（长文）' })
         .onChange((value: string) => {
           this.formStory = value;
         })
         .height(140)
+      AiHint({ scene: 'person', long: true })
 
       Row({ space: 12 }) {
         Button('取消')

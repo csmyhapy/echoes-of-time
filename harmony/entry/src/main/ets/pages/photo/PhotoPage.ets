@@ -8,6 +8,7 @@ import { PersonBundle, Photo, Message, Node, photosOfNode, messagesForPhoto } fr
 import { PhotoParams, readerScale, fmtDate } from '../../utils/Common';
 import { MessageSection } from '../../components/MessageSection';
 import { AudioService } from '../../services/AudioService';
+import { AiHint } from '../../components/AiHint';
 import { PreviewMock } from '../../preview/PreviewMock';
 
 @Entry
@@ -430,11 +431,13 @@ struct PhotoPage {
         .onChange((value: string) => {
           this.formCaption = value;
         })
+      AiHint({ scene: 'photo', long: false })
       TextArea({ text: this.formStory, placeholder: '这张照片背后的故事' })
         .height(110)
         .onChange((value: string) => {
           this.formStory = value;
         })
+      AiHint({ scene: 'photo', long: true })
       Row({ space: 12 }) {
         Button('取消')
           .backgroundColor('#EFE6D8')

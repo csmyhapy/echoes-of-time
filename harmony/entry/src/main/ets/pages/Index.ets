@@ -32,6 +32,7 @@ struct Index {
   @State pinInput: string = '';
   @State pinError: string = '';
   @State newPanel: boolean = false;
+  @State oneArchiveHint: boolean = false;
   @State formName: string = '';
   @State formBirth: string = '';
   @State formSummary: string = '';
@@ -94,10 +95,20 @@ struct Index {
     }
   }
 
+  /** 正式版一机一档：示例档案不计入，再建第二个时给委婉说明（不是报错语气） */
+  private nonDemoCount(): number {
+    let count: number = 0;
+    for (const p of this.persons) {
+      if (!p.isDemo) {
+        count = count + 1;
+      }
+    }
+    return count;
+  }
+
   private startNewPerson(): void {
-    if (!Entitlements.canCreatePerson()) {
-      promptAction.showToast({ message: '新建档案需要先解锁' });
-      router.pushUrl({ url: 'pages/paywall/PaywallPage' });
+    if (!Entitlements.canCreateAnother(this.nonDemoCount())) {
+      this.oneArchiveHint = true;
       return;
     }
     this.formName = '';
@@ -108,8 +119,9 @@ struct Index {
 
   private async createPerson(): Promise<void> {
     // 入口之外再兜一次，防止有人绕过 UI 直接调用
-    if (!Entitlements.canCreatePerson()) {
-      promptAction.showToast({ message: '新建档案需要先解锁' });
+    if (!Entitlements.canCreateAnother(this.nonDemoCount())) {
+      this.newPanel = false;
+      this.oneArchiveHint = true;
       return;
     }
     const name: string = this.formName.trim();
@@ -234,12 +246,52 @@ struct Index {
       .height('100%')
       .backgroundColor('#F7F1E8')
 
+      if (this.oneArchiveHint) {
+        this.OneArchiveHint()
+      }
+
       if (this.locked) {
         this.LockLayer()
       }
     }
     .width('100%')
     .height('100%')
+  }
+
+  @Builder
+  OneArchiveHint() {
+    Column() {
+      Column({ space: 12 }) {
+        Text('暂时只能建立一个档案')
+          .fontSize(20)
+          .fontWeight(FontWeight.Medium)
+          .fontColor('#2B2622')
+        Text('回忆录要跨越很多年、慢慢积累。为了保护您的创作体验，目前先开放一机一档，请专心把这一份写完整；后续版本会考虑更多可能。')
+          .fontSize(14)
+          .fontColor('#6F665D')
+          .lineHeight(22)
+        Button('好的，知道了')
+          .width('100%')
+          .height(46)
+          .backgroundColor('#6B4A29')
+          .fontColor('#FFFFFF')
+          .margin({ top: 6 })
+          .onClick(() => {
+            this.oneArchiveHint = false;
+          })
+      }
+      .alignItems(HorizontalAlign.Start)
+      .padding(22)
+      .width('86%')
+      .backgroundColor('#FFFDF9')
+      .borderRadius(18)
+      .shadow({ radius: 20, color: '#22000000', offsetY: 8 })
+    }
+    .width('100%')
+    .height('100%')
+    .justifyContent(FlexAlign.Center)
+    .alignItems(HorizontalAlign.Center)
+    .backgroundColor('#66000000')
   }
 
   @Builder

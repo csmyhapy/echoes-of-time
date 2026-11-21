@@ -15,6 +15,7 @@ import { Entitlements } from '../../services/Entitlements';
 import { AudioService } from '../../services/AudioService';
 import { MessageSection } from '../../components/MessageSection';
 import { VoiceRecorder } from '../../components/VoiceRecorder';
+import { AiHint } from '../../components/AiHint';
 import { PreviewMock } from '../../preview/PreviewMock';
 
 @Entry
@@ -133,10 +134,6 @@ struct NodePage {
   }
 
   private async addPhotos(): Promise<void> {
-    if (!Entitlements.isPaid()) {
-      promptAction.showToast({ message: Entitlements.limitHint('照片', 0) });
-      return;
-    }
     const max: number = Entitlements.maxPhotos();
     if (this.bundle === undefined) {
       return;
@@ -558,11 +555,13 @@ struct NodePage {
           this.formSummary = value;
         })
         .height(64)
+      AiHint({ scene: 'node', long: false })
       TextArea({ text: this.formStory, placeholder: '这一章的故事' })
         .onChange((value: string) => {
           this.formStory = value;
         })
         .height(120)
+      AiHint({ scene: 'node', long: true })
 
       Row({ space: 12 }) {
         Button('取消')

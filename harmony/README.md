@@ -25,8 +25,8 @@
 | SDK | 内置 HarmonyOS 26.0.0 Release（`compileSdkVersion 26.0.0.105`，API 26） |
 | 构建命令 | `./build.sh`（或 `./build.sh release`） |
 | debug HAP | `entry/build/default/outputs/default/entry-default-unsigned.hap`（同路径，按需切 debug/release） |
-| release HAP | 8.9 MB（9,351,309 B），`minAPIVersion=12`、`targetAPIVersion=26`、`buildMode=release` |
-| 校验值 | SHA-256 `8ff21f3a07e818858add82b62d8f4d8104d00a6a1bfbcccf24d2bb40849dc1b9`（9,351,309 B） |
+| release HAP | 9.4 MB（9,841,256 B），`minAPIVersion=12`、`targetAPIVersion=26`、`buildMode=release` |
+| 校验值 | SHA-256 `26a429a44c010234d9b1f2d40831960982063fb4296333a1d3c8f10ab9229e4e`（9,841,256 B，2026-11-21） |
 | 签名 | **未签名**（缺 AGC 证书/Profile，`No signingConfig found for product default`） |
 
 > 命令行构建必须设置 `JAVA_HOME=/Applications/DevEco-Studio.app/Contents/jbr/Contents/Home`，否则 `PackageHap` 会报 `Unable to locate a Java Runtime`。`build.sh` 已封装好这些环境变量。

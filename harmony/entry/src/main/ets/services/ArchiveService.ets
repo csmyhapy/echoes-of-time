@@ -14,6 +14,13 @@ import { PersonBundle, Person, Node, Photo, VoiceNote, Message } from '../models
  * 与 iOS ArchiveExporter / ArchiveImporter 保持同名同结构，便于 iOS ⇄ 鸿蒙互导。
  */
 
+export interface ImportSummary {
+  name: string;
+  nodes: number;
+  photos: number;
+  missing: number;
+}
+
 interface ArchiveRoot {
   version: number;
   exportedAt: string;
@@ -76,7 +83,13 @@ export class ArchiveService {
     const documentPicker: picker.DocumentViewPicker = new picker.DocumentViewPicker(context);
     const options: picker.DocumentSaveOptions = new picker.DocumentSaveOptions();
     options.newFileNames = [`${ArchiveService.safeName(bundle.person.name)}.echosarchive.zip`];
-    const uris: string[] = await documentPicker.save(options);
+    // 系统保存面板偶发不回调（尤其模拟器）：加超时兜底，避免按钮永久"处理中"
+    const uris: string[] = await Promise.race([
+      documentPicker.save(options),
+      new Promise<string[]>((resolve: (value: string[]) => void) => {
+        setTimeout(() => resolve([]), 8000);
+      })
+    ]);
     if (uris.length === 0) {
       return '';
     }
@@ -94,14 +107,19 @@ export class ArchiveService {
    * 导入档案包：返回新建人物的 id；用户取消或格式不对返回空串。
    * 同名人物不覆盖，导入为「名字（导入）」副本，避免误删原档。
    */
-  static async importArchive(context: common.UIAbilityContext): Promise<string> {
+  static async importArchive(context: common.UIAbilityContext): Promise<ImportSummary | null> {
     const documentPicker: picker.DocumentViewPicker = new picker.DocumentViewPicker(context);
     const options: picker.DocumentSelectOptions = new picker.DocumentSelectOptions();
     options.maxSelectNumber = 1;
     options.fileSuffixFilters = ['.zip'];
-    const uris: string[] = await documentPicker.select(options);
+    const uris: string[] = await Promise.race([
+      documentPicker.select(options),
+      new Promise<string[]>((resolve: (value: string[]) => void) => {
+        setTimeout(() => resolve([]), 8000);
+      })
+    ]);
     if (uris.length === 0) {
-      return '';
+      return null;
     }
 
     const tempZip: string = `${context.filesDir}/import_${util.generateRandomUUID()}.zip`;
@@ -118,7 +136,7 @@ export class ArchiveService {
     const dataPath: string = `${outDir}/data.json`;
     if (!fs.accessSync(dataPath)) {
       ArchiveService.cleanup(outDir);
-      return '';
+      return null;
     }
     const root: ArchiveRoot = JSON.parse(ArchiveService.readText(dataPath)) as ArchiveRoot;
 
@@ -158,11 +176,24 @@ export class ArchiveService {
       await Repository.insertMessage(store, message);
     }
 
+    let missing: number = 0;
+    for (const photo of root.photos) {
+      if (photo.imageFileName.length > 0 && !fs.accessSync(`${destDir}/${photo.imageFileName}`)) {
+        missing = missing + 1;
+      }
+    }
+
     ArchiveService.cleanup(outDir);
     if (fs.accessSync(tempZip)) {
       fs.unlinkSync(tempZip);
     }
-    return person.id;
+    const summary: ImportSummary = {
+      name: person.name,
+      nodes: root.nodes.length,
+      photos: root.photos.length,
+      missing: missing
+    };
+    return summary;
   }
 
   private static safeName(name: string): string {

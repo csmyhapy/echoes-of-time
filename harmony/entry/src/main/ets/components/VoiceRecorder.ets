@@ -59,11 +59,6 @@ export struct VoiceRecorder {
     if (this.busy || this.recording) {
       return;
     }
-    // 免费态（tier=none）任何录音写入都拦掉，含"重录已有旁白"（否则可绕过配额）
-    if (!Entitlements.isPaid()) {
-      promptAction.showToast({ message: '录旁白需要先解锁入门版' });
-      return;
-    }
     const max: number = Entitlements.maxVoices();
     if (this.voiceId.length === 0 && this.existingCount >= max) {
       promptAction.showToast({ message: Entitlements.limitHint('段旁白', max) });
@@ -116,6 +111,13 @@ export struct VoiceRecorder {
       }
       const store: relationalStore.RdbStore = await Db.get(this.ctx);
       if (this.voiceId.length > 0) {
+        // 重录替换：先删旧录音文件，避免磁盘上残留（免费额度也按 1 段计）
+        const oldVoices: VoiceNote[] = await Repository.queryVoices(store, this.personId);
+        for (const v of oldVoices) {
+          if (v.id === this.voiceId && v.audioFileName.length > 0) {
+            MediaStore.deleteFile(this.ctx, this.personId, v.audioFileName);
+          }
+        }
         await Repository.deleteVoice(store, this.voiceId);
       }
       const voice: VoiceNote = {
