@@ -106,7 +106,8 @@ final class AppState {
         // 本地开发/自用：Debug 包直接开启开发者模式，解锁「一人一档」，便于建多个档案测试；Release 不编译此段。
         self.isDeveloper = true
         #else
-        self.isDeveloper = UserDefaults.standard.bool(forKey: "developerMode")
+        // Release（面向普通用户）：开发者模式恒关，不读取任何本地旧值，一人一档锁死。
+        self.isDeveloper = false
         #endif
 
         Bundle.setLanguage(lang.rawValue)
