@@ -71,8 +71,6 @@ struct PersonDetailView: View {
                 infoBlock
                 summaryBlock
 
-                overviewCard
-
                 if !person.story.isEmpty {
                     storySection
                 }
@@ -82,6 +80,8 @@ struct PersonDetailView: View {
                 timelineSection
 
                 MessageSection(person: person, isReader: isReader)
+
+                overviewCard
             }
             .padding(20)
             .readableCentered()
@@ -197,7 +197,7 @@ struct PersonDetailView: View {
             }
 
             if !isReader && !sortedNodes.isEmpty {
-                Text("chapter.drag.hint")
+                Text("chapter.menu.hint")
                     .font(.system(size: 12))
                     .foregroundStyle(.secondary)
             }
@@ -211,30 +211,14 @@ struct PersonDetailView: View {
                     NavigationLink {
                         NodeDetailView(node: node, isReader: isReader)
                     } label: {
-                        NodeCard(node: node, personID: person.id, large: isReader)
+                        NodeCard(
+                            node: node,
+                            personID: person.id,
+                            large: isReader,
+                            trailingMenu: isReader ? nil : AnyView(chapterMenu(for: node))
+                        )
                     }
                     .buttonStyle(.plain)
-                    .onDrag {
-                        guard !isReader else { return NSItemProvider() }
-                        return NSItemProvider(object: node.id.uuidString as NSString)
-                    }
-                    .onDrop(of: [.text], isTargeted: nil) { providers in
-                        guard !isReader, let item = providers.first else { return false }
-                        item.loadObject(ofClass: NSString.self) { value, _ in
-                            DispatchQueue.main.async {
-                                guard let s = value as? String,
-                                      let fromID = UUID(uuidString: s), fromID != node.id else { return }
-                                reorderNode(from: fromID, to: node.id)
-                            }
-                        }
-                        return true
-                    }
-                    .contextMenu {
-                        if !isReader {
-                            Button("common.edit") { editingNode = node }
-                            Button("common.delete", role: .destructive) { delete(node) }
-                        }
-                    }
                 }
 
                 if sortedNodes.count > 3 {
@@ -402,15 +386,37 @@ struct PersonDetailView: View {
         try? context.save()
     }
 
-    /// 拖拽重排可见章节，写回连续 sortOrder；App列表与PDF目录都按 sortOrder 优先
-    private func reorderNode(from fromID: UUID, to toID: UUID) {
-        var arr = person.nodes.filter { $0.isVisible }
-        guard let fromIdx = arr.firstIndex(where: { $0.id == fromID }),
-              let toIdx = arr.firstIndex(where: { $0.id == toID }) else { return }
-        let moved = arr.remove(at: fromIdx)
-        arr.insert(moved, at: toIdx)
-        for (i, n) in arr.enumerated() { n.sortOrder = i }
+    /// 上移(-1)/下移(+1)一个章节：在展示序列里与相邻交换，整组重写连续 sortOrder；App列表与PDF目录都按 sortOrder 优先
+    private func moveNode(_ node: Node, direction: Int) {
+        var arr = sortedNodes
+        guard let i = arr.firstIndex(of: node) else { return }
+        let j = i + direction
+        guard arr.indices.contains(j) else { return }
+        arr.swapAt(i, j)
+        for (k, n) in arr.enumerated() { n.sortOrder = k }
         try? context.save()
+    }
+
+    /// 章节卡片右侧竖排三点菜单（对齐安卓）：编辑 / 上移 / 下移 / 删除
+    @ViewBuilder
+    private func chapterMenu(for node: Node) -> some View {
+        let idx = sortedNodes.firstIndex(of: node) ?? 0
+        Menu {
+            Button("common.edit") { editingNode = node }
+            Button("chapter.move.up") { moveNode(node, direction: -1) }
+                .disabled(idx == 0)
+            Button("chapter.move.down") { moveNode(node, direction: 1) }
+                .disabled(idx == sortedNodes.count - 1)
+            Button("common.delete", role: .destructive) { delete(node) }
+        } label: {
+            VStack(spacing: 3) {
+                Circle().fill(Color.secondary).frame(width: 5, height: 5)
+                Circle().fill(Color.secondary).frame(width: 5, height: 5)
+                Circle().fill(Color.secondary).frame(width: 5, height: 5)
+            }
+            .frame(width: 28, height: 44)
+            .contentShape(Rectangle())
+        }
     }
 
     private var coverBlock: some View {
@@ -607,6 +613,7 @@ struct NodeCard: View {
     let node: Node
     let personID: UUID
     var large: Bool = false
+    var trailingMenu: AnyView? = nil
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -636,6 +643,9 @@ struct NodeCard: View {
                     }
                 }
                 Spacer()
+                if let trailingMenu {
+                    trailingMenu
+                }
             }
 
             if !node.summary.isEmpty {

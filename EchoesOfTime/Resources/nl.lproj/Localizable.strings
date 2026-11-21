@@ -105,6 +105,9 @@
 "chapter.order.reminder" = "Melding over hoofdstukvolgorde";
 "chapter.order.proceed" = "Toch exporteren";
 "chapter.drag.hint" = "Houd een hoofdstuk vast om te slepen; de PDF-inhoudsopgave volgt.";
+"chapter.move.up" = "Omhoog";
+"chapter.move.down" = "Omlaag";
+"chapter.menu.hint" = "Tik op de drie puntjes van een hoofdstuk om het te bewerken, omhoog of omlaag te verplaatsen of te verwijderen; de PDF-inhoudsopgave volgt.";
 "library.empty.demo" = "Voorbeeldarchief laden";
 "settings.bgm" = "Achtergrondmuziek";
 "one.archive.limit.title" = "Slechts één archief";

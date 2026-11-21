@@ -105,6 +105,9 @@
 "chapter.order.reminder" = "Aviso sobre a ordem dos capítulos";
 "chapter.order.proceed" = "Exportar mesmo assim";
 "chapter.drag.hint" = "Pressione um capítulo para arrastá-lo; o sumário do PDF acompanha.";
+"chapter.move.up" = "Mover para cima";
+"chapter.move.down" = "Mover para baixo";
+"chapter.menu.hint" = "Toque nos três pontos de um capítulo para editar, mover para cima/baixo ou excluir; o sumário do PDF acompanha.";
 "library.empty.demo" = "Carregar arquivo de exemplo";
 "settings.bgm" = "Música de fundo";
 "one.archive.limit.title" = "Apenas um arquivo";

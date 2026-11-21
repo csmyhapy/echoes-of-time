@@ -105,6 +105,9 @@
 "chapter.order.reminder" = "章の順序に関する注意";
 "chapter.order.proceed" = "それでも書き出す";
 "chapter.drag.hint" = "章を長押ししてドラッグで並べ替え。PDFの目次も連動します。";
+"chapter.move.up" = "上へ移動";
+"chapter.move.down" = "下へ移動";
+"chapter.menu.hint" = "章の右側の三点をタップで編集・上下移動・削除。PDFの目次も連動します。";
 "library.empty.demo" = "サンプルアーカイブを読み込む";
 "settings.bgm" = "BGM";
 "one.archive.limit.title" = "アーカイブはひとつだけ";

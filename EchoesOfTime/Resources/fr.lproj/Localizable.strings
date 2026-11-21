@@ -105,6 +105,9 @@
 "chapter.order.reminder" = "Avis sur l'ordre des chapitres";
 "chapter.order.proceed" = "Exporter quand même";
 "chapter.drag.hint" = "Maintenez un chapitre pour le faire glisser ; la table des matières du PDF suit.";
+"chapter.move.up" = "Monter";
+"chapter.move.down" = "Descendre";
+"chapter.menu.hint" = "Touchez les trois points d'un chapitre pour le modifier, le déplacer ou le supprimer ; la table des matières du PDF suit.";
 "library.empty.demo" = "Charger une archive d'exemple";
 "settings.bgm" = "Musique de fond";
 "one.archive.limit.title" = "Une seule archive";

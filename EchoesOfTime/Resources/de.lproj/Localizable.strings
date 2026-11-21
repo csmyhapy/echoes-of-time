@@ -105,6 +105,9 @@
 "chapter.order.reminder" = "Hinweis zur Kapitelreihenfolge";
 "chapter.order.proceed" = "Trotzdem exportieren";
 "chapter.drag.hint" = "Kapitel lange drücken, um es zu verschieben; das PDF-Inhaltsverzeichnis folgt.";
+"chapter.move.up" = "Nach oben";
+"chapter.move.down" = "Nach unten";
+"chapter.menu.hint" = "Tippen Sie auf die drei Punkte eines Kapitels, um es zu bearbeiten, zu verschieben oder zu löschen; das PDF-Inhaltsverzeichnis folgt.";
 "library.empty.demo" = "Beispielarchiv laden";
 "settings.bgm" = "Hintergrundmusik";
 "one.archive.limit.title" = "Nur ein Archiv";

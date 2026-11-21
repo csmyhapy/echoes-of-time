@@ -105,6 +105,9 @@
 "chapter.order.reminder" = "챕터 순서 안내";
 "chapter.order.proceed" = "그래도 내보내기";
 "chapter.drag.hint" = "챕터를 길게 눌러 드래그하여 순서를 바꾸세요. PDF 목차도 따라 바뀝니다.";
+"chapter.move.up" = "위로 이동";
+"chapter.move.down" = "아래로 이동";
+"chapter.menu.hint" = "챕터 오른쪽 점 세 개를 눌러 편집·위아래 이동·삭제하세요. PDF 목차도 따라 바뀝니다.";
 "library.empty.demo" = "샘플 보관함 불러오기";
 "settings.bgm" = "배경 음악";
 "one.archive.limit.title" = "보관함은 하나만";

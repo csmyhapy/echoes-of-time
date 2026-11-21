@@ -105,6 +105,9 @@
 "chapter.order.reminder" = "Avviso sull'ordine dei capitoli";
 "chapter.order.proceed" = "Esporta comunque";
 "chapter.drag.hint" = "Tieni premuto un capitolo per trascinarlo; l'indice del PDF si aggiorna.";
+"chapter.move.up" = "Sposta su";
+"chapter.move.down" = "Sposta giù";
+"chapter.menu.hint" = "Tocca i tre punti di un capitolo per modificarlo, spostarlo su o giù o eliminarlo; l'indice del PDF si aggiorna.";
 "library.empty.demo" = "Carica archivio di esempio";
 "settings.bgm" = "Musica di sottofondo";
 "one.archive.limit.title" = "Un solo archivio";

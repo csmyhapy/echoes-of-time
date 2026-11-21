@@ -105,6 +105,9 @@
 "chapter.order.reminder" = "章节顺序提醒";
 "chapter.order.proceed" = "仍要导出";
 "chapter.drag.hint" = "长按章节可拖拽调整顺序，PDF 目录随之更新";
+"chapter.move.up" = "上移";
+"chapter.move.down" = "下移";
+"chapter.menu.hint" = "点击章节右侧三点可编辑、上移、下移或删除，PDF 目录随之更新";
 "library.empty.demo" = "载入示例档案";
 "settings.bgm" = "背景音乐";
 "one.archive.limit.title" = "仅支持一个档案";
