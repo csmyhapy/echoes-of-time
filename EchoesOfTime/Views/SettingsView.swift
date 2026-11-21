@@ -98,6 +98,31 @@ struct SettingsView: View {
                 Toggle("settings.bgm", isOn: $bgmEnabled)
             }
 
+            // 备份/迁移：导入档案包，所有用户可用（不依赖开发者模式）
+            Section("settings.section.data") {
+                Button {
+                    showImporter = true
+                } label: {
+                    HStack {
+                        Label("settings.import.archive", systemImage: "square.and.arrow.down")
+                        Spacer()
+                        if isImporting {
+                            ProgressView()
+                        }
+                    }
+                }
+                .disabled(isImporting)
+
+                Text("settings.import.note")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+
+                Text("settings.data.note")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
+
+            #if DEBUG
             Section("settings.section.developer") {
                 Button("settings.demo.add") {
                     if persons.contains(where: { $0.isDemo }) {
@@ -108,39 +133,14 @@ struct SettingsView: View {
                 }
             }
 
-            Section("settings.section.data") {
-                Text("settings.data.note")
+            Section {
+                Toggle("settings.developer.on", isOn: $state.isDeveloper)
+                Text("settings.developer.note")
                     .font(.footnote)
-                    .foregroundStyle(.secondary)
+            } header: {
+                Text("settings.section.developer.mode")
             }
-
-            if appState.isDeveloper {
-                Section {
-                    Toggle("settings.developer.on", isOn: $state.isDeveloper)
-
-                    Button {
-                        showImporter = true
-                    } label: {
-                        HStack {
-                            Label("settings.import.archive", systemImage: "square.and.arrow.down")
-                            Spacer()
-                            if isImporting {
-                                ProgressView()
-                            }
-                        }
-                    }
-                    .disabled(isImporting)
-
-                    Text("settings.import.note")
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                } header: {
-                    Text("settings.section.developer.mode")
-                } footer: {
-                    Text("settings.developer.note")
-                        .font(.footnote)
-                }
-            }
+            #endif
 
             Section {
                 NavigationLink {
@@ -161,13 +161,17 @@ struct SettingsView: View {
                     Text(Self.versionText)
                         .foregroundStyle(.secondary)
                 }
+                #if DEBUG
                 .contentShape(Rectangle())
                 .onTapGesture { unlockIfNeeded() }
+                #endif
             } footer: {
+                #if DEBUG
                 if !appState.isDeveloper {
                     Text("settings.developer.hint")
                         .font(.footnote)
                 }
+                #endif
             }
         }
         .navigationTitle("settings.title")
@@ -176,9 +180,11 @@ struct SettingsView: View {
         } message: {
             Text("demo.exists.message")
         }
+        #if DEBUG
         .alert("settings.developer.unlocked", isPresented: $showUnlockAlert) {
             Button("common.save", role: .cancel) {}
         }
+        #endif
         .fileImporter(
             isPresented: $showImporter,
             allowedContentTypes: [.zip],
@@ -244,7 +250,8 @@ struct SettingsView: View {
         return "\(short) (\(build))"
     }
 
-    /// 连点版本号 5 次解锁开发者模式（普通用户不会误触）
+    #if DEBUG
+    /// 连点版本号 5 次解锁开发者模式（仅 Debug 包可用，Release 无此入口）
     private func unlockIfNeeded() {
         guard !appState.isDeveloper else { return }
         versionTapCount += 1
@@ -254,6 +261,7 @@ struct SettingsView: View {
             showUnlockAlert = true
         }
     }
+    #endif
 }
 
 // MARK: - 二级：语言选择（苹果式单选列表）
